@@ -27,6 +27,38 @@ PG_DSN = env(
 FEATURE_BUILDER_URL = env("FEATURE_BUILDER_URL", "http://localhost:8000")
 
 
+def wait_for_redis(timeout_seconds: int = 60, interval: float = 1.5) -> None:
+    """Wait until Redis is reachable or timeout."""
+    start = time.time()
+    last_err = None
+    while time.time() - start < timeout_seconds:
+        try:
+            r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PASSWORD, decode_responses=True)
+            if r.ping():
+                return
+        except Exception as e:
+            last_err = e
+        time.sleep(interval)
+    raise RuntimeError(f"Redis not ready after {timeout_seconds}s: {last_err}")
+
+
+def wait_for_feature_builder(timeout_seconds: int = 60, interval: float = 1.5) -> None:
+    """Wait until Feature Builder /health responds healthy or timeout."""
+    start = time.time()
+    last_err = None
+    url = f"{FEATURE_BUILDER_URL}/health"
+    while time.time() - start < timeout_seconds:
+        try:
+            with httpx.Client(timeout=3.0) as client:
+                resp = client.get(url)
+                if resp.status_code == 200:
+                    return
+        except Exception as e:
+            last_err = e
+        time.sleep(interval)
+    raise RuntimeError(f"Feature Builder not ready after {timeout_seconds}s: {last_err}")
+
+
 def check_redis():
     print("== Redis Health ==")
     r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PASSWORD, decode_responses=True)
@@ -129,7 +161,11 @@ def call_feature_builder(match_info):
 
 def main():
     print("E2E Smoke Test starting...")
+    print("Waiting for Redis...")
+    wait_for_redis()
     check_redis()
+    print("Waiting for Feature Builder...")
+    wait_for_feature_builder()
     match_info = check_db_and_seed_match()
     fb = call_feature_builder(match_info)
     print("\n== Summary ==")
