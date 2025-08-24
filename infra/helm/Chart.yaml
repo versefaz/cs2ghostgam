@@ -1,0 +1,5 @@
+﻿apiVersion: v2
+name: cs2-betting-analytics
+version: 0.1.0
+description: Generic chart for microservices in cs2-betting-analytics
+appVersion: "0.1.0"

@@ -1,0 +1,32 @@
+{
+  "name": "cs2-betting-analytics",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "libs/*"
+  ],
+  "scripts": {
+    "build": "echo build",
+    "lint": "echo lint",
+    "test": "echo test"
+  },
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "grpc-tools": "^1.11.3"
+  },
+  "dependencies": {
+    "@apollo/client": "^4.0.0",
+    "graphql": "^16.11.0",
+    "tailwindcss": "^4.1.12"
+  }
+}

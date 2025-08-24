@@ -1,0 +1,13 @@
+﻿syntax = "proto3";
+package analytics;
+
+message MatchId { int64 value = 1; }
+
+message Prediction {
+  double prob = 1;
+  repeated double shap = 2;
+}
+
+service Predictor {
+  rpc Predict (MatchId) returns (Prediction) {}
+}

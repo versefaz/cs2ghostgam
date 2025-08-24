@@ -1,0 +1,22 @@
+﻿# dependencies
+node_modules/
+# python
+.venv/
+__pycache__/
+dist/
+build/
+*.pyc
+# env
+.env
+# notebooks
+.ipynb_checkpoints/
+# misc
+.DS_Store
+# poetry
+poetry.lock
+# terraform
+*.tfstate*
+.terraform/
+# vscode/idea
+.vscode/
+.idea/

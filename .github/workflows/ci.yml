@@ -1,0 +1,54 @@
+﻿name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: example
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install and Test (ingest-hltv)
+        working-directory: services/ingest-hltv
+        run: |
+          poetry install
+          poetry run pytest -q
+
+  docker:
+    needs: test
+    strategy:
+      matrix:
+        service: [api-gateway, ingest-hltv, feature-builder, prediction, portfolio-sim, feedback-logger]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & Push
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/${{ matrix.service }}:${{ github.sha }} services/${{ matrix.service }}
+          docker push ghcr.io/${{ github.repository }}/${{ matrix.service }}:${{ github.sha }}

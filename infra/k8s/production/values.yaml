@@ -1,0 +1,21 @@
+﻿global:
+  environment: production
+
+api-gateway:
+  replicas: 3
+  resources:
+    requests: { memory: "512Mi", cpu: "500m" }
+    limits: { memory: "1Gi", cpu: "1000m" }
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+
+prediction:
+  replicas: 2
+  nodeSelector:
+    gpu: "true"
+  resources:
+    limits:
+      nvidia.com/gpu: 1
