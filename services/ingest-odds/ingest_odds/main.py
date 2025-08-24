@@ -1,7 +1,13 @@
-﻿import sys
+import asyncio
+import os
+from .live_odds import LiveOddsStreamer
 
-def main():
-    print(\"ingest_odds service starting...\")
 
-if __name__ == \"__main__\":
-    main()
+async def amain() -> None:
+    match_id = int(os.getenv("MATCH_ID", "0"))
+    streamer = LiveOddsStreamer()
+    await streamer.stream_odds(match_id)
+
+
+if __name__ == "__main__":
+    asyncio.run(amain())

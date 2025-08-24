@@ -79,4 +79,3 @@ class LiveOddsStreamer:
             f"live:odds:{match_id}",
             {b"payload": encoded},
         )
-

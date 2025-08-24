@@ -2,6 +2,7 @@ import asyncio
 from typing import AsyncGenerator
 import strawberry
 import json
+import os
 
 # NOTE: Wire real clients later (DI or app.state)
 try:
@@ -39,7 +40,8 @@ class Subscription:
             # fallback: empty stream
             while True:
                 await asyncio.sleep(5)
-        r = redis.Redis()
+        redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
+        r = redis.from_url(redis_url)
         stream = f"live:odds:{match_id}"
         last_id = "$"
         while True:
@@ -56,7 +58,8 @@ class Subscription:
         if nats is None:
             while True:
                 await asyncio.sleep(5)
-        nc = await nats.connect(servers=["nats://nats:4222"])  # TODO: env
+        nats_url = os.getenv("NATS_URL", "nats://nats:4222")
+        nc = await nats.connect(servers=[nats_url])
         sub = await nc.subscribe(f"live.match.{match_id}")
         try:
             async for msg in sub.messages:  # type: ignore[attr-defined]

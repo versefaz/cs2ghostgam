@@ -1,4 +1,4 @@
-﻿version: "3.9"
+version: "3.9"
 services:
   postgres:
     image: timescale/timescaledb:2.14-pg15
@@ -17,14 +17,30 @@ services:
     build: ./services/api-gateway
     environment:
       - PORT=8000
+      - NATS_URL=nats://nats:4222
+      - REDIS_URL=redis://redis:6379/0
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
     ports: ["8000:8000"]
-    depends_on: [postgres, redis]
+    depends_on: [postgres, redis, nats]
   ingest-hltv:
     build: ./services/ingest-hltv
     environment:
       - SCRAPE_INTERVAL=10
-    depends_on: [nats]
+      - NATS_URL=nats://nats:4222
+      - REDIS_URL=redis://redis:6379/0
+    depends_on: [nats, redis]
+  ingest-odds:
+    build: ./services/ingest-odds
+    environment:
+      - MATCH_ID=0
+      - ODDS_INTERVAL=5
+      - NATS_URL=nats://nats:4222
+      - REDIS_URL=redis://redis:6379/0
+      # bookmaker keys (optional)
+      - ONEXBET_API_KEY=${ONEXBET_API_KEY:-}
+      - BETWAY_API_KEY=${BETWAY_API_KEY:-}
+      - PINNACLE_API_KEY=${PINNACLE_API_KEY:-}
+    depends_on: [nats, redis]
   prediction:
     build: ./services/prediction
     environment:

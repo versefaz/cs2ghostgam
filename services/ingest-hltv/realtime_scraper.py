@@ -5,6 +5,7 @@ import redis.asyncio as redis
 import orjson
 import json
 import nats
+import os
 
 class HLTVRealtimeScraper:
     """
@@ -14,7 +15,8 @@ class HLTVRealtimeScraper:
     - Player stats แบบ tick-by-tick
     """
     def __init__(self) -> None:
-        self.redis = redis.Redis(decode_responses=False)
+        redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
+        self.redis = redis.from_url(redis_url, decode_responses=False)
         self.ws_url = "wss://scorebot-secure.hltv.org/socket.io/"
         self.nc: Optional[nats.NATS] = None
 
@@ -22,7 +24,8 @@ class HLTVRealtimeScraper:
         """เชื่อมต่อ WebSocket สำหรับแมตช์ที่กำลังแข่ง (skeleton)"""
         # connect NATS once
         if not self.nc:
-            self.nc = await nats.connect(servers=["nats://nats:4222"])  # override via env later
+            nats_url = os.getenv("NATS_URL", "nats://nats:4222")
+            self.nc = await nats.connect(servers=[nats_url])
         async with async_playwright() as p:
             browser = await p.chromium.launch()
             page = await browser.new_page()
