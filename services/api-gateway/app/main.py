@@ -3,6 +3,7 @@ from strawberry.fastapi import GraphQLRouter
 from fastapi import FastAPI
 import grpc, orjson, httpx, os, redis
 from .graphql.subscriptions import Subscription
+from .hltv_socketio_client import HLTVSocketClient
 
 @strawberry.type
 class AnalyzePayload:
@@ -32,3 +33,14 @@ app.include_router(GraphQLRouter(schema), prefix="/graphql")
 @app.get("/healthz")
 def healthz():
     return {"status": "ok"}
+
+# HLTV Socket.io client lifecycle
+client = HLTVSocketClient()
+
+@app.on_event("startup")
+async def on_startup():
+    await client.start()
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    await client.stop()
