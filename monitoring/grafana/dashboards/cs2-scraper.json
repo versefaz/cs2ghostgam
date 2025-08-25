@@ -1,0 +1,82 @@
+{
+  "dashboard": {
+    "title": "CS2 Ghost Gam - Scraper Dashboard",
+    "uid": "cs2-scraper-001",
+    "version": 1,
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "type": "graph",
+        "title": "Scraping Success Rate",
+        "targets": [
+          {
+            "expr": "rate(scraper_success_total[5m]) / rate(scraper_attempts_total[5m]) * 100",
+            "legendFormat": "{{source}}"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "type": "graph",
+        "title": "Data Collection Rate",
+        "targets": [
+          {
+            "expr": "rate(scraper_items_collected_total[5m])",
+            "legendFormat": "{{type}}"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 8},
+        "type": "stat",
+        "title": "Total Matches",
+        "targets": [
+          {
+            "expr": "count(matches_total)",
+            "legendFormat": "Matches"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 8},
+        "type": "stat",
+        "title": "Total Players",
+        "targets": [
+          {
+            "expr": "count(players_total)",
+            "legendFormat": "Players"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 8},
+        "type": "stat",
+        "title": "Active Odds",
+        "targets": [
+          {
+            "expr": "count(odds_active)",
+            "legendFormat": "Odds"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "gridPos": {"h": 10, "w": 24, "x": 0, "y": 16},
+        "type": "table",
+        "title": "Recent Scraping Jobs",
+        "targets": [
+          {
+            "expr": "scraper_job_status",
+            "format": "table"
+          }
+        ]
+      }
+    ]
+  }
+}

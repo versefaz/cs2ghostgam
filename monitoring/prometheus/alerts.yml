@@ -1,0 +1,31 @@
+groups:
+  - name: cs2_scraper_alerts
+    interval: 30s
+    rules:
+      - alert: ScraperDown
+        expr: up{job="cs2_scraper"} == 0
+        for: 5m
+        annotations:
+          summary: "Scraper is down"
+          description: "CS2 scraper has been down for more than 5 minutes"
+
+      - alert: HighErrorRate
+        expr: rate(scraper_errors_total[5m]) > 0.1
+        for: 10m
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is above 10% for the last 10 minutes"
+
+      - alert: NoDataCollection
+        expr: rate(scraper_items_collected_total[15m]) == 0
+        for: 15m
+        annotations:
+          summary: "No data being collected"
+          description: "No new data collected in the last 15 minutes"
+
+      - alert: DatabaseConnectionFailed
+        expr: pg_up == 0
+        for: 1m
+        annotations:
+          summary: "Database connection failed"
+          description: "Cannot connect to PostgreSQL database"
