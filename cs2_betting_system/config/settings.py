@@ -22,6 +22,8 @@ BOOKMAKER_PRIORITY = [
         'BOOKMAKER_PRIORITY', 'Pinnacle, bet365, 1xBet, Marathonbet, Unibet'
     ).split(',')
 ]
+ODDS_CACHE_TTL = int(os.getenv('ODDS_CACHE_TTL', '300'))  # seconds
+USE_UC = os.getenv('USE_UC', 'true').lower() in ('1', 'true', 'yes')
 
 # Database
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')

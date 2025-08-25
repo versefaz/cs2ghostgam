@@ -1,9 +1,15 @@
+import os
+import json
+import random
 import time
 from datetime import datetime
 from typing import List, Dict
 
+import redis
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -14,17 +20,36 @@ from config import settings
 class LiveMatchScraper:
     def __init__(self):
         self.driver = None
+        self.redis_client = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, decode_responses=True)
+        self.alerts = AlertSystem()
         self.setup_driver()
 
     def setup_driver(self):
         """Setup Selenium driver; if fails, leave None and run in degraded mode."""
         try:
+            # randomize user agent per session
+            ua_pool = [
+                settings.USER_AGENT,
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+            ]
+            ua = random.choice(ua_pool)
+
             options = Options()
             options.add_argument('--headless=new')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
-            options.add_argument(f'user-agent={settings.USER_AGENT}')
-            self.driver = webdriver.Chrome(options=options)
+            options.add_argument(f'user-agent={ua}')
+
+            if settings.USE_UC:
+                try:
+                    import undetected_chromedriver as uc  # type: ignore
+                    self.driver = uc.Chrome(options=options)
+                except Exception as e:
+                    print(f"UC driver failed, fallback to webdriver.Chrome: {e}")
+                    self.driver = webdriver.Chrome(options=options)
+            else:
+                self.driver = webdriver.Chrome(options=options)
         except Exception as e:
             print(f"Selenium unavailable, fallback to mock scraping: {e}")
             self.driver = None
@@ -35,6 +60,7 @@ class LiveMatchScraper:
             return []
         matches: List[Dict] = []
         try:
+            self._human_wait()
             self.driver.get('https://www.hltv.org/matches')
             WebDriverWait(self.driver, settings.SELENIUM_WAIT).until(
                 EC.presence_of_element_located((By.CLASS_NAME, 'match-day'))
@@ -50,7 +76,7 @@ class LiveMatchScraper:
                         'status': 'live',
                         'timestamp': datetime.now(),
                     }
-                    match_data.update(self.get_live_odds(match_data['team1'], match_data['team2']))
+                    match_data.update(self.get_cached_odds(match_data['team1'], match_data['team2']))
                     matches.append(match_data)
                 except Exception:
                     continue
@@ -65,7 +91,7 @@ class LiveMatchScraper:
                         'status': 'upcoming',
                         'timestamp': datetime.now(),
                     }
-                    m.update(self.get_live_odds(m['team1'], m['team2']))
+                    m.update(self.get_cached_odds(m['team1'], m['team2']))
                     matches.append(m)
                 except Exception:
                     continue
@@ -140,8 +166,40 @@ class LiveMatchScraper:
             if odds:
                 return odds
         except Exception:
-            pass
+            self.alerts.count_error()
+            if self.alerts.should_alert():
+                self.alerts.alert_critical(f"Odds scraping failed repeatedly for {team1} vs {team2}")
         return {'odds_team1': None, 'odds_team2': None, 'odds_source': None}
+
+    def get_live_odds_with_protection(self, team1: str, team2: str) -> Dict:
+        """Apply anti-bot protections then scrape odds."""
+        # Random human-like delay and mouse movement
+        self._human_wait()
+        try:
+            if self.driver:
+                actions = ActionChains(self.driver)
+                actions.move_by_offset(random.randint(1, 100), random.randint(1, 100)).perform()
+        except Exception:
+            pass
+        return self.get_live_odds(team1, team2)
+
+    def get_cached_odds(self, team1: str, team2: str) -> Dict:
+        """Use Redis cache for odds to reduce hits and evade anti-bot."""
+        try:
+            cache_key = f"odds:{team1}:{team2}"
+            cached = self.redis_client.get(cache_key)
+            if cached:
+                return json.loads(cached)
+            odds = self.get_live_odds_with_protection(team1, team2)
+            if odds and (odds.get('odds_team1') and odds.get('odds_team2')):
+                self.redis_client.setex(cache_key, settings.ODDS_CACHE_TTL, json.dumps(odds))
+            return odds
+        except Exception as e:
+            print(f"Cache error: {e}")
+            return self.get_live_odds_with_protection(team1, team2)
+
+    def _human_wait(self):
+        time.sleep(random.uniform(2, 5))
 
     def scrape_all_sources(self) -> List[Dict]:
         matches = []
@@ -155,3 +213,25 @@ class LiveMatchScraper:
                 self.driver.quit()
             except Exception:
                 pass
+
+
+class AlertSystem:
+    def __init__(self):
+        self.discord_webhook = os.getenv('DISCORD_WEBHOOK') or settings.DISCORD_WEBHOOK
+        self.error_count = 0
+
+    def count_error(self):
+        self.error_count += 1
+
+    def should_alert(self) -> bool:
+        return self.error_count > 5 and bool(self.discord_webhook)
+
+    def alert_critical(self, message: str):
+        try:
+            if not self.discord_webhook:
+                return
+            requests.post(self.discord_webhook, json={
+                "content": f"🚨 CRITICAL: {message}"
+            }, timeout=10)
+        except Exception:
+            pass
