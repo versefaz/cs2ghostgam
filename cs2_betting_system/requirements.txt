@@ -12,3 +12,4 @@ streamlit==1.28.0
 plotly==5.17.0
 undetected-chromedriver==3.5.5
 fake-useragent==1.4.0
+prometheus-client==0.20.0

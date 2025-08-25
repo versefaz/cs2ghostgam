@@ -24,6 +24,8 @@ BOOKMAKER_PRIORITY = [
 ]
 ODDS_CACHE_TTL = int(os.getenv('ODDS_CACHE_TTL', '300'))  # seconds
 USE_UC = os.getenv('USE_UC', 'true').lower() in ('1', 'true', 'yes')
+USE_PROXY = os.getenv('USE_PROXY', 'false').lower() in ('1', 'true', 'yes')
+PROXY_URL = os.getenv('PROXY_URL', '')
 
 # Database
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
@@ -42,4 +44,8 @@ MODEL_PROBABILITY_THRESHOLD = float(os.getenv('MODEL_PROBABILITY_THRESHOLD', '0.
 DISCORD_WEBHOOK = os.getenv('DISCORD_WEBHOOK')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+
+# Metrics / Monitoring
+METRICS_PORT_PREDICTION = int(os.getenv('METRICS_PORT_PREDICTION', '9092'))
+METRICS_PORT_SCRAPER = int(os.getenv('METRICS_PORT_SCRAPER', '9091'))
 

@@ -40,6 +40,9 @@ class LiveMatchScraper:
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
             options.add_argument(f'user-agent={ua}')
+            # Optional proxy support
+            if settings.USE_PROXY and settings.PROXY_URL:
+                options.add_argument(f'--proxy-server={settings.PROXY_URL}')
 
             if settings.USE_UC:
                 try:
