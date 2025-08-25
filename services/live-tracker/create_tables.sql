@@ -1,4 +1,3 @@
-CREATE DATABASE IF NOT EXISTS cs2_predictions; -- for Docker init compatibility, harmless if exists
 \c cs2_predictions;
 
 CREATE TABLE IF NOT EXISTS predictions (
