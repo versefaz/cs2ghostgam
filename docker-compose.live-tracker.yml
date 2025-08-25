@@ -1,0 +1,101 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14
+    container_name: cs2_postgres
+    environment:
+      POSTGRES_DB: cs2_predictions
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./services/live-tracker/create_tables.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - cs2_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: cs2_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - cs2_network
+
+  prediction_tracker:
+    build: ./services/live-tracker
+    container_name: cs2_tracker
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=cs2_predictions
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_password
+      - REDIS_HOST=redis
+      - REDIS_DB=0
+      - PROMETHEUS_PORT=8080
+    volumes:
+      - ./services/live-tracker/models:/app/models
+      - ./services/live-tracker/logs:/app/logs
+    networks:
+      - cs2_network
+    command: python prediction_tracker.py
+
+  streamlit_dashboard:
+    build: ./services/live-tracker
+    container_name: cs2_dashboard
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8501:8501"
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=cs2_predictions
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_password
+      - REDIS_HOST=redis
+      - REDIS_DB=0
+    networks:
+      - cs2_network
+    command: streamlit run dashboard.py --server.port 8501 --server.address 0.0.0.0
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cs2_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./services/live-tracker/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - cs2_network
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: cs2_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./services/live-tracker/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./services/live-tracker/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - cs2_network
+
+networks:
+  cs2_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  grafana_data:
+  prometheus_data:
