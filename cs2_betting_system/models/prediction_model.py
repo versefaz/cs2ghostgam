@@ -1,4 +1,6 @@
+import os
 import math
+import pickle
 from typing import Dict, List
 import numpy as np
 import pandas as pd
@@ -18,6 +20,19 @@ class PredictionModel:
 
     def __init__(self):
         self.feature_columns = settings.FEATURE_COLUMNS
+        self.model = None
+        self._load_model_if_available()
+
+    def _load_model_if_available(self):
+        """Try to load a trained model from disk; stay silent on failure."""
+        try:
+            path = settings.MODEL_PATH
+            if path and os.path.exists(path):
+                with open(path, 'rb') as f:
+                    self.model = pickle.load(f)
+        except Exception as e:
+            # Keep heuristic fallback if loading fails
+            print(f"Model load failed, using heuristic: {e}")
 
     def extract_features(self, match: Dict) -> Dict:
         features: Dict = {}
@@ -59,7 +74,29 @@ class PredictionModel:
     def predict(self, match: Dict) -> Dict:
         features = self.extract_features(match)
         # Probability team1 wins
-        p_t1 = self._heuristic_prob(features)
+        p_t1 = None
+        if self.model is not None:
+            try:
+                # Build feature vector in configured order; missing features default to 0.0
+                row = [[float(features.get(col, 0.0)) for col in self.feature_columns]]
+                X = pd.DataFrame(row, columns=self.feature_columns)
+                if hasattr(self.model, 'predict_proba'):
+                    proba = self.model.predict_proba(X)
+                    # Use probability of positive class; assume second column
+                    p_t1 = float(proba[0, 1]) if proba.shape[1] > 1 else float(proba[0, 0])
+                elif hasattr(self.model, 'decision_function'):
+                    z = float(self.model.decision_function(X)[0])
+                    p_t1 = float(sigmoid(z))
+                elif hasattr(self.model, 'predict'):
+                    y = float(self.model.predict(X)[0])
+                    # If only class label, approximate as high/low confidence
+                    p_t1 = 0.7 if y >= 0.5 else 0.3
+            except Exception as e:
+                print(f"Model inference failed, using heuristic: {e}")
+                p_t1 = None
+
+        if p_t1 is None:
+            p_t1 = self._heuristic_prob(features)
         p_t2 = 1.0 - p_t1
 
         # Pick side with higher edge vs market odds
