@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: 'odds_service'
+    static_configs:
+      - targets: ['odds_service:8000']
+    metrics_path: /metrics
