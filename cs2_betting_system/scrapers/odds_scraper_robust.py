@@ -9,7 +9,7 @@ import time
 from datetime import datetime
 import json
 import random
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 import logging
 from dataclasses import dataclass, asdict
 from enum import Enum
@@ -54,12 +54,15 @@ class OddsRecord:
 
 
 class FlexibleOddsScraper:
-    """Scraper ที่ยืดหยุ่นและทนทานต่อการเปลี่ยนแปลง"""
+    """Enhanced Robust Scraper with retry/backoff and source tracking"""
 
     def __init__(self):
         self.selectors_config = self._load_selectors_config()
         self.driver_pool = []
         self.session = None
+        self.source_reliability = {}  # Track source success rates
+        self.last_attempt_times = {}  # Rate limiting per source
+        self.failed_attempts = {}  # Track consecutive failures
 
     def _load_selectors_config(self) -> Dict:
         """โหลด selector config ที่อัปเดตได้ง่าย"""
@@ -99,16 +102,249 @@ class FlexibleOddsScraper:
                     "Accept": "application/json",
                     "X-API-Key": "YOUR_API_KEY"
                 }
-            },
-            OddsSource.GGBET: {
-                "primary_selectors": [
-                    "//div[@class='odd__value']",
-                    "//button[contains(@class, 'odds-button')]"
-                ],
-                "dynamic_content": True,
-                "scroll_required": True
             }
         }
+    
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+        retry=retry_if_exception_type((ConnectionError, TimeoutError))
+    )
+    async def fetch_odds_with_retry(self, source: OddsSource, match_identifiers: Dict) -> Optional[List[OddsRecord]]:
+        """Fetch odds with exponential backoff retry"""
+        source_name = source.value
+        
+        # Rate limiting check
+        if source_name in self.last_attempt_times:
+            time_since_last = time.time() - self.last_attempt_times[source_name]
+            min_interval = 2.0  # Minimum 2 seconds between requests
+            if time_since_last < min_interval:
+                await asyncio.sleep(min_interval - time_since_last)
+        
+        self.last_attempt_times[source_name] = time.time()
+        
+        try:
+            # Track attempt
+            if source_name not in self.failed_attempts:
+                self.failed_attempts[source_name] = 0
+                
+            # Use different methods based on source config
+            config = self.selectors_config.get(source, {})
+            
+            if "api_endpoint" in config:
+                odds = await self._fetch_via_api(source, match_identifiers, config)
+            else:
+                odds = await self._fetch_via_scraping(source, match_identifiers, config)
+            
+            # Success - reset failure counter and update reliability
+            self.failed_attempts[source_name] = 0
+            self._update_source_reliability(source_name, True)
+            
+            return odds
+            
+        except Exception as e:
+            # Track failure
+            self.failed_attempts[source_name] += 1
+            self._update_source_reliability(source_name, False)
+            
+            logger.warning(f"Failed to fetch odds from {source_name}: {e}")
+            
+            # If too many consecutive failures, temporarily disable source
+            if self.failed_attempts[source_name] >= 5:
+                logger.error(f"Source {source_name} disabled due to consecutive failures")
+                return None
+                
+            raise  # Re-raise for retry mechanism
+    
+    def _update_source_reliability(self, source_name: str, success: bool):
+        """Update source reliability tracking"""
+        if source_name not in self.source_reliability:
+            self.source_reliability[source_name] = {"successes": 0, "attempts": 0}
+        
+        self.source_reliability[source_name]["attempts"] += 1
+        if success:
+            self.source_reliability[source_name]["successes"] += 1
+    
+    def get_source_reliability_score(self, source_name: str) -> float:
+        """Get reliability score for a source (0.0 to 1.0)"""
+        if source_name not in self.source_reliability:
+            return 0.5  # Default neutral score
+        
+        stats = self.source_reliability[source_name]
+        if stats["attempts"] == 0:
+            return 0.5
+        
+        return stats["successes"] / stats["attempts"]
+    
+    async def _fetch_via_api(self, source: OddsSource, match_identifiers: Dict, config: Dict) -> List[OddsRecord]:
+        """Fetch odds via API with proper error handling"""
+        if not self.session:
+            self.session = aiohttp.ClientSession()
+        
+        endpoint = config["api_endpoint"]
+        headers = config.get("headers", {})
+        
+        # Build API request based on source
+        if source == OddsSource.PINNACLE:
+            params = {
+                "sportId": 12,  # Esports
+                "leagueIds": match_identifiers.get("league_id", ""),
+                "eventIds": match_identifiers.get("event_id", "")
+            }
+        else:
+            params = match_identifiers
+        
+        async with self.session.get(endpoint, headers=headers, params=params, timeout=10) as response:
+            if response.status != 200:
+                raise ConnectionError(f"API returned status {response.status}")
+            
+            data = await response.json()
+            return self._parse_api_response(source, data)
+    
+    async def _fetch_via_scraping(self, source: OddsSource, match_identifiers: Dict, config: Dict) -> List[OddsRecord]:
+        """Fetch odds via web scraping with fallback selectors"""
+        driver = await self._get_driver()
+        
+        try:
+            # Navigate to odds page
+            url = self._build_odds_url(source, match_identifiers)
+            driver.get(url)
+            
+            # Wait for page load with multiple conditions
+            wait_conditions = config.get("wait_conditions", [])
+            for condition_type, condition_value in wait_conditions:
+                try:
+                    WebDriverWait(driver, 5).until(
+                        EC.presence_of_element_located((condition_type, condition_value))
+                    )
+                    break
+                except:
+                    continue
+            
+            # Try primary selectors first, then fallbacks
+            odds_data = None
+            
+            for selector_type in ["primary_selectors", "fallback_selectors"]:
+                selectors = config.get(selector_type, [])
+                for selector in selectors:
+                    try:
+                        odds_data = self._extract_odds_with_selector(driver, selector, config)
+                        if odds_data:
+                            break
+                    except Exception as e:
+                        logger.debug(f"Selector {selector} failed: {e}")
+                        continue
+                
+                if odds_data:
+                    break
+            
+            if not odds_data:
+                raise ValueError(f"No odds data found for {source.value}")
+            
+            return self._convert_to_odds_records(source, odds_data, match_identifiers)
+            
+        finally:
+            await self._return_driver(driver)
+    
+    def _extract_odds_with_selector(self, driver, selector: str, config: Dict) -> Optional[Dict]:
+        """Extract odds using specific selector with validation"""
+        elements = driver.find_elements(By.XPATH, selector)
+        
+        if not elements:
+            return None
+        
+        odds_values = []
+        for element in elements:
+            try:
+                text = element.text.strip()
+                if text and self._is_valid_odds(text):
+                    odds_values.append(float(text))
+            except (ValueError, AttributeError):
+                continue
+        
+        # Validate we have expected number of odds (typically 2 for match winner)
+        if len(odds_values) >= 2:
+            return {
+                "team1_odds": odds_values[0],
+                "team2_odds": odds_values[1],
+                "draw_odds": odds_values[2] if len(odds_values) > 2 else None
+            }
+        
+        return None
+    
+    def _is_valid_odds(self, text: str) -> bool:
+        """Validate if text represents valid odds"""
+        try:
+            odds = float(text)
+            return 1.01 <= odds <= 100.0  # Reasonable odds range
+        except ValueError:
+            return False
+    
+    async def _get_driver(self):
+        """Get WebDriver from pool or create new one"""
+        if self.driver_pool:
+            return self.driver_pool.pop()
+        
+        # Create new driver with anti-detection measures
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+        
+        driver = webdriver.Chrome(options=options)
+        driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+        
+        return driver
+    
+    async def _return_driver(self, driver):
+        """Return driver to pool for reuse"""
+        if len(self.driver_pool) < 3:  # Max 3 drivers in pool
+            self.driver_pool.append(driver)
+        else:
+            driver.quit()
+    
+    def _build_odds_url(self, source: OddsSource, match_identifiers: Dict) -> str:
+        """Build URL for odds page based on source and match identifiers"""
+        base_urls = {
+            OddsSource.ODDSPORTAL: "https://www.oddsportal.com/esports/counter-strike",
+            OddsSource.BET365: "https://www.bet365.com/esports/counter-strike",
+            OddsSource.GGBET: "https://gg.bet/en/esports/counter-strike"
+        }
+        
+        base_url = base_urls.get(source, "")
+        match_path = match_identifiers.get("url_path", "")
+        
+        return f"{base_url}/{match_path}" if match_path else base_url
+    
+    def _parse_api_response(self, source: OddsSource, data: Dict) -> List[OddsRecord]:
+        """Parse API response into OddsRecord objects"""
+        records = []
+        
+        # Implementation depends on API structure
+        # This is a template that should be customized per source
+        
+        return records
+    
+    def _convert_to_odds_records(self, source: OddsSource, odds_data: Dict, match_identifiers: Dict) -> List[OddsRecord]:
+        """Convert extracted odds data to OddsRecord objects"""
+        record = OddsRecord(
+            team1=match_identifiers.get("team1", "Team1"),
+            team2=match_identifiers.get("team2", "Team2"),
+            odds_1=odds_data["team1_odds"],
+            odds_2=odds_data["team2_odds"],
+            odds_draw=odds_data.get("draw_odds"),
+            source=source.value,
+            timestamp=datetime.utcnow(),
+            match_time=match_identifiers.get("match_time"),
+            market_type="match_winner",
+            confidence=self.get_source_reliability_score(source.value),
+            raw_data=odds_data
+        )
+        
+        return [record]
 
     async def setup(self):
         """Initialize resources"""

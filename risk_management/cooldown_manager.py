@@ -4,14 +4,16 @@ from enum import Enum
 import asyncio
 from collections import defaultdict
 from dataclasses import dataclass
+import logging
 
+logger = logging.getLogger(__name__)
 
 class CooldownLevel(Enum):
     MATCH = "match"
     TEAM = "team"
+    MARKET = "market"  # e.g., match_winner, map1_winner
+    LEAGUE = "league"  # e.g., ESL Pro League, BLAST Premier
     TOURNAMENT = "tournament"
-    LEAGUE = "league"
-    MARKET = "market"
     GLOBAL = "global"
 
 
@@ -29,14 +31,19 @@ class CooldownConfig:
     loss_multiplier: float = 2.0  # Multiply cooldown on loss
     consecutive_loss_multiplier: float = 1.5
     max_cooldown_multiplier: float = 5.0
+    base_cooldown_minutes: int = 30
+    max_loss_multiplier: float = 10.0
 
 
 class CooldownManager:
     """Comprehensive cooldown management system"""
 
-    def __init__(self, config: CooldownConfig):
-        self.config = config
-        self.cooldowns: Dict[str, Dict[str, datetime]] = defaultdict(dict)
+    def __init__(self):
+        self.cooldowns: Dict[str, Dict[CooldownLevel, datetime]] = {}
+        self.config = CooldownConfig()
+        self.market_cooldowns: Dict[str, datetime] = {}  # market_type -> cooldown_end
+        self.league_cooldowns: Dict[str, datetime] = {}  # league_id -> cooldown_end
+        self.tournament_cooldowns: Dict[str, datetime] = {}  # tournament_id -> cooldown_end
         self.loss_streaks: Dict[str, int] = defaultdict(int)
         self.blocked_entities: set[str] = set()
         self._lock = asyncio.Lock()
@@ -52,12 +59,36 @@ class CooldownManager:
         if entity_id in self.blocked_entities:
             return False, None
 
-        cooldown_key = f"{level.value}:{entity_id}"
-        if cooldown_key in self.cooldowns[level.value]:
-            cooldown_end = self.cooldowns[level.value][cooldown_key]
-            now = datetime.now()
-            if now < cooldown_end:
-                return False, (cooldown_end - now)
+        if level in [CooldownLevel.MATCH, CooldownLevel.TEAM, CooldownLevel.GLOBAL]:
+            # Traditional cooldowns
+            if entity_id not in self.cooldowns:
+                self.cooldowns[entity_id] = {}
+            if level in self.cooldowns[entity_id]:
+                cooldown_end = self.cooldowns[entity_id][level]
+                now = datetime.now()
+                if now < cooldown_end:
+                    return False, (cooldown_end - now)
+        elif level == CooldownLevel.MARKET:
+            # Market-specific cooldowns (e.g., match_winner, map1_winner)
+            if entity_id in self.market_cooldowns:
+                cooldown_end = self.market_cooldowns[entity_id]
+                now = datetime.now()
+                if now < cooldown_end:
+                    return False, (cooldown_end - now)
+        elif level == CooldownLevel.LEAGUE:
+            # League-specific cooldowns (e.g., ESL Pro League)
+            if entity_id in self.league_cooldowns:
+                cooldown_end = self.league_cooldowns[entity_id]
+                now = datetime.now()
+                if now < cooldown_end:
+                    return False, (cooldown_end - now)
+        elif level == CooldownLevel.TOURNAMENT:
+            # Tournament-specific cooldowns
+            if entity_id in self.tournament_cooldowns:
+                cooldown_end = self.tournament_cooldowns[entity_id]
+                now = datetime.now()
+                if now < cooldown_end:
+                    return False, (cooldown_end - now)
 
         if check_all:
             avail, remain = self._check_hierarchy_cooldowns(level, entity_id)
@@ -66,31 +97,32 @@ class CooldownManager:
 
         return True, None
 
-    def add_cooldown(
-        self,
-        level: CooldownLevel,
-        entity_id: str,
-        result: str = "neutral",
-        custom_duration: Optional[timedelta] = None,
-    ):
-        """Add cooldown with optional loss multipliers"""
-        base_duration = custom_duration or self._get_base_duration(level)
-
-        loss_key = f"{level.value}:{entity_id}"
-        if result == "loss":
-            self.loss_streaks[loss_key] += 1
-            multiplier = min(
-                self.config.loss_multiplier
-                * (self.config.consecutive_loss_multiplier ** (self.loss_streaks[loss_key] - 1)),
-                self.config.max_cooldown_multiplier,
-            )
-            base_duration *= multiplier
-        elif result == "win":
-            self.loss_streaks[loss_key] = 0
-
-        cooldown_key = f"{level.value}:{entity_id}"
-        self.cooldowns[level.value][cooldown_key] = datetime.now() + base_duration
-
+    def set_cooldown(self, identifier: str, level: CooldownLevel, duration_minutes: int = None, context: Dict = None):
+        """Set cooldown for specific identifier and level with context support"""
+        if duration_minutes is None:
+            duration_minutes = self.config.base_cooldown_minutes
+        
+        cooldown_end = datetime.utcnow() + timedelta(minutes=duration_minutes)
+        
+        if level in [CooldownLevel.MATCH, CooldownLevel.TEAM, CooldownLevel.GLOBAL]:
+            # Traditional cooldowns
+            if identifier not in self.cooldowns:
+                self.cooldowns[identifier] = {}
+            self.cooldowns[identifier][level] = cooldown_end
+        elif level == CooldownLevel.MARKET:
+            # Market-specific cooldowns (e.g., match_winner, map1_winner)
+            market_type = context.get('market_type', identifier) if context else identifier
+            self.market_cooldowns[market_type] = cooldown_end
+        elif level == CooldownLevel.LEAGUE:
+            # League-specific cooldowns (e.g., ESL Pro League)
+            league_id = context.get('league_id', identifier) if context else identifier
+            self.league_cooldowns[league_id] = cooldown_end
+        elif level == CooldownLevel.TOURNAMENT:
+            # Tournament-specific cooldowns
+            tournament_id = context.get('tournament_id', identifier) if context else identifier
+            self.tournament_cooldowns[tournament_id] = cooldown_end
+        
+        logger.info(f"Cooldown set: {identifier} ({level.value}) until {cooldown_end}")
         self._propagate_cooldowns(level, entity_id, base_duration)
 
     def _get_base_duration(self, level: CooldownLevel) -> timedelta:

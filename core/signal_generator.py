@@ -1,14 +1,24 @@
 import asyncio
+import json
+import uuid
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
 import logging
 
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 from models.signal import BettingSignal, SignalSide, SignalPriority
 
 # Note: numpy used only for potential future calcs; not strictly required in current functions
 from utils.kelly import calculate_kelly_fraction
+
+# Redis imports with fallback
+try:
+    import redis.asyncio as redis
+    REDIS_AVAILABLE = True
+except ImportError:
+    REDIS_AVAILABLE = False
+    redis = None
 
 logger = logging.getLogger(__name__)
 
@@ -38,12 +48,82 @@ class SignalConfig:
 
 
 class SignalGenerator:
-    """สร้างสัญญาณการเดิมพันจากข้อมูลต่างๆ"""
+    """Professional Signal Generator with Redis Publishing"""
 
-    def __init__(self, config: SignalConfig = None):
+    def __init__(self, config: SignalConfig = None, redis_url: str = "redis://localhost:6379"):
         self.config = config or SignalConfig()
         self.active_signals: Dict[str, BettingSignal] = {}
         self._lock = asyncio.Lock()
+        
+        # Redis setup
+        self.redis_url = redis_url
+        self.redis_client: Optional[redis.Redis] = None
+        self.signal_queue = "cs2_betting_signals"
+        self.signal_history = "cs2_signal_history"
+        self.publisher_id = str(uuid.uuid4())[:8]
+        
+    async def initialize(self):
+        """Initialize Redis connection"""
+        if REDIS_AVAILABLE:
+            try:
+                self.redis_client = redis.from_url(self.redis_url, decode_responses=True)
+                await self.redis_client.ping()
+                logger.info(f"SignalGenerator connected to Redis: {self.redis_url}")
+            except Exception as e:
+                logger.warning(f"Redis connection failed: {e}. Signals will not be published.")
+                self.redis_client = None
+        else:
+            logger.warning("Redis not available. Signals will not be published.")
+            
+    async def close(self):
+        """Close Redis connection"""
+        if self.redis_client:
+            await self.redis_client.close()
+            
+    async def publish_signal(self, signal: BettingSignal) -> bool:
+        """Publish signal to Redis queue with persistence"""
+        if not self.redis_client:
+            logger.debug("Redis not available, signal not published")
+            return False
+            
+        try:
+            # Create signal payload
+            signal_data = {
+                "signal_id": str(uuid.uuid4()),
+                "publisher_id": self.publisher_id,
+                "timestamp": datetime.utcnow().isoformat(),
+                "match_id": signal.match_id,
+                "side": signal.side.value,
+                "stake": signal.stake,
+                "ev": signal.ev,
+                "confidence": signal.confidence,
+                "odds": signal.odds,
+                "probability": signal.probability,
+                "kelly_fraction": signal.kelly_fraction,
+                "source": signal.source,
+                "strategy": signal.strategy,
+                "priority": signal.priority.value,
+                "expires_at": signal.expires_at.isoformat() if signal.expires_at else None,
+                "reasons": signal.reasons,
+                "metadata": signal.metadata or {}
+            }
+            
+            # Publish to queue (LPUSH for FIFO processing)
+            await self.redis_client.lpush(self.signal_queue, json.dumps(signal_data))
+            
+            # Store in history with expiration (24 hours)
+            history_key = f"{self.signal_history}:{signal_data['signal_id']}"
+            await self.redis_client.setex(history_key, 86400, json.dumps(signal_data))
+            
+            # Publish to pub/sub for real-time consumers
+            await self.redis_client.publish(f"{self.signal_queue}_live", json.dumps(signal_data))
+            
+            logger.info(f"Signal published: {signal.match_id} - {signal.side.value} - EV: {signal.ev:.2%}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to publish signal: {e}")
+            return False
 
     async def generate_value_signal(
         self,
@@ -329,6 +409,56 @@ class SignalGenerator:
             return True
 
     async def add_active_signal(self, signal: BettingSignal):
-        """เพิ่มสัญญาณเข้า active list"""
+        """Add signal to active list and publish to Redis"""
         async with self._lock:
             self.active_signals[signal.match_id] = signal
+            
+        # Publish signal
+        await self.publish_signal(signal)
+        
+    async def process_and_publish_signal(self, signal: BettingSignal) -> bool:
+        """Validate, add, and publish signal in one operation"""
+        # Validate signal
+        if not await self.validate_signal(signal):
+            logger.info(f"Signal validation failed: {signal.match_id}")
+            return False
+            
+        # Add to active signals and publish
+        await self.add_active_signal(signal)
+        
+        logger.info(f"Signal processed and published: {signal.match_id} - {signal.strategy} - EV: {signal.ev:.2%}")
+        return True
+        
+    async def get_queue_status(self) -> Dict[str, Any]:
+        """Get current queue status"""
+        if not self.redis_client:
+            return {"queue_length": 0, "redis_connected": False}
+            
+        try:
+            queue_length = await self.redis_client.llen(self.signal_queue)
+            return {
+                "queue_length": queue_length,
+                "redis_connected": True,
+                "active_signals": len(self.active_signals),
+                "publisher_id": self.publisher_id
+            }
+        except Exception as e:
+            logger.error(f"Failed to get queue status: {e}")
+            return {"queue_length": 0, "redis_connected": False, "error": str(e)}
+            
+    async def clear_expired_signals(self) -> int:
+        """Remove expired signals from active list"""
+        async with self._lock:
+            now = datetime.utcnow()
+            expired_ids = [
+                signal_id for signal_id, signal in self.active_signals.items()
+                if signal.expires_at and signal.expires_at < now
+            ]
+            
+            for signal_id in expired_ids:
+                del self.active_signals[signal_id]
+                
+            if expired_ids:
+                logger.info(f"Cleared {len(expired_ids)} expired signals")
+                
+            return len(expired_ids)
