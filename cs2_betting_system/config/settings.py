@@ -33,12 +33,16 @@ REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
 POSTGRES_URL = os.getenv('DATABASE_URL', 'postgresql://user:password@localhost/cs2betting')
 
 # Model Settings
-MODEL_PATH = os.getenv('MODEL_PATH', 'models/saved/best_model.pkl')
+MODEL_PATH = os.getenv('MODEL_PATH', 'models/cs2_model_xgboost_latest.pkl')
+MODEL_SAVE_PATH = os.getenv('MODEL_SAVE_PATH', 'models/')
+MODEL_BACKUP_PATH = os.getenv('MODEL_BACKUP_PATH', 'models/backups/')
 FEATURE_COLUMNS = [
     'team1_rating', 'team2_rating', 'team1_form', 'team2_form',
     'h2h_score', 'map_winrate_diff', 'odds_movement', 'avg_odds'
 ]
 MODEL_PROBABILITY_THRESHOLD = float(os.getenv('MODEL_PROBABILITY_THRESHOLD', '0.5'))
+MODEL_RETRAIN_INTERVAL_HOURS = int(os.getenv('MODEL_RETRAIN_INTERVAL_HOURS', '168'))  # Weekly
+MODEL_VALIDATION_THRESHOLD = float(os.getenv('MODEL_VALIDATION_THRESHOLD', '0.65'))  # Min AUC
 
 # Alert Settings
 DISCORD_WEBHOOK = os.getenv('DISCORD_WEBHOOK')

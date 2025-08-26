@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-08-27T05:24:36.750413",
+  "data_samples": 800,
+  "features": 14,
+  "train_samples": 640,
+  "test_samples": 160,
+  "train_metrics": {
+    "accuracy": 0.73125,
+    "precision": 0.7307692307692307,
+    "recall": 0.7215189873417721,
+    "f1_score": 0.7261146496815285,
+    "roc_auc": 0.8095991561181435
+  },
+  "test_metrics": {
+    "accuracy": 0.7125,
+    "precision": 0.7162162162162162,
+    "recall": 0.6794871794871795,
+    "f1_score": 0.6973684210526315,
+    "roc_auc": 0.8142589118198874
+  },
+  "model_path": "models/cs2_simple_model.pkl",
+  "feature_names": [
+    "team1_rating",
+    "team2_rating",
+    "team1_win_rate",
+    "team2_win_rate",
+    "team1_form",
+    "team2_form",
+    "rating_diff",
+    "win_rate_diff",
+    "form_diff",
+    "rank_diff",
+    "map_diff",
+    "h2h_diff",
+    "tournament_tier",
+    "is_lan"
+  ]
+}
