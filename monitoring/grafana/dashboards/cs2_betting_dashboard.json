@@ -1,0 +1,168 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "CS2 Betting System Dashboard",
+    "tags": ["cs2", "betting", "monitoring"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "System Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"cs2-betting\"}",
+            "legendFormat": "Services Up"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 0.5},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Scraping Performance",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(scrape_requests_total[5m])",
+            "legendFormat": "{{source}} - {{status}}"
+          }
+        ],
+        "yAxes": [
+          {"label": "Requests/sec", "min": 0}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Prediction Accuracy",
+        "type": "singlestat",
+        "targets": [
+          {
+            "expr": "avg(prediction_accuracy_percent)",
+            "legendFormat": "Overall Accuracy"
+          }
+        ],
+        "valueName": "current",
+        "format": "percent",
+        "thresholds": "50,70",
+        "colorBackground": true,
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Active Signals",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "active_signals_count",
+            "legendFormat": "{{signal_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Queue Sizes",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "queue_size",
+            "legendFormat": "{{queue_name}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Financial Performance",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "bankroll_amount",
+            "legendFormat": "Bankroll"
+          },
+          {
+            "expr": "current_exposure_amount",
+            "legendFormat": "Exposure"
+          }
+        ],
+        "yAxes": [
+          {"label": "Amount ($)", "min": 0}
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+      },
+      {
+        "id": 7,
+        "title": "Hit Rate by Market",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "hit_rate_percent",
+            "legendFormat": "{{market_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+      },
+      {
+        "id": 8,
+        "title": "Error Rates",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(scraper_errors_total[5m])",
+            "legendFormat": "{{source}} - {{error_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+      },
+      {
+        "id": 9,
+        "title": "Redis Operations",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(redis_operations_total[5m])",
+            "legendFormat": "{{operation}} - {{status}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 32}
+      },
+      {
+        "id": 10,
+        "title": "System Resources",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "system_cpu_usage_percent",
+            "legendFormat": "CPU Usage %"
+          },
+          {
+            "expr": "system_memory_usage_bytes / 1024 / 1024 / 1024",
+            "legendFormat": "Memory Usage (GB)"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 40}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+}
