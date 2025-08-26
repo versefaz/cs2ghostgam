@@ -193,6 +193,169 @@ async def main():
     monitor_task.cancel()
 
 
+async def advanced_example():
+    """Advanced usage with multiple strategies and correlation-aware allocation"""
+
+    # Different risk profiles
+    profiles = {
+        'conservative': {
+            'kelly_fraction': 0.1,
+            'max_bet_pct': 0.02,
+            'max_exposure_pct': 0.1
+        },
+        'moderate': {
+            'kelly_fraction': 0.25,
+            'max_bet_pct': 0.05,
+            'max_exposure_pct': 0.2
+        },
+        'aggressive': {
+            'kelly_fraction': 0.5,
+            'max_bet_pct': 0.1,
+            'max_exposure_pct': 0.4
+        }
+    }
+
+    bankroll = 50000.0
+    profile = profiles['moderate']
+
+    limits = BettingLimits(
+        max_bet_size=bankroll * profile['max_bet_pct'],
+        max_exposure=bankroll * profile['max_exposure_pct'],
+        max_bets_per_day=30,
+        max_percent_bankroll=profile['max_bet_pct'],
+        min_bet_size=50.0,
+        max_concurrent_bets=15
+    )
+
+    risk_system = RiskManagementSystem(
+        bankroll=bankroll,
+        limits=limits,
+        kelly_fraction=profile['kelly_fraction']
+    )
+
+    # Process batch of signals with correlation management
+    high_value_signals = [
+        # Correlated signals (same match)
+        {
+            'id': 'hv_001',
+            'match_id': 'finals_001',
+            'team': 'TeamA',
+            'market_type': 'match_winner',
+            'confidence': 68,
+            'odds': 2.2,
+            'volatility': 0.25,
+            'correlation_group': 'finals'
+        },
+        {
+            'id': 'hv_002',
+            'match_id': 'finals_001',
+            'team': 'TeamA',
+            'market_type': 'first_map',
+            'confidence': 62,
+            'odds': 1.9,
+            'volatility': 0.3,
+            'correlation_group': 'finals'
+        },
+        # Independent signal
+        {
+            'id': 'hv_003',
+            'match_id': 'semi_001',
+            'team': 'TeamB',
+            'market_type': 'total_rounds_over',
+            'confidence': 71,
+            'odds': 1.85,
+            'volatility': 0.2,
+            'correlation_group': 'semis'
+        }
+    ]
+
+    # Calculate multi-Kelly allocation
+    kelly_params_list = []
+    for sig in high_value_signals:
+        params = KellyParameters(
+            probability=sig['confidence']/100,
+            odds=sig['odds'],
+            bankroll=risk_system.bankroll,
+            kelly_fraction=profile['kelly_fraction']
+        )
+        kelly_params_list.append(params)
+
+    allocations = risk_system.kelly_calculator.calculate_multi_kelly(kelly_params_list)
+
+    print("Multi-Kelly Allocation:")
+    for idx, allocation in allocations.items():
+        sig = high_value_signals[idx]
+        print(f"  {sig['id']}: ${allocation:.2f} ({sig['market_type']})")
+
+
+async def backtest_risk_management():
+    """Backtest risk management on historical signals"""
+
+    print(f"\n{'='*60}")
+    print("\uD83D\uDCCA RISK MANAGEMENT BACKTEST")
+    print(f"{'='*60}")
+
+    # Simulate 100 betting opportunities
+    initial_bankroll = 10000.0
+    results = {
+        'with_risk': {'bankroll': initial_bankroll, 'wins': 0, 'losses': 0},
+        'without_risk': {'bankroll': initial_bankroll, 'wins': 0, 'losses': 0}
+    }
+
+    # Generate sample signals
+    import random
+    random.seed(42)
+
+    for _ in range(100):
+        true_prob = random.uniform(0.45, 0.65)
+        offered_odds = 1 / (true_prob - random.uniform(0, 0.1))
+
+        # With risk management (Kelly, capped at 5%)
+        kelly_numerator = (true_prob * offered_odds - 1)
+        denom = max(offered_odds - 1, 1e-9)
+        kelly_fraction = max(0.0, 0.25 * (kelly_numerator / denom))
+        kelly_stake = min(initial_bankroll * 0.05, results['with_risk']['bankroll'] * kelly_fraction)
+
+        # Without risk management (flat stake)
+        flat_stake = initial_bankroll * 0.02
+
+        won = random.random() < true_prob
+
+        if kelly_stake > 0:
+            if won:
+                results['with_risk']['bankroll'] += kelly_stake * (offered_odds - 1)
+                results['with_risk']['wins'] += 1
+            else:
+                results['with_risk']['bankroll'] -= kelly_stake
+                results['with_risk']['losses'] += 1
+
+        if results['without_risk']['bankroll'] > flat_stake:
+            if won:
+                results['without_risk']['bankroll'] += flat_stake * (offered_odds - 1)
+                results['without_risk']['wins'] += 1
+            else:
+                results['without_risk']['bankroll'] -= flat_stake
+                results['without_risk']['losses'] += 1
+
+    print("\n\ud83d\udcc8 Results After 100 Bets:")
+    print(f"\nWith Risk Management (Kelly):")
+    print(f"  Final Bankroll: ${results['with_risk']['bankroll']:.2f}")
+    print(f"  ROI: {((results['with_risk']['bankroll']/initial_bankroll - 1) * 100):.1f}%")
+    total_with = results['with_risk']['wins'] + results['with_risk']['losses']
+    print(f"  Win Rate: {results['with_risk']['wins']}/{total_with}")
+
+    print(f"\nWithout Risk Management (Flat):")
+    print(f"  Final Bankroll: ${results['without_risk']['bankroll']:.2f}")
+    print(f"  ROI: {((results['without_risk']['bankroll']/initial_bankroll - 1) * 100):.1f}%")
+    total_wo = results['without_risk']['wins'] + results['without_risk']['losses']
+    print(f"  Win Rate: {results['without_risk']['wins']}/{total_wo}")
+
+
 if __name__ == "__main__":
     print("Starting Risk Management System demo...")
+    # Run main example
     asyncio.run(main())
+    # Run advanced example
+    # asyncio.run(advanced_example())
+    # Run backtest
+    # asyncio.run(backtest_risk_management())
