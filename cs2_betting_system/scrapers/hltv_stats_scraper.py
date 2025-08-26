@@ -435,7 +435,7 @@ class HLTVStatsScraper:
             return {}
 
     def _process_team_metrics(self, team_stats: Dict) -> Dict:
-        processed: Dict = {}
+        processed: Dict = {}  # Fix syntax error by replacing stray placeholder with proper initialization
         recent_matches = team_stats.get('recent_matches', [])
         if recent_matches:
             last_10 = recent_matches[:10]
