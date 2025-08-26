@@ -1,11 +1,13 @@
 import asyncio
 import logging
+import json
 from datetime import datetime, timedelta
 from typing import List, Dict
 
 from risk_management.kelly_calculator import BettingLimits, KellyParameters
 from risk_management.risk_system import RiskManagementSystem
 from risk_management.monitoring import RiskMonitor
+from risk_management.cooldown_manager import CooldownLevel
 
 
 # Configure logging
@@ -178,7 +180,25 @@ async def main():
     print(f"\n\uD83D\uDCB0 Updated Bankroll: ${risk_system.bankroll:.2f}")
     print(f"\ud83d\udcc9 Total PnL: ${risk_system.bankroll - bankroll:.2f}")
 
-    # 6. Check alerts
+    # 6. Check cooldowns
+    print(f"\n{'='*60}")
+    print("\u23F0 COOLDOWN STATUS")
+    print(f"{'='*60}")
+
+    test_entities = [
+        (CooldownLevel.TEAM, "NaVi"),
+        (CooldownLevel.MATCH, "match_456"),
+        (CooldownLevel.MARKET, "match_winner"),
+    ]
+
+    for level, entity in test_entities:
+        available, remaining = risk_system.cooldown_manager.is_available(level, entity)
+        if available:
+            print(f"\u2705 {level.value}:{entity} - Available")
+        else:
+            print(f"\u23F0 {level.value}:{entity} - Cooldown: {remaining}")
+
+    # 7. Check alerts
     if monitor.alerts:
         print(f"\n{'='*60}")
         print("\ud83d\udea8 RISK ALERTS")
@@ -359,3 +379,4 @@ if __name__ == "__main__":
     # asyncio.run(advanced_example())
     # Run backtest
     # asyncio.run(backtest_risk_management())
+ 
