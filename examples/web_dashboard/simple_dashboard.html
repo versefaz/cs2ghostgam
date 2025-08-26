@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS2 Betting System Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stat-card h3 {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .change {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .positive { color: #4ade80; }
+        .negative { color: #f87171; }
+        .neutral { color: #fbbf24; }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .chart-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .signals-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .signals-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .signal-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4ade80;
+        }
+        
+        .signal-item.warning {
+            border-left-color: #fbbf24;
+        }
+        
+        .signal-item.danger {
+            border-left-color: #f87171;
+        }
+        
+        .signal-match {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .signal-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online { background-color: #4ade80; }
+        .status-warning { background-color: #fbbf24; }
+        .status-offline { background-color: #f87171; }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 CS2 Betting System</h1>
+            <p>Real-time monitoring and signal dashboard</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Bankroll</h3>
+                <div class="value" id="bankroll">$1,000.00</div>
+                <div class="change positive" id="bankroll-change">+2.5% today</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Win Rate</h3>
+                <div class="value" id="win-rate">78.5%</div>
+                <div class="change positive" id="win-rate-change">+1.2% this week</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>ROI</h3>
+                <div class="value" id="roi">12.8%</div>
+                <div class="change positive" id="roi-change">+0.8% this month</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Active Signals</h3>
+                <div class="value" id="active-signals">3</div>
+                <div class="change neutral" id="signals-change">2 pending</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>System Status</h3>
+                <div class="value">
+                    <span class="status-indicator status-online"></span>Online
+                </div>
+                <div class="change" id="uptime">99.8% uptime</div>
+            </div>
+        </div>
+        
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>📈 Performance Over Time</h3>
+                <canvas id="performanceChart" width="400" height="200"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3>🎯 Win Rate Distribution</h3>
+                <canvas id="winRateChart" width="200" height="200"></canvas>
+            </div>
+        </div>
+        
+        <div class="signals-section">
+            <div class="signals-header">
+                <h3>🚀 Recent Signals</h3>
+                <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
+            </div>
+            
+            <div id="signals-list">
+                <div class="signal-item">
+                    <div class="signal-match">NAVI vs G2 Esports</div>
+                    <div class="signal-details">
+                        <span>BET: NAVI @ 2.15</span>
+                        <span>Stake: $25.00</span>
+                        <span>Edge: 8.5%</span>
+                        <span>2 min ago</span>
+                    </div>
+                </div>
+                
+                <div class="signal-item warning">
+                    <div class="signal-match">FaZe vs Astralis</div>
+                    <div class="signal-details">
+                        <span>HOLD: Low confidence</span>
+                        <span>Confidence: 45%</span>
+                        <span>Edge: 2.1%</span>
+                        <span>15 min ago</span>
+                    </div>
+                </div>
+                
+                <div class="signal-item">
+                    <div class="signal-match">Vitality vs MOUZ</div>
+                    <div class="signal-details">
+                        <span>BET: Vitality @ 1.85</span>
+                        <span>Stake: $30.00</span>
+                        <span>Edge: 12.3%</span>
+                        <span>1 hour ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Performance Chart
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Bankroll ($)',
+                    data: [1000, 1050, 1120, 1080, 1150, 1200],
+                    borderColor: '#4ade80',
+                    backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'ROI (%)',
+                    data: [0, 5, 12, 8, 15, 20],
+                    borderColor: '#fbbf24',
+                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                    tension: 0.4,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y: {
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        ticks: { color: '#fff' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+        
+        // Win Rate Chart
+        const winRateCtx = document.getElementById('winRateChart').getContext('2d');
+        const winRateChart = new Chart(winRateCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Wins', 'Losses'],
+                datasets: [{
+                    data: [78.5, 21.5],
+                    backgroundColor: ['#4ade80', '#f87171'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff' }
+                    }
+                }
+            }
+        });
+        
+        // Real-time data updates
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/dashboard/stats');
+                const data = await response.json();
+                
+                // Update stats
+                document.getElementById('bankroll').textContent = `$${data.bankroll.toFixed(2)}`;
+                document.getElementById('win-rate').textContent = `${data.win_rate.toFixed(1)}%`;
+                document.getElementById('roi').textContent = `${data.roi.toFixed(1)}%`;
+                document.getElementById('active-signals').textContent = data.active_signals;
+                
+                // Update charts
+                performanceChart.data.datasets[0].data = data.bankroll_history;
+                performanceChart.data.datasets[1].data = data.roi_history;
+                performanceChart.update();
+                
+                winRateChart.data.datasets[0].data = [data.win_rate, 100 - data.win_rate];
+                winRateChart.update();
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        
+        async function fetchSignals() {
+            try {
+                const response = await fetch('/api/signals/recent?limit=5');
+                const signals = await response.json();
+                
+                const signalsList = document.getElementById('signals-list');
+                signalsList.innerHTML = '';
+                
+                signals.forEach(signal => {
+                    const signalDiv = document.createElement('div');
+                    signalDiv.className = `signal-item ${signal.action === 'HOLD' ? 'warning' : ''}`;
+                    
+                    const match = signal.match || {};
+                    signalDiv.innerHTML = `
+                        <div class="signal-match">${match.team1 || 'Team1'} vs ${match.team2 || 'Team2'}</div>
+                        <div class="signal-details">
+                            <span>${signal.action}: ${signal.selection || 'N/A'} @ ${signal.odds || 0}</span>
+                            <span>Stake: $${signal.stake || 0}</span>
+                            <span>Edge: ${(signal.edge * 100 || 0).toFixed(1)}%</span>
+                            <span>${signal.time_ago || 'Just now'}</span>
+                        </div>
+                    `;
+                    
+                    signalsList.appendChild(signalDiv);
+                });
+                
+            } catch (error) {
+                console.error('Error fetching signals:', error);
+            }
+        }
+        
+        function refreshData() {
+            fetchData();
+            fetchSignals();
+        }
+        
+        // Initialize and set up auto-refresh
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshData();
+            setInterval(refreshData, 30000); // Refresh every 30 seconds
+        });
+        
+        // WebSocket connection for real-time updates
+        function connectWebSocket() {
+            const ws = new WebSocket(`ws://${window.location.host}/ws/dashboard`);
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'signal') {
+                    // Add new signal to the top of the list
+                    const signalsList = document.getElementById('signals-list');
+                    const signalDiv = document.createElement('div');
+                    signalDiv.className = 'signal-item';
+                    
+                    const match = data.match || {};
+                    signalDiv.innerHTML = `
+                        <div class="signal-match">${match.team1 || 'Team1'} vs ${match.team2 || 'Team2'}</div>
+                        <div class="signal-details">
+                            <span>${data.action}: ${data.selection || 'N/A'} @ ${data.odds || 0}</span>
+                            <span>Stake: $${data.stake || 0}</span>
+                            <span>Edge: ${(data.edge * 100 || 0).toFixed(1)}%</span>
+                            <span>Just now</span>
+                        </div>
+                    `;
+                    
+                    signalsList.insertBefore(signalDiv, signalsList.firstChild);
+                    
+                    // Remove oldest signal if more than 5
+                    if (signalsList.children.length > 5) {
+                        signalsList.removeChild(signalsList.lastChild);
+                    }
+                }
+            };
+            
+            ws.onclose = function() {
+                // Reconnect after 5 seconds
+                setTimeout(connectWebSocket, 5000);
+            };
+        }
+        
+        // Start WebSocket connection
+        connectWebSocket();
+    </script>
+</body>
+</html>

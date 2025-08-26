@@ -1,0 +1,73 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Database
+sqlalchemy==2.0.23
+alembic==1.13.1
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+
+# Redis
+redis==5.0.1
+hiredis==2.2.3
+
+# HTTP clients
+aiohttp==3.9.1
+httpx==0.25.2
+requests==2.31.0
+
+# Web scraping
+selenium==4.15.2
+beautifulsoup4==4.12.2
+lxml==4.9.3
+fake-useragent==1.4.0
+
+# Machine learning
+scikit-learn==1.3.2
+pandas==2.1.4
+numpy==1.25.2
+joblib==1.3.2
+
+# Monitoring
+prometheus-client==0.19.0
+psutil==5.9.6
+
+# Async
+asyncio-mqtt==0.16.1
+aiofiles==23.2.1
+
+# Utilities
+python-dotenv==1.0.0
+click==8.1.7
+rich==13.7.0
+loguru==0.7.2
+pytz==2023.3
+croniter==2.0.1
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+pytest-xdist==3.5.0
+
+# Development
+black==23.11.0
+flake8==6.1.0
+isort==5.12.0
+mypy==1.7.1
+bandit==1.7.5
+safety==2.3.5
+
+# Discord/Telegram
+discord-webhook==1.3.0
+python-telegram-bot==20.7
+
+# Email
+aiosmtplib==3.0.1
+
+# Docker health checks
+docker==6.1.3
