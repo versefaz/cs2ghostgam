@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-27T21:06:04.239812",
+  "timestamp": "2025-08-27T21:56:47.517828",
   "predictions": [
     [
       "VP_vs_GL_-_Map_1_Dust2_20250827_210604",
@@ -25,15 +25,15 @@
       "BLAST Open London 2025",
       "match_winner",
       "Virtus.pro",
-      null,
+      "GamerLegion",
       0.71,
       26.0,
       0.1846,
       "[\"VP มี win rate 71% บน Ancient\", \"GL มี win rate เพียง 45% บน Ancient\", \"Edge 26% เอียงไป VP\", \"electroNic เก่ง split execute บน Ancient\", \"Ancient เป็นแมพที่ VP เก่งที่สุด\"]",
       "[\"HLTV\", \"Team Stats\", \"Recent Form\"]",
-      null,
-      null,
-      "[]"
+      0,
+      -100.0,
+      "[\"ทำนายผิด: คาด Virtus.pro แต่ได้ GamerLegion\"]"
     ],
     [
       "VP_vs_GL_-_Map_3_Train_20250827_210604",
@@ -136,6 +136,46 @@
       1.0,
       1,
       "2025-08-27T21:06:04.203605"
+    ],
+    [
+      5,
+      "match_winner",
+      "VP มี win rate 71% บน Ancient",
+      0.0,
+      1,
+      "2025-08-27T21:56:47.514873"
+    ],
+    [
+      6,
+      "match_winner",
+      "GL มี win rate เพียง 45% บน Ancient",
+      0.0,
+      1,
+      "2025-08-27T21:56:47.515879"
+    ],
+    [
+      7,
+      "match_winner",
+      "Edge 26% เอียงไป VP",
+      0.0,
+      1,
+      "2025-08-27T21:56:47.515890"
+    ],
+    [
+      8,
+      "match_winner",
+      "electroNic เก่ง split execute บน Ancient",
+      0.0,
+      1,
+      "2025-08-27T21:56:47.515895"
+    ],
+    [
+      9,
+      "match_winner",
+      "Ancient เป็นแมพที่ VP เก่งที่สุด",
+      0.0,
+      1,
+      "2025-08-27T21:56:47.515898"
     ]
   ]
 }
