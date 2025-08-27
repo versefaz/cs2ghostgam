@@ -1,1 +1,1 @@
-# core package for signal generation
+# pipeline package for signal processing
