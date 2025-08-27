@@ -263,13 +263,27 @@ async def main():
     pipeline = IntegratedPipeline(cfg={})
     await pipeline.start()
     
-    # graceful shutdown
+    # graceful shutdown - Windows compatible
     stop_event = asyncio.Event()
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        asyncio.get_running_loop().add_signal_handler(sig, stop_event.set)
     
-    await stop_event.wait()
-    await pipeline.stop()
+    def signal_handler_sync(signum, frame):
+        logger.info(f"Received signal {signum}, initiating shutdown...")
+        stop_event.set()
+    
+    # Windows-compatible signal handling
+    if sys.platform != 'win32':
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            asyncio.get_running_loop().add_signal_handler(sig, stop_event.set)
+    else:
+        signal.signal(signal.SIGINT, signal_handler_sync)
+        signal.signal(signal.SIGTERM, signal_handler_sync)
+    
+    try:
+        await stop_event.wait()
+    except KeyboardInterrupt:
+        logger.info("Received Ctrl+C, shutting down...")
+    finally:
+        await pipeline.stop()
 
 
 async def cleanup_system():

@@ -243,3 +243,72 @@ client_session: <aiohttp.client.ClientSession object at 0x000001A7D2C45BE0>
 2025-08-27 15:27:19,969 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
 2025-08-27 15:27:19,970 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
 2025-08-27 15:27:19,970 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:28:04,310 - app.scrapers.enhanced_hltv_scraper - WARNING - HTTP 403 for https://www.hltv.org/matches
+2025-08-27 15:28:48,242 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:28:48,242 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:28:48,242 - core.utils.timing - INFO - Pipeline startup initiated
+2025-08-27 15:28:48,242 - core.pubsub.publisher - WARNING - Redis disabled via flag; using NullPublisher
+2025-08-27 15:28:48,244 - core.integrated_pipeline - WARNING - CS2 prediction model not available, using fallback
+2025-08-27 15:28:48,244 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:28:48,244 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:29:14,326 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:29:14,326 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:29:14,327 - core.utils.timing - INFO - Pipeline startup initiated
+2025-08-27 15:29:14,327 - core.pubsub.publisher - WARNING - Redis disabled via flag; using NullPublisher
+2025-08-27 15:29:14,330 - core.integrated_pipeline - WARNING - CS2 prediction model not available, using fallback
+2025-08-27 15:29:14,330 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:29:14,331 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:29:33,954 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 924.863931}
+2025-08-27 15:29:54,069 - app.scrapers.enhanced_hltv_scraper - WARNING - HTTP 403 for https://www.hltv.org/matches
+2025-08-27 15:29:59,191 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:30:00,188 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:30:02,242 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:30:02,243 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:30:02,243 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:30:23,777 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:30:24,881 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:30:25,389 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:30:25,390 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:30:25,390 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:31:46,486 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 1225.461899}
+2025-08-27 15:32:49,861 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:32:49,861 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:32:49,862 - core.utils.timing - INFO - Pipeline startup initiated
+2025-08-27 15:32:49,862 - core.pubsub.publisher - WARNING - Redis disabled via flag; using NullPublisher
+2025-08-27 15:32:49,881 - core.integrated_pipeline - INFO - Created default CS2 prediction model
+2025-08-27 15:32:49,881 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:32:49,881 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:32:49,884 - core.integrated_pipeline - INFO - Found 3 upcoming CS2 matches
+2025-08-27 15:32:49,885 - core.integrated_pipeline - INFO - Scraped odds from 3 sources, total 6 markets
+2025-08-27 15:32:49,887 - core.integrated_pipeline - INFO - Generated 2 high-confidence betting signals
+2025-08-27 15:32:49,888 - core.integrated_pipeline - INFO - System metrics: {'pipeline_status': 'running', 'publisher_mode': 'null', 'model_loaded': True, 'feature_engine_ready': True, 'uptime_minutes': 5}
+2025-08-27 15:33:52,941 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:33:52,941 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:33:52,941 - core.utils.timing - INFO - Pipeline startup initiated
+2025-08-27 15:33:52,941 - core.pubsub.publisher - WARNING - Redis disabled via flag; using NullPublisher
+2025-08-27 15:33:52,949 - core.integrated_pipeline - INFO - Created default CS2 prediction model
+2025-08-27 15:33:52,949 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:33:52,949 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:33:52,950 - core.integrated_pipeline - INFO - [MATCH] Monitoring CS2 matches...
+2025-08-27 15:33:52,950 - core.integrated_pipeline - INFO - [MATCH] Found 3 upcoming CS2 matches
+2025-08-27 15:33:52,950 - core.integrated_pipeline - INFO - [ODDS] Scraping odds from bookmakers...
+2025-08-27 15:33:52,950 - core.integrated_pipeline - INFO - [ODDS] Scraped odds from 3 sources, total 6 markets
+2025-08-27 15:33:52,950 - core.integrated_pipeline - INFO - [SIGNAL] Generating betting signals...
+2025-08-27 15:33:52,950 - core.integrated_pipeline - INFO - [SIGNAL] Generated 2 high-confidence betting signals
+2025-08-27 15:33:52,950 - core.integrated_pipeline - INFO - [METRICS] Reporting system metrics...
+2025-08-27 15:33:52,951 - core.integrated_pipeline - INFO - [METRICS] System metrics: {'pipeline_status': 'running', 'publisher_mode': 'null', 'model_loaded': True, 'feature_engine_ready': True, 'uptime_minutes': 5}
+2025-08-27 15:35:58,915 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:35:58,916 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:35:58,916 - core.utils.timing - INFO - Pipeline startup initiated
+2025-08-27 15:35:58,916 - core.pubsub.publisher - WARNING - Redis disabled via flag; using NullPublisher
+2025-08-27 15:35:58,921 - core.integrated_pipeline - INFO - Created default CS2 prediction model
+2025-08-27 15:35:58,921 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:35:58,921 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:35:58,921 - core.integrated_pipeline - INFO - [MATCH] Monitoring CS2 matches...
+2025-08-27 15:35:58,921 - core.integrated_pipeline - INFO - [MATCH] Found 3 upcoming CS2 matches
+2025-08-27 15:35:58,922 - core.integrated_pipeline - INFO - [ODDS] Scraping odds from bookmakers...
+2025-08-27 15:35:58,922 - core.integrated_pipeline - INFO - [ODDS] Scraped odds from 3 sources, total 6 markets
+2025-08-27 15:35:58,922 - core.integrated_pipeline - INFO - [SIGNAL] Generating betting signals...
+2025-08-27 15:35:58,922 - core.integrated_pipeline - INFO - [SIGNAL] Generated 2 high-confidence betting signals
+2025-08-27 15:35:58,922 - core.integrated_pipeline - INFO - [METRICS] Reporting system metrics...
+2025-08-27 15:35:58,922 - core.integrated_pipeline - INFO - [METRICS] System metrics: {'pipeline_status': 'running', 'publisher_mode': 'null', 'model_loaded': True, 'feature_engine_ready': True, 'uptime_minutes': 5}
