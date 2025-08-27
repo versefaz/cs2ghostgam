@@ -1,0 +1,141 @@
+{
+  "timestamp": "2025-08-27T21:06:04.239812",
+  "predictions": [
+    [
+      "VP_vs_GL_-_Map_1_Dust2_20250827_210604",
+      "2025-08-27T21:06:04.189075",
+      "VP vs GL - Map 1 Dust2",
+      "BLAST Open London 2025",
+      "match_winner",
+      "GamerLegion",
+      "GamerLegion",
+      0.74,
+      31.0,
+      0.2294,
+      "[\"GL มี win rate 74% บน Dust2\", \"VP มี win rate เพียง 43% บน Dust2\", \"Edge 31% เอียงไป GL อย่างชัดเจน\", \"Dust2 เป็นแมพที่ GL เก่งที่สุด\"]",
+      "[\"HLTV\", \"Team Stats\", \"Recent Form\"]",
+      1,
+      100.0,
+      "[]"
+    ],
+    [
+      "VP_vs_GL_-_Map_2_Ancient_20250827_210604",
+      "2025-08-27T21:06:04.208063",
+      "VP vs GL - Map 2 Ancient",
+      "BLAST Open London 2025",
+      "match_winner",
+      "Virtus.pro",
+      null,
+      0.71,
+      26.0,
+      0.1846,
+      "[\"VP มี win rate 71% บน Ancient\", \"GL มี win rate เพียง 45% บน Ancient\", \"Edge 26% เอียงไป VP\", \"electroNic เก่ง split execute บน Ancient\", \"Ancient เป็นแมพที่ VP เก่งที่สุด\"]",
+      "[\"HLTV\", \"Team Stats\", \"Recent Form\"]",
+      null,
+      null,
+      "[]"
+    ],
+    [
+      "VP_vs_GL_-_Map_3_Train_20250827_210604",
+      "2025-08-27T21:06:04.213904",
+      "VP vs GL - Map 3 Train",
+      "BLAST Open London 2025",
+      "match_winner",
+      "GamerLegion",
+      null,
+      0.52,
+      4.0,
+      0.020800000000000003,
+      "[\"GL มี win rate 62% บน Train\", \"VP มี win rate 58% บน Train\", \"Edge เพียง 4% ใกล้เคียงมาก\", \"GL มีโมเมนตัมจาก Map 1\", \"Train เป็นแมพกลาง ขึ้นอยู่กับจิตวิทยา\"]",
+      "[\"HLTV\", \"Team Stats\", \"Recent Form\"]",
+      null,
+      null,
+      "[]"
+    ],
+    [
+      "VP_vs_GL_-_Series_Winner_20250827_210604",
+      "2025-08-27T21:06:04.220303",
+      "VP vs GL - Series Winner",
+      "BLAST Open London 2025",
+      "match_winner",
+      "GamerLegion",
+      null,
+      0.55,
+      10.0,
+      0.05500000000000001,
+      "[\"GL นำ 1-0 จาก Map 1\", \"GL มีโมเมนตัมและความมั่นใจ\", \"หาก VP ชนะ Ancient จะไป Train 50-50\", \"หาก GL ชนะ Ancient จะจบ 2-0\", \"โอกาสรวม GL เอาชนะ VP ได้\"]",
+      "[\"HLTV\", \"Team Stats\", \"Recent Form\"]",
+      null,
+      null,
+      "[]"
+    ],
+    [
+      "FaZe_vs_ECSTATIC_20250827_210604",
+      "2025-08-27T21:06:04.226478",
+      "FaZe vs ECSTATIC",
+      "BLAST Open London 2025",
+      "match_winner",
+      "FaZe",
+      null,
+      0.9,
+      59.7,
+      0.5373,
+      "[\"FaZe อันดับ 9 vs ECSTATIC อันดับ 36\", \"ความแตกต่างระดับชัดเจน\", \"FaZe มีประสบการณ์และทีมเวิร์กดีกว่า\", \"ECSTATIC เป็นทีมใหม่ยังไม่แน่นอน\", \"Kelly Criterion แนะนำ 59.7%\"]",
+      "[\"HLTV\", \"Team Stats\", \"Recent Form\"]",
+      null,
+      null,
+      "[]"
+    ],
+    [
+      "NAVI_vs_fnatic_20250827_210604",
+      "2025-08-27T21:06:04.233413",
+      "NAVI vs fnatic",
+      "BLAST Open London 2025",
+      "match_winner",
+      "Natus Vincere",
+      null,
+      0.9,
+      53.0,
+      0.47700000000000004,
+      "[\"NAVI อันดับ 6 vs fnatic อันดับ 34\", \"NAVI มี s1mple และ electronic\", \"fnatic อยู่ในช่วงฟื้นฟูทีม\", \"NAVI เป็นเต็งแรงที่ปลอดภัย\", \"Kelly Criterion แนะนำ 53.0%\"]",
+      "[\"HLTV\", \"Team Stats\", \"Recent Form\"]",
+      null,
+      null,
+      "[]"
+    ]
+  ],
+  "learning_patterns": [
+    [
+      1,
+      "match_winner",
+      "GL มี win rate 74% บน Dust2",
+      1.0,
+      1,
+      "2025-08-27T21:06:04.202919"
+    ],
+    [
+      2,
+      "match_winner",
+      "VP มี win rate เพียง 43% บน Dust2",
+      1.0,
+      1,
+      "2025-08-27T21:06:04.203579"
+    ],
+    [
+      3,
+      "match_winner",
+      "Edge 31% เอียงไป GL อย่างชัดเจน",
+      1.0,
+      1,
+      "2025-08-27T21:06:04.203597"
+    ],
+    [
+      4,
+      "match_winner",
+      "Dust2 เป็นแมพที่ GL เก่งที่สุด",
+      1.0,
+      1,
+      "2025-08-27T21:06:04.203605"
+    ]
+  ]
+}
