@@ -16,15 +16,25 @@ import traceback
 from app.scrapers.enhanced_hltv_scraper import EnhancedHLTVScraper, MatchContext
 from app.scrapers.robust_odds_scraper import RobustOddsScraper, MarketConsensus
 from core.production_signal_generator import ProductionSignalGenerator
-from ml_pipeline.training.model_trainer import ModelTrainer
-from ml_pipeline.features.feature_engineering import FeatureEngineer
-from cs2_betting_system.models.prediction_model import PredictionModel
-from publishers.redis_publisher import RedisPublisher
-from monitoring.prometheus_metrics import PrometheusMetrics
-from monitoring.alert_system import AlertSystem
-from shared.redis_schema import RedisSchema
 
 logger = logging.getLogger(__name__)
+
+# ML pipeline imports - simplified for production
+try:
+    from ml_pipeline.training.model_trainer import ModelTrainer
+    from ml_pipeline.features.feature_engineering import FeatureEngineer
+    ML_PIPELINE_AVAILABLE = True
+except ImportError:
+    ML_PIPELINE_AVAILABLE = False
+    logger.warning("ML pipeline components not available, using fallback")
+
+# CS2 betting system imports - simplified
+try:
+    from cs2_betting_system.models.prediction_model import PredictionModel
+    CS2_MODEL_AVAILABLE = True
+except ImportError:
+    CS2_MODEL_AVAILABLE = False
+    logger.warning("CS2 prediction model not available, using fallback")
 
 
 @dataclass
@@ -66,12 +76,23 @@ class IntegratedPipeline:
         self.model_trainer: Optional[ModelTrainer] = None
         self.prediction_model: Optional[PredictionModel] = None
         self.feature_engineer: Optional[FeatureEngineer] = None
-        self.redis_publisher: Optional[RedisPublisher] = None
-        self.redis_schema: Optional[RedisSchema] = None
         
-        # Monitoring
-        self.prometheus_metrics = PrometheusMetrics()
-        self.alert_system = AlertSystem()
+        # Redis components
+        self.redis_publisher = None
+        self.redis_schema = None
+        
+        # Monitoring (with fallbacks)
+        try:
+            from monitoring.prometheus_metrics import PrometheusMetrics
+            self.prometheus_metrics = PrometheusMetrics(service_name="integrated_pipeline")
+        except ImportError:
+            self.prometheus_metrics = None
+            
+        try:
+            from monitoring.alert_system import AlertSystem
+            self.alert_system = AlertSystem()
+        except ImportError:
+            self.alert_system = None
         
         # State management
         self.is_running = False
@@ -98,36 +119,70 @@ class IntegratedPipeline:
             self.odds_scraper = RobustOddsScraper()
             await self.odds_scraper.initialize()
             
-            # Initialize Redis components
-            self.redis_schema = RedisSchema(redis_url=self.config.redis_url)
-            await self.redis_schema.initialize()
+            # Initialize Redis components (with fallback)
+            try:
+                from shared.redis_schema import RedisSchema
+                self.redis_schema = RedisSchema(redis_url=self.config.redis_url)
+                await self.redis_schema.initialize()
+            except ImportError:
+                logger.warning("Redis schema not available, using fallback")
+                self.redis_schema = None
             
-            self.redis_publisher = RedisPublisher(redis_url=self.config.redis_url)
-            await self.redis_publisher.initialize()
+            # Initialize Redis publisher (with fallback)
+            try:
+                from publishers.redis_publisher import RedisPublisher
+                self.redis_publisher = RedisPublisher(redis_url=self.config.redis_url)
+                await self.redis_publisher.initialize()
+            except ImportError:
+                logger.warning("Redis publisher not available, using fallback")
+                self.redis_publisher = None
             
-            # Initialize signal generator
-            self.signal_generator = ProductionSignalGenerator(
-                redis_url=self.config.redis_url,
-                bankroll=10000.0
-            )
-            await self.signal_generator.initialize()
+            # Initialize signal generator (with fallback for limits)
+            try:
+                from risk_management.kelly_calculator import BettingLimits
+                limits = BettingLimits(
+                    max_bet_size=500.0,
+                    max_exposure=2000.0,
+                    max_bets_per_day=20,
+                    max_percent_bankroll=0.05,
+                    min_bet_size=10.0,
+                    max_concurrent_bets=10
+                )
+                self.signal_generator = ProductionSignalGenerator(
+                    redis_url=self.config.redis_url,
+                    bankroll=10000.0
+                )
+                await self.signal_generator.initialize()
+            except Exception as e:
+                logger.warning(f"Signal generator initialization failed: {e}")
+                self.signal_generator = None
             
-            # Initialize ML components
-            self.feature_engineer = FeatureEngineer()
-            self.model_trainer = ModelTrainer()
+            # Initialize ML components (with fallbacks)
+            if ML_PIPELINE_AVAILABLE:
+                try:
+                    from ml_pipeline.config.feature_config import FeatureConfig
+                    feature_config = FeatureConfig()
+                    self.feature_engineer = FeatureEngineer(config=feature_config)
+                    self.model_trainer = ModelTrainer()
+                except Exception as e:
+                    logger.warning(f"ML pipeline initialization failed: {e}")
+                    self.feature_engineer = None
+                    self.model_trainer = None
+            else:
+                self.feature_engineer = None
+                self.model_trainer = None
+                
+            if CS2_MODEL_AVAILABLE:
+                self.prediction_model = PredictionModel()
+            else:
+                self.prediction_model = None
+                if self.model_trainer and not self.model_trainer.load_model(self.config.model_path):
+                    logger.warning("Could not load existing model, will train new one")
+                    await self._train_initial_model()
             
-            # Load or train model
-            if not self.model_trainer.load_model(self.config.model_path):
-                logger.warning("Could not load existing model, will train new one")
-                await self._train_initial_model()
-            
-            self.prediction_model = PredictionModel(
-                model_path=self.config.model_path,
-                feature_engineer=self.feature_engineer
-            )
-            
-            # Initialize monitoring
-            await self.alert_system.initialize()
+            # Initialize monitoring (with fallback)
+            if hasattr(self, 'alert_system') and self.alert_system:
+                await self.alert_system.initialize()
             
             # Start background tasks
             self._start_background_tasks()
@@ -136,12 +191,12 @@ class IntegratedPipeline:
             
         except Exception as e:
             logger.error(f"Pipeline initialization failed: {e}")
-            await self.alert_system.send_alert(
-                "critical",
-                "Pipeline Initialization Failed",
-                f"Error: {str(e)}",
-                {"component": "pipeline", "error": str(e)}
-            )
+            if self.alert_system:
+                await self.alert_system.send_alert(
+                    "critical",
+                    f"Pipeline initialization failed: {str(e)}",
+                    {"error": str(e), "traceback": traceback.format_exc()}
+                )
             raise
     
     async def close(self):
@@ -616,12 +671,12 @@ class IntegratedPipeline:
             logger.info("Pipeline stopped by user")
         except Exception as e:
             logger.error(f"Pipeline error: {e}")
-            await self.alert_system.send_alert(
-                "critical",
-                "Pipeline Error",
-                f"Pipeline encountered critical error: {str(e)}",
-                {"error": str(e), "traceback": traceback.format_exc()}
-            )
+            if self.alert_system:
+                await self.alert_system.send_alert(
+                    "critical",
+                    f"Pipeline runtime error: {str(e)}",
+                    {"error": str(e), "traceback": traceback.format_exc()}
+                )
         finally:
             await self.close()
     

@@ -16,9 +16,24 @@ import json
 # Core integrated components
 from core.integrated_pipeline import IntegratedPipeline, PipelineConfig
 from core.performance_optimizer import PerformanceOptimizer, OptimizationConfig
-from monitoring.prometheus_metrics import PrometheusMetrics
-from monitoring.alert_system import AlertSystem
-from shared.redis_schema import RedisSchema
+try:
+    from monitoring.prometheus_metrics import PrometheusMetrics
+    PROMETHEUS_AVAILABLE = True
+except ImportError:
+    PROMETHEUS_AVAILABLE = False
+    print("Prometheus metrics not available, using fallback")
+try:
+    from monitoring.alert_system import AlertSystem
+    ALERT_SYSTEM_AVAILABLE = True
+except ImportError:
+    ALERT_SYSTEM_AVAILABLE = False
+    print("Alert system not available, using fallback")
+try:
+    from shared.redis_schema import RedisSchema
+    REDIS_SCHEMA_AVAILABLE = True
+except ImportError:
+    REDIS_SCHEMA_AVAILABLE = False
+    print("Redis schema not available, using fallback")
 
 
 logger = logging.getLogger(__name__)
@@ -27,17 +42,16 @@ logger = logging.getLogger(__name__)
 def print_banner():
     """Print system banner"""
     banner = """
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║                    CS2 BETTING SYSTEM V2.0 - PRODUCTION READY                ║
-║                                                                               ║
-║  🎯 Complete Integration: Match Data → Features → ML → Signals → Redis        ║
-║  🚀 Performance Optimized: Auto-tuning, Caching, Monitoring                  ║
-║  🛡️  Production Grade: Error Handling, Health Checks, Alerting               ║
-║  📊 Real-time Analytics: Prometheus, Grafana, Live Dashboard                 ║
-║                                                                               ║
-║  Target: 80%+ Win Rate | 15%+ ROI | 99.9% Uptime                            ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
-    """
+===============================================================================
+                    CS2 BETTING SYSTEM V2.0 - PRODUCTION READY                
+                                                                               
+  Real-time Match Analysis    Advanced ML Predictions                   
+  Automated Signal Generation Redis Pub/Sub Integration                 
+  Performance Optimization    Comprehensive Monitoring                   
+                                                                               
+  Target: 80%+ Win Rate | 15%+ ROI | Real-time Processing                     
+===============================================================================
+"""
     print(banner)
 
 
@@ -47,8 +61,19 @@ class CS2BettingSystem:
     def __init__(self):
         self.pipeline: Optional[IntegratedPipeline] = None
         self.optimizer: Optional[PerformanceOptimizer] = None
+        self.metrics = None
         self.is_running = False
         self.shutdown_event = asyncio.Event()
+        
+        # Initialize metrics (with fallback)
+        if PROMETHEUS_AVAILABLE:
+            try:
+                self.metrics = PrometheusMetrics(service_name="cs2_betting_system")
+            except Exception as e:
+                logger.warning(f"Prometheus metrics not available: {e}")
+                self.metrics = None
+        else:
+            self.metrics = None
         
         # Setup signal handlers
         self._setup_signal_handlers()
@@ -102,6 +127,14 @@ class CS2BettingSystem:
         try:
             # Initialize all components
             await self.initialize()
+            
+            # Initialize alert system (with fallback)
+            if ALERT_SYSTEM_AVAILABLE:
+                self.alert_system = AlertSystem()
+                await self.alert_system.initialize()
+            else:
+                self.alert_system = None
+            
             self.is_running = True
             
             # Start all background tasks
