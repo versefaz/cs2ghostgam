@@ -1,0 +1,23 @@
+2025-08-27 14:56:50,312 - __main__ - INFO - Performance optimizer initialized
+2025-08-27 14:56:50,315 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 14:56:50,316 - core.utils.timing - INFO - Startup delay: 11.0 seconds
+2025-08-27 14:57:01,357 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 14:57:01,358 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 14:57:01,358 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 14:57:01,359 - core.integrated_pipeline - ERROR - Pipeline initialization failed: 'RobustOddsScraper' object has no attribute 'sessions'
+2025-08-27 14:57:01,363 - __main__ - INFO - Shutting down integrated pipeline...
+2025-08-27 14:57:01,363 - __main__ - ERROR - Error during cleanup: 'IntegratedPipeline' object has no attribute 'shutdown'
+2025-08-27 14:57:01,548 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000028622CE1BE0>
+2025-08-27 14:57:46,390 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 14:57:46,390 - __main__ - INFO - Performance optimizer initialized
+2025-08-27 14:57:46,395 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 14:57:46,395 - core.utils.timing - INFO - Startup delay: 11.0 seconds
+2025-08-27 14:57:57,404 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 14:57:57,404 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 14:57:57,405 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 14:57:57,405 - core.integrated_pipeline - ERROR - Pipeline initialization failed: 'RobustOddsScraper' object has no attribute 'sessions'
+2025-08-27 14:57:57,423 - __main__ - INFO - Shutting down integrated pipeline...
+2025-08-27 14:57:57,423 - __main__ - ERROR - Error during cleanup: 'IntegratedPipeline' object has no attribute 'shutdown'
+2025-08-27 14:57:57,645 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000024710761BE0>

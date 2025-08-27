@@ -17,8 +17,10 @@ from bs4 import BeautifulSoup
 import re
 from urllib.parse import urljoin, urlparse
 import statistics
-# from fake_useragent import UserAgent  # Not needed, using config user agents
 from enum import Enum
+
+# Import SessionManager for proper session handling
+from app.scrapers.session_manager import session_manager
 
 # Import timing utilities and config
 from core.utils.timing import HumanLikeTiming, TimingConfig, RateLimitError, RequestThrottler, random_startup_delay
@@ -73,27 +75,50 @@ class MarketConsensus:
 
 
 class RobustOddsScraper:
-    """Robust odds scraper with human-like timing and multiple bookmaker support"""
+    """Robust odds scraper with multi-source support, validation, and consensus"""
     
     def __init__(self):
-        self.sessions: Dict[str, aiohttp.ClientSession] = {}
-        
-        # Load timing configuration
-        odds_config = SCRAPER_SETTINGS['odds']
+        # Remove direct session management - use SessionManager instead
         self.timing = HumanLikeTiming(TimingConfig(
-            base_interval_sec=odds_config['base_interval_sec'],
-            jitter_pct=odds_config['jitter_pct'],
-            max_backoff=odds_config['max_backoff'],
-            min_delay=SCRAPER_SETTINGS['rate_limiting']['min_delay_between_requests']
+            base_interval_sec=3.0,
+            jitter_pct=0.3,
+            max_backoff=5,
+            min_delay=1.0
         ))
         
-        # Request throttling per bookmaker
+        # Initialize throttlers for each bookmaker
         self.throttlers: Dict[str, RequestThrottler] = {}
+        for source in BookmakerSource:
+            self.throttlers[source.value] = RequestThrottler(
+                max_concurrent=SCRAPER_SETTINGS['concurrency']['max_connections'],
+                min_delay=SCRAPER_SETTINGS['rate_limiting']['min_delay_between_requests']
+            )
         
-        # User agent rotation
-        self.user_agents = USER_AGENTS
+        # Enhanced user agent rotation with more realistic agents
+        self.user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        ]
         self.current_ua_index = 0
-        self.timeout = 30  # Add timeout attribute
+        self.timeout = 30
+        
+        # Enhanced bookmaker configurations with API endpoints
+        self.bookmaker_configs = self._init_enhanced_bookmaker_configs()
+        
+        # Caching and validation
+        self.odds_cache: Dict[str, List[OddsData]] = {}
+        self.cache_ttl = 300  # 5 minutes
+        self.validation_threshold = 0.1  # 10% variance allowed
+        
+        # Rate limiting tracking
+        self.rate_limits: Dict[str, Dict] = {}
+        
+        # Consensus settings
+        self.min_sources_for_consensus = 2
+        self.outlier_threshold = 2.0  # Standard deviations
         
         # Bookmaker-specific delays (in addition to global timing)
         self.bookmaker_delays: Dict[str, float] = {
@@ -105,75 +130,43 @@ class RobustOddsScraper:
             'betway': 2.8,
             'unibet': 3.2
         }
-        
-        # Rate limiting per source
-        self.rate_limits = {
-            BookmakerSource.ODDSPORTAL: {'requests': 0, 'window_start': 0, 'max_per_minute': 20},
-            BookmakerSource.BET365: {'requests': 0, 'window_start': 0, 'max_per_minute': 15},
-            BookmakerSource.PINNACLE: {'requests': 0, 'window_start': 0, 'max_per_minute': 30},
-            BookmakerSource.BETWAY: {'requests': 0, 'window_start': 0, 'max_per_minute': 25},
-            BookmakerSource.UNIBET: {'requests': 0, 'window_start': 0, 'max_per_minute': 20},
-            BookmakerSource.GGBET: {'requests': 0, 'window_start': 0, 'max_per_minute': 15},
-            BookmakerSource.RIVALRY: {'requests': 0, 'window_start': 0, 'max_per_minute': 20},
-        }
-        
-        # Caching
-        self.odds_cache: Dict[str, List[OddsData]] = {}
-        self.cache_ttl = 300  # 5 minutes
-        
-        # Initialize throttlers for each bookmaker
-        for source in BookmakerSource:
-            self.throttlers[source.value] = RequestThrottler(
-                max_concurrent=3,
-                min_delay=self.config.min_delay if hasattr(self, 'config') else 2.0
-            )
-        
-        # Validation thresholds
-        self.min_odds = 1.01
-        self.max_odds = 50.0
-        self.max_spread_threshold = 0.5  # 50% spread is suspicious
-        
-        # Bookmaker configurations
-        self.bookmaker_configs = {
-            BookmakerSource.ODDSPORTAL: {
-                'base_url': 'https://www.oddsportal.com',
-                'selectors': {
-                    'match_rows': '.table-main tbody tr',
-                    'team_names': '.name',
-                    'odds': '.odds-nowrp',
-                    'match_time': '.table-time'
+    
+    def _init_enhanced_bookmaker_configs(self) -> Dict[BookmakerSource, Dict]:
+        """Initialize enhanced bookmaker configurations with API endpoints"""
+        return {
+            BookmakerSource.RIVALRY: {
+                'base_url': 'https://www.rivalry.com',
+                'api_endpoint': '/api/v4/matches/csgo',
+                'web_endpoint': '/esports/cs2-betting',
+                'rate_limit': 30,
+                'request_type': 'api',  # 'api' or 'html'
+                'headers': {
+                    'Referer': 'https://www.rivalry.com/esports/cs2-betting',
+                    'Accept': 'application/json, text/plain, */*',
+                    'X-Requested-With': 'XMLHttpRequest'
                 },
-                'headers': {
-                    'User-Agent': self._get_next_user_agent(),
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                    'Accept-Language': 'en-US,en;q=0.9',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'Connection': 'keep-alive',
-                    'Upgrade-Insecure-Requests': '1',
-                }
-            },
-            BookmakerSource.BET365: {
-                'base_url': 'https://www.bet365.com',
-                'selectors': {
-                    'match_rows': '.gl-Market_General',
-                    'team_names': '.gl-Participant_Name',
-                    'odds': '.gl-Participant_Odds'
-                }
-            },
-            BookmakerSource.PINNACLE: {
-                'base_url': 'https://www.pinnacle.com',
-                'api_endpoint': '/api/v1/odds',
-                'headers': {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                    'Accept': 'application/json',
-                }
+                'accept': 'application/json'
             },
             BookmakerSource.GGBET: {
                 'base_url': 'https://gg.bet',
-                'selectors': {
-                    'match_rows': '.match-item',
-                    'team_names': '.team-name',
-                    'odds': '.odds-value'
+                'web_endpoint': '/en/esports/betting/counter-strike',
+                'rate_limit': 20,
+                'request_type': 'html',
+                'selector': 'div.event-row, .match-item, .betting-event',
+                'headers': {
+                    'Referer': 'https://gg.bet/en/esports',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+                }
+            },
+            BookmakerSource.ODDSPORTAL: {
+                'base_url': 'https://www.oddsportal.com',
+                'web_endpoint': '/esports/counter-strike',
+                'rate_limit': 15,
+                'request_type': 'html',
+                'selector': '.table-main tr, .event-row',
+                'headers': {
+                    'Referer': 'https://www.oddsportal.com/esports',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
                 }
             }
         }
@@ -192,36 +185,46 @@ class RobustOddsScraper:
         return ua
     
     async def initialize(self):
-        """Initialize HTTP sessions for each bookmaker"""
+        """Initialize scraper - sessions managed by SessionManager"""
+        logger.info(f"Initializing RobustOddsScraper with {len(self.bookmaker_configs)} bookmaker sources")
+        
+        # Pre-create sessions for all bookmakers
         for source in BookmakerSource:
             config = self.bookmaker_configs.get(source, {})
-            headers = config.get('headers', {
+            headers = {
                 'User-Agent': self._get_next_user_agent(),
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-            })
+                'Accept': config.get('accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'DNT': '1',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                **config.get('headers', {})
+            }
             
-            connector = aiohttp.TCPConnector(limit=5, limit_per_host=2)
-            timeout = aiohttp.ClientTimeout(total=self.timeout, connect=5)
-            
-            self.sessions[source.value] = aiohttp.ClientSession(
-                connector=connector,
-                timeout=timeout,
-                headers=headers
+            # Get session from SessionManager
+            await session_manager.get_session(
+                source.value,
+                headers=headers,
+                timeout=self.timeout,
+                limit=3,
+                limit_per_host=2
             )
+        
+        logger.info(f"Initialized {len(BookmakerSource)} bookmaker sessions")
         
         logger.info(f"Initialized {len(self.sessions)} bookmaker sessions")
     
     async def close(self):
-        """Close all HTTP sessions properly to prevent warnings"""
-        for session in self.sessions.values():
-            if session and not session.closed:
-                await session.close()
-        # Wait for underlying connections to close
+        """Close all HTTP sessions via SessionManager"""
+        await session_manager.close_all()
+        logger.info("All odds scraper sessions closed via SessionManager")
         await asyncio.sleep(0.1)
     
     async def _rate_limit_check(self, source: BookmakerSource):
         """Check and enforce rate limits"""
         current_time = asyncio.get_event_loop().time()
+        rate_info = self.rate_limits.get(source.value, {'requests': 0, 'window_start': 0, 'max_per_minute': 20})
         rate_info = self.rate_limits[source]
         
         # Reset window if needed
@@ -244,23 +247,55 @@ class RobustOddsScraper:
         await asyncio.sleep(0.5 + (asyncio.get_event_loop().time() % 1.0))
     
     async def _make_request(self, url: str, source: BookmakerSource, retries: int = 3) -> Optional[str]:
-        """Make HTTP request with human-like timing and error handling"""
-        if source.value not in self.sessions:
-            await self.initialize()
+        """Make HTTP request with enhanced anti-bot measures"""
+        config = self.bookmaker_configs.get(source, {})
         
-        try:
-            # Use throttled request with bookmaker-specific rate limiting
-            return await self.throttlers[source.value].throttled_request(
-                source.value, self._execute_request, url, source
-            )
-        except RateLimitError as e:
-            delay = self.timing.on_rate_limit(e.retry_after)
-            await asyncio.sleep(delay)
-            return None
-        except Exception as e:
-            self.timing.on_error("network" if "timeout" in str(e).lower() else "general")
-            logger.error(f"Error fetching {url} from {source.value}: {e}")
-            return None
+        for attempt in range(retries):
+            try:
+                # Anti-bot delay with randomization
+                base_delay = random.uniform(2.0, 5.0)
+                jitter = random.uniform(-0.5, 0.5)
+                await asyncio.sleep(base_delay + jitter + (attempt * 1.0))
+                
+                # Get session from SessionManager
+                session = await session_manager.get_session(source.value)
+                
+                # Rotate user agent for each request
+                headers = {
+                    'User-Agent': self._get_next_user_agent(),
+                    **config.get('headers', {})
+                }
+                
+                # Add random headers to appear more human-like
+                if random.random() > 0.5:
+                    headers['Cache-Control'] = 'no-cache'
+                if random.random() > 0.7:
+                    headers['Pragma'] = 'no-cache'
+                
+                async with session.get(url, headers=headers) as response:
+                    if response.status == 200:
+                        content = await response.text()
+                        self.timing.on_success()
+                        return content
+                    elif response.status == 429:  # Rate limited
+                        retry_after = int(response.headers.get('Retry-After', 60))
+                        delay = self.timing.on_rate_limit(retry_after)
+                        logger.warning(f"{source.value} rate limited, waiting {delay}s")
+                        await asyncio.sleep(delay)
+                    elif response.status == 403:  # Forbidden - likely bot detection
+                        logger.warning(f"{source.value} returned 403 - possible bot detection")
+                        await asyncio.sleep(random.uniform(10, 20))  # Longer delay
+                    else:
+                        logger.warning(f"{source.value} returned status {response.status}")
+                        
+            except Exception as e:
+                self.timing.on_error("network" if "timeout" in str(e).lower() else "general")
+                logger.error(f"Error fetching {url} from {source.value} (attempt {attempt + 1}): {e}")
+                
+                if attempt < retries - 1:
+                    await asyncio.sleep(random.uniform(5, 10))  # Backoff delay
+        
+        return None
 
     async def _execute_request(self, url: str, source: BookmakerSource) -> Optional[str]:
         """Execute the actual HTTP request"""

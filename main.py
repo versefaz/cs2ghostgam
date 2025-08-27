@@ -1,21 +1,54 @@
 #!/usr/bin/env python3
 """
-CS2 Betting System - Production-Ready Main Entry Point
-Complete Integration: Pipeline → Scrapers → ML → Signals → Redis → Consumers
+CS2 Betting System - Main Entry Point
+Production-ready betting signal generation with comprehensive monitoring
 """
 
 import asyncio
 import logging
 import signal
 import sys
-import os
+import traceback
 from datetime import datetime
-from typing import Dict, Any, Optional
-import json
+from contextlib import suppress
+
+# Core system imports
+from core.integrated_pipeline import IntegratedPipeline
+from core.performance_optimizer import PerformanceOptimizer
+from app.scrapers.session_manager import session_manager
+
+# Configure logging with better formatting
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("cs2_betting_system.log")
+    ]
+)
+
+# Suppress noisy loggers for cleaner output
+logging.getLogger("aiohttp").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("asyncio").setLevel(logging.WARNING)
+
+logger = logging.getLogger(__name__)
+
+# Global system state
+pipeline = None
+performance_optimizer = None
+is_shutting_down = False
+
+# Setup signal handlers
+def signal_handler(signum, frame):
+    global is_shutting_down
+    logger.info(f"Received signal {signum}, initiating shutdown...")
+    is_shutting_down = True
+
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 # Core integrated components
-from core.integrated_pipeline import IntegratedPipeline, PipelineConfig
-from core.performance_optimizer import PerformanceOptimizer, OptimizationConfig
 try:
     from monitoring.prometheus_metrics import PrometheusMetrics
     PROMETHEUS_AVAILABLE = True
@@ -166,22 +199,46 @@ class CS2BettingSystem:
         self.is_running = False
         self.shutdown_event.set()
     
-    async def cleanup(self):
-        """Cleanup all system resources"""
-        logger.info("Cleaning up system resources...")
+    async def cleanup_system():
+        """Enhanced cleanup system resources with proper session management"""
+        global pipeline, performance_optimizer
+        
+        logger.info("🛑 Cleaning up system resources...")
         
         try:
-            # Close all components
-            if self.pipeline:
-                await self.pipeline.close()
+            # Shutdown pipeline first
+            if pipeline:
+                logger.info("Shutting down integrated pipeline...")
+                await pipeline.shutdown()
+                pipeline = None
+                
+            # Close performance optimizer
+            if performance_optimizer:
+                logger.info("Closing performance optimizer...")
+                await performance_optimizer.close()
+                performance_optimizer = None
             
-            if self.optimizer:
-                await self.optimizer.close()
+            # Close all HTTP sessions via SessionManager
+            logger.info("Closing all HTTP sessions...")
+            await session_manager.close_all()
             
-            logger.info("System cleanup completed")
+            # Give time for all cleanup to complete
+            await asyncio.sleep(0.5)
             
+            # Cancel any remaining tasks
+            tasks = [task for task in asyncio.all_tasks() if not task.done()]
+            if tasks:
+                logger.info(f"Cancelling {len(tasks)} remaining tasks...")
+                for task in tasks:
+                    task.cancel()
+                
+                # Wait for tasks to cancel
+                await asyncio.gather(*tasks, return_exceptions=True)
+                
         except Exception as e:
             logger.error(f"Error during cleanup: {e}")
+        
+        logger.info("✅ System cleanup completed")
     
     async def _monitoring_loop(self):
         """System monitoring loop"""
@@ -200,29 +257,110 @@ class CS2BettingSystem:
 
 
 async def main():
-    """Main entry point"""
-    system = CS2BettingSystem()
+    """Enhanced main application entry point with proper cleanup"""
+    global pipeline, performance_optimizer
+    
+    stop_event = asyncio.Event()
+    
+    def signal_handler_async(*args):
+        logger.info("Received shutdown signal")
+        stop_event.set()
+    
+    # Register signal handlers for graceful shutdown
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        signal.signal(sig, signal_handler_async)
     
     try:
-        await system.run()
+        # Display startup banner
+        print_banner()
+        
+        logger.info("Starting CS2 Betting System v2.0...")
+        
+        # Initialize performance optimizer
+        performance_optimizer = PerformanceOptimizer()
+        logger.info("Performance optimizer initialized")
+        
+        # Initialize integrated pipeline
+        pipeline = IntegratedPipeline()
+        await pipeline.initialize()
+        
+        logger.info("All components initialized successfully")
+        logger.info("System is now monitoring matches and generating signals")
+        logger.info("Press Ctrl+C to stop")
+        
+        # Start the main pipeline in background
+        pipeline_task = asyncio.create_task(pipeline.run())
+        
+        # Wait for shutdown signal or pipeline completion
+        done, pending = await asyncio.wait(
+            [pipeline_task, asyncio.create_task(stop_event.wait())],
+            return_when=asyncio.FIRST_COMPLETED
+        )
+        
+        # Cancel any pending tasks
+        for task in pending:
+            task.cancel()
+            
     except KeyboardInterrupt:
-        logger.info("Received keyboard interrupt, shutting down...")
+        logger.info("Shutdown requested by user")
     except Exception as e:
-        logger.error(f"Unhandled exception: {e}")
-        sys.exit(1)
+        logger.exception(f"System error: {e}")
+    finally:
+        await cleanup_system()
+
+
+async def cleanup_system():
+    """Enhanced cleanup system resources with proper session management"""
+    global pipeline, performance_optimizer
+    
+    logger.info("🛑 Cleaning up system resources...")
+    
+    try:
+        # Shutdown pipeline first
+        if pipeline:
+            logger.info("Shutting down integrated pipeline...")
+            await pipeline.shutdown()
+            pipeline = None
+            
+        # Close performance optimizer
+        if performance_optimizer:
+            logger.info("Closing performance optimizer...")
+            await performance_optimizer.close()
+            performance_optimizer = None
+        
+        # Close all HTTP sessions via SessionManager
+        logger.info("Closing all HTTP sessions...")
+        await session_manager.close_all()
+        
+        # Give time for all cleanup to complete
+        await asyncio.sleep(0.5)
+        
+        # Cancel any remaining tasks
+        tasks = [task for task in asyncio.all_tasks() if not task.done()]
+        if tasks:
+            logger.info(f"Cancelling {len(tasks)} remaining tasks...")
+            for task in tasks:
+                task.cancel()
+            
+            # Wait for tasks to cancel with timeout
+            with suppress(asyncio.TimeoutError):
+                await asyncio.wait_for(
+                    asyncio.gather(*tasks, return_exceptions=True),
+                    timeout=2.0
+                )
+            
+    except Exception as e:
+        logger.error(f"Error during cleanup: {e}")
+    
+    logger.info("✅ System cleanup completed")
 
 
 if __name__ == "__main__":
     # Set event loop policy for Windows
-    if sys.platform == "win32":
+    if sys.platform == 'win32':
         asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
     
-    # Configure logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
-    
-    # Run the system
-    asyncio.run(main())
- 
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        pass  # Graceful exit on Ctrl+C

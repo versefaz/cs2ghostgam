@@ -160,10 +160,11 @@ class IntegratedPipeline:
             # Initialize ML components (with fallbacks)
             if ML_PIPELINE_AVAILABLE:
                 try:
-                    from ml_pipeline.config.feature_config import FeatureConfig, FEATURE_SETS
-                    feature_config = FEATURE_SETS['default']
+                    from ml_pipeline.config.default_config import DEFAULT_FEATURE_CONFIG
+                    feature_config = DEFAULT_FEATURE_CONFIG.to_dict()
                     self.feature_engineer = FeatureEngineer(config=feature_config)
                     self.model_trainer = ModelTrainer()
+                    logger.info("ML pipeline initialized with default configuration")
                 except Exception as e:
                     logger.warning(f"ML pipeline initialization failed: {e}")
                     self.feature_engineer = None
@@ -635,22 +636,44 @@ class IntegratedPipeline:
     async def _report_metrics(self):
         """Report pipeline metrics to monitoring systems"""
         try:
-            # Update Prometheus metrics
-            if hasattr(self.prometheus_metrics, 'matches_scraped_total'):
-                self.prometheus_metrics.matches_scraped_total._value._value = self.metrics.matches_processed
-            if hasattr(self.prometheus_metrics, 'signals_generated_total'):
-                self.prometheus_metrics.signals_generated_total._value._value = self.metrics.signals_generated
-            if hasattr(self.prometheus_metrics, 'predictions_generated_total'):
-                self.prometheus_metrics.predictions_generated_total._value._value = self.metrics.predictions_made
+            # Create metrics summary
+            metrics_summary = {
+                "total_matches": getattr(self.metrics, 'matches_processed', 0),
+                "signals_sent": getattr(self.metrics, 'signals_generated', 0),
+                "predictions_made": getattr(self.metrics, 'predictions_made', 0),
+                "errors": getattr(self.metrics, 'errors_encountered', 0),
+                "uptime_seconds": (datetime.utcnow() - getattr(self.metrics, 'uptime_start', datetime.utcnow())).total_seconds()
+            }
             
-            # Store metrics in Redis
+            # Log metrics instead of using problematic Prometheus counters
+            logger.info(f"📊 System Metrics: {metrics_summary}")
+            
+            # Update Prometheus metrics safely if available
+            if self.prometheus_metrics:
+                try:
+                    # Use record methods instead of direct counter access
+                    if hasattr(self.prometheus_metrics, 'record_match_scraped'):
+                        for _ in range(metrics_summary["total_matches"]):
+                            self.prometheus_metrics.record_match_scraped("hltv", "success")
+                    
+                    if hasattr(self.prometheus_metrics, 'record_signal_generated'):
+                        for _ in range(metrics_summary["signals_sent"]):
+                            self.prometheus_metrics.record_signal_generated("betting", "high")
+                            
+                except Exception as prom_error:
+                    logger.debug(f"Prometheus metrics update failed: {prom_error}")
+            
+            # Store metrics in Redis if available
             if self.redis_schema:
-                metrics_data = asdict(self.metrics)
-                metrics_data['timestamp'] = datetime.utcnow().isoformat()
-                await self.redis_schema.store_metrics(metrics_data)
+                try:
+                    metrics_data = metrics_summary.copy()
+                    metrics_data['timestamp'] = datetime.utcnow().isoformat()
+                    await self.redis_schema.store_metrics(metrics_data)
+                except Exception as redis_error:
+                    logger.debug(f"Redis metrics storage failed: {redis_error}")
             
         except Exception as e:
-            logger.error(f"Error reporting metrics: {e}")
+            logger.debug(f"Metrics reporting skipped: {e}")
     
     async def run(self):
         """Run the integrated pipeline"""
