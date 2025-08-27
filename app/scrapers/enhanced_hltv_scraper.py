@@ -9,14 +9,16 @@ import re
 import json
 import logging
 from datetime import datetime, timedelta
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, asdict
-from urllib.parse import urljoin, urlparse
-
-import aiohttp
-import asyncio
 from bs4 import BeautifulSoup
+import json
+import re
 from fake_useragent import UserAgent
+
+# Import timing utilities and config
+from core.utils.timing import HumanLikeTiming, TimingConfig, RateLimitError, RequestThrottler, random_startup_delay
+from app.config import SCRAPER_SETTINGS, USER_AGENTS, RATE_LIMIT_CODES, SUCCESS_CODES
 
 logger = logging.getLogger(__name__)
 
@@ -70,12 +72,30 @@ class MatchContext:
 
 
 class EnhancedHLTVScraper:
-    """Production-ready HLTV scraper with comprehensive team data"""
+    """Enhanced HLTV scraper with comprehensive team statistics and human-like timing"""
     
-    def __init__(self, max_concurrent: int = 5, delay_range: Tuple[float, float] = (1.0, 3.0)):
+    def __init__(self):
         self.base_url = "https://www.hltv.org"
-        self.max_concurrent = max_concurrent
-        self.delay_range = delay_range
+        self.session: Optional[aiohttp.ClientSession] = None
+        
+        # Load timing configuration
+        hltv_config = SCRAPER_SETTINGS['hltv']
+        self.timing = HumanLikeTiming(TimingConfig(
+            base_interval_sec=hltv_config['base_interval_sec'],
+            jitter_pct=hltv_config['jitter_pct'],
+            max_backoff=hltv_config['max_backoff'],
+            min_delay=SCRAPER_SETTINGS['rate_limiting']['min_delay_between_requests']
+        ))
+        
+        # Request throttling
+        self.throttler = RequestThrottler(
+            max_concurrent=SCRAPER_SETTINGS['concurrency']['max_connections'],
+            min_delay=SCRAPER_SETTINGS['rate_limiting']['min_delay_between_requests']
+        )
+        
+        # User agent rotation
+        self.user_agents = USER_AGENTS
+        self.current_ua_index = 0
         self.ua = UserAgent()
         
         # Caching
@@ -99,29 +119,48 @@ class EnhancedHLTVScraper:
         await self.close()
     
     async def initialize(self):
-        """Initialize HTTP session"""
-        connector = aiohttp.TCPConnector(limit=self.max_concurrent, limit_per_host=3)
-        timeout = aiohttp.ClientTimeout(total=30, connect=10)
+        """Initialize the scraper with session and headers"""
+        # Use configuration-based connection limits
+        concurrency = SCRAPER_SETTINGS['concurrency']
+        connector = aiohttp.TCPConnector(
+            limit=concurrency['max_connections'],
+            limit_per_host=2,  # Max 2 connections per host
+            ttl_dns_cache=300,  # DNS cache for 5 minutes
+            use_dns_cache=True
+        )
+        
+        timeout = aiohttp.ClientTimeout(
+            total=concurrency['read_timeout'],
+            connect=concurrency['connection_timeout']
+        )
         
         self.session = aiohttp.ClientSession(
             connector=connector,
             timeout=timeout,
             headers={
-                'User-Agent': self.ua.random,
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language': 'en-US,en;q=0.5',
                 'Accept-Encoding': 'gzip, deflate',
                 'Connection': 'keep-alive',
                 'Upgrade-Insecure-Requests': '1',
+                'DNT': '1',  # Do Not Track
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none'
             }
         )
         
-        logger.info("Enhanced HLTV Scraper initialized")
+        # Add random startup delay to spread out scraper initialization
+        await random_startup_delay(max_delay=15.0)
+        
+        logger.info("Enhanced HLTV Scraper initialized with human-like timing")
     
     async def close(self):
-        """Close HTTP session"""
-        if self.session:
+        """Close HTTP session properly to prevent warnings"""
+        if self.session and not self.session.closed:
             await self.session.close()
+            # Wait a bit for the underlying connections to close
+            await asyncio.sleep(0.1)
     
     async def _rate_limit(self):
         """Apply rate limiting"""
@@ -141,11 +180,62 @@ class EnhancedHLTVScraper:
                 self.request_count = 0
         
         # Random delay between requests
-        delay = self.delay_range[0] + (self.delay_range[1] - self.delay_range[0]) * asyncio.get_event_loop().time() % 1
+        delay = self.timing.get_delay()
         await asyncio.sleep(delay)
         
         self.request_count += 1
     
+    def _get_next_user_agent(self) -> str:
+        """Get next user agent in rotation"""
+        ua = self.user_agents[self.current_ua_index]
+        self.current_ua_index = (self.current_ua_index + 1) % len(self.user_agents)
+        return ua
+
+    async def _make_request(self, url: str, headers: Dict[str, str] = None) -> Optional[str]:
+        """Make HTTP request with human-like timing and error handling"""
+        if not self.session:
+            await self.initialize()
+        
+        try:
+            # Use throttled request with domain-based rate limiting
+            return await self.throttler.throttled_request(
+                "hltv.org", self._execute_request, url, headers
+            )
+        except RateLimitError as e:
+            delay = self.timing.on_rate_limit(e.retry_after)
+            await asyncio.sleep(delay)
+            return None
+        except Exception as e:
+            self.timing.on_error("network" if "timeout" in str(e).lower() else "general")
+            logger.error(f"Error fetching {url}: {e}")
+            return None
+
+    async def _execute_request(self, url: str, headers: Dict[str, str] = None) -> Optional[str]:
+        """Execute the actual HTTP request"""
+        request_headers = {
+            'User-Agent': self._get_next_user_agent(),
+            'Referer': self.base_url,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+        if headers:
+            request_headers.update(headers)
+        
+        async with self.session.get(url, headers=request_headers) as response:
+            if response.status in SUCCESS_CODES:
+                self.timing.on_success()
+                return await response.text()
+            elif response.status in RATE_LIMIT_CODES:
+                retry_after = response.headers.get('Retry-After')
+                retry_after_int = int(retry_after) if retry_after and retry_after.isdigit() else None
+                raise RateLimitError(response.status, retry_after_int, f"Rate limited: {response.status}")
+            elif response.status == 403:
+                logger.warning(f"HTTP 403 for {url}")
+                return None
+            else:
+                logger.warning(f"HTTP {response.status} for {url}")
+                return None
+
     async def _fetch_page(self, url: str, retries: int = 3) -> Optional[BeautifulSoup]:
         """Fetch and parse HTML page with retries"""
         if not self.session:

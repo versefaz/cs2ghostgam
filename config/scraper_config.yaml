@@ -1,0 +1,49 @@
+# Scraper Timing Configuration - Human-like patterns to avoid detection
+hltv:
+  base_interval_sec: 480        # Base 8 minutes (was 5 min)
+  jitter_pct: 0.30              # ±30% randomization
+  max_backoff: 4                # Max 2^4 = 16x delay on rate limit
+
+odds:
+  base_interval_sec: 360        # Base 6 minutes (was 3 min)  
+  jitter_pct: 0.25              # ±25% randomization
+  max_backoff: 3                # Max 2^3 = 8x delay
+  
+team_stats:
+  base_interval_sec: 900        # Base 15 minutes (was 10 min)
+  jitter_pct: 0.25              # ±25% randomization
+  max_backoff: 4                # Max 16x delay
+
+live_scores:
+  base_interval_sec: 60         # Base 1 minute (was 30 sec)
+  jitter_pct: 0.40              # ±40% for high-frequency requests
+  max_backoff: 5                # Max 32x delay
+
+# Connection limits to appear human-like
+concurrency:
+  max_connections: 3            # Most sites accept 2-4 per IP
+  connection_timeout: 30        # 30 second timeout
+  read_timeout: 45              # 45 second read timeout
+
+# Rotate User-Agent strings to avoid detection
+user_agents:
+  - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/120.0.0.0 Safari/537.36"
+  - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15"
+  - "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0"
+  - "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+  - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:120.0) Gecko/20100101 Firefox/120.0"
+
+# Rate limiting behavior
+rate_limiting:
+  respect_robots_txt: true      # Honor robots.txt crawl-delay
+  min_delay_between_requests: 2 # Minimum 2 seconds between requests to same domain
+  retry_attempts: 3             # Max retries before giving up
+  
+# HTTP status code handling
+http_handling:
+  rate_limit_codes: [429, 503, 502]  # Codes that trigger backoff
+  success_codes: [200, 201, 202]     # Codes that reset backoff
+  client_error_codes: [400, 401, 403, 404]  # Codes that skip backoff

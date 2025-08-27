@@ -13,8 +13,11 @@ from dataclasses import dataclass, asdict
 from enum import Enum
 import re
 from urllib.parse import urljoin, urlparse
+import statistics
 
-import aiohttp
+# Import timing utilities and config
+from core.utils.timing import HumanLikeTiming, TimingConfig, RateLimitError, RequestThrottler, random_startup_delay
+from app.config import SCRAPER_SETTINGS, USER_AGENTS, RATE_LIMIT_CODES, SUCCESS_CODES
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 import backoff
@@ -68,15 +71,37 @@ class MarketConsensus:
 
 
 class RobustOddsScraper:
-    """Production-ready multi-source odds scraper"""
+    """Robust odds scraper with human-like timing and multiple bookmaker support"""
     
-    def __init__(self, max_concurrent: int = 3, timeout: int = 15):
-        self.max_concurrent = max_concurrent
-        self.timeout = timeout
-        self.ua = UserAgent()
-        
-        # Session management
+    def __init__(self):
         self.sessions: Dict[str, aiohttp.ClientSession] = {}
+        
+        # Load timing configuration
+        odds_config = SCRAPER_SETTINGS['odds']
+        self.timing = HumanLikeTiming(TimingConfig(
+            base_interval_sec=odds_config['base_interval_sec'],
+            jitter_pct=odds_config['jitter_pct'],
+            max_backoff=odds_config['max_backoff'],
+            min_delay=SCRAPER_SETTINGS['rate_limiting']['min_delay_between_requests']
+        ))
+        
+        # Request throttling per bookmaker
+        self.throttlers: Dict[str, RequestThrottler] = {}
+        
+        # User agent rotation
+        self.user_agents = USER_AGENTS
+        self.current_ua_index = 0
+        
+        # Bookmaker-specific delays (in addition to global timing)
+        self.bookmaker_delays: Dict[str, float] = {
+            'gg.bet': 3.0,
+            'rivalry': 2.5,
+            'oddsportal': 4.0,
+            'bet365': 5.0,
+            'pinnacle': 3.5,
+            'betway': 2.8,
+            'unibet': 3.2
+        }
         
         # Rate limiting per source
         self.rate_limits = {
@@ -109,7 +134,7 @@ class RobustOddsScraper:
                     'match_time': '.table-time'
                 },
                 'headers': {
-                    'User-Agent': self.ua.random,
+                    'User-Agent': self._get_next_user_agent(),
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Language': 'en-US,en;q=0.9',
                     'Accept-Encoding': 'gzip, deflate, br',
@@ -171,10 +196,12 @@ class RobustOddsScraper:
         logger.info(f"Initialized {len(self.sessions)} bookmaker sessions")
     
     async def close(self):
-        """Close all HTTP sessions"""
+        """Close all HTTP sessions properly to prevent warnings"""
         for session in self.sessions.values():
-            await session.close()
-        self.sessions.clear()
+            if session and not session.closed:
+                await session.close()
+        # Wait for underlying connections to close
+        await asyncio.sleep(0.1)
     
     async def _rate_limit_check(self, source: BookmakerSource):
         """Check and enforce rate limits"""
@@ -200,54 +227,86 @@ class RobustOddsScraper:
         # Add random delay
         await asyncio.sleep(0.5 + (asyncio.get_event_loop().time() % 1.0))
     
-    @backoff.on_exception(
-        backoff.expo,
-        (aiohttp.ClientError, asyncio.TimeoutError),
-        max_tries=3,
-        max_time=60
-    )
-    async def _fetch_with_retry(
-        self, 
-        source: BookmakerSource, 
-        url: str, 
-        **kwargs
-    ) -> Optional[aiohttp.ClientResponse]:
-        """Fetch URL with exponential backoff retry"""
-        await self._rate_limit_check(source)
-        
-        session = self.sessions.get(source.value)
-        if not session:
-            logger.error(f"No session available for {source.value}")
-            return None
+    async def _make_request(self, url: str, source: BookmakerSource, retries: int = 3) -> Optional[str]:
+        """Make HTTP request with human-like timing and error handling"""
+        if source.value not in self.sessions:
+            await self.initialize()
         
         try:
-            async with session.get(url, **kwargs) as response:
-                if response.status == 200:
-                    return response
-                elif response.status == 429:
-                    # Rate limited, wait longer
-                    await asyncio.sleep(5)
-                    raise aiohttp.ClientError("Rate limited")
-                elif response.status >= 500:
-                    # Server error, retry
-                    raise aiohttp.ClientError(f"Server error: {response.status}")
-                else:
-                    logger.warning(f"HTTP {response.status} from {source.value}: {url}")
-                    return None
-                    
-        except asyncio.TimeoutError:
-            logger.warning(f"Timeout fetching from {source.value}: {url}")
-            raise
+            # Use throttled request with bookmaker-specific rate limiting
+            return await self.throttlers[source.value].throttled_request(
+                source.value, self._execute_request, url, source
+            )
+        except RateLimitError as e:
+            delay = self.timing.on_rate_limit(e.retry_after)
+            await asyncio.sleep(delay)
+            return None
         except Exception as e:
-            logger.error(f"Error fetching from {source.value}: {e}")
-            raise
-    
+            self.timing.on_error("network" if "timeout" in str(e).lower() else "general")
+            logger.error(f"Error fetching {url} from {source.value}: {e}")
+            return None
+
+    async def _execute_request(self, url: str, source: BookmakerSource) -> Optional[str]:
+        """Execute the actual HTTP request"""
+        session = self.sessions[source.value]
+        
+        request_headers = {
+            'User-Agent': self._get_next_user_agent(),
+            'Referer': self.bookmaker_configs[source]['base_url'],
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+        
+        async with session.get(url, headers=request_headers) as response:
+            if response.status in SUCCESS_CODES:
+                self.timing.on_success()
+                return await response.text()
+            elif response.status in RATE_LIMIT_CODES:
+                retry_after = response.headers.get('Retry-After')
+                retry_after_int = int(retry_after) if retry_after and retry_after.isdigit() else None
+                raise RateLimitError(response.status, retry_after_int, f"Rate limited by {source.value}")
+            elif response.status in [403, 404]:
+                logger.warning(f"HTTP {response.status} for {url} from {source.value}")
+                return None
+            else:
+                logger.warning(f"HTTP {response.status} for {url} from {source.value}")
+                return None
+
+    async def run_continuous_scraping(self):
+        """Run continuous odds scraping with human-like timing"""
+        logger.info("Starting continuous odds scraping with human-like patterns")
+        
+        while True:
+            try:
+                # Scrape odds from all sources
+                all_odds = await self.get_comprehensive_odds()
+                logger.info(f"Scraped odds for {len(all_odds)} matches from multiple bookmakers")
+                
+                # Reset backoff on success
+                self.timing.on_success()
+                
+            except RateLimitError:
+                logger.warning("Rate limited, applying exponential backoff")
+                delay = self.timing.on_rate_limit()
+                await asyncio.sleep(delay)
+                continue
+                
+            except Exception as e:
+                logger.error(f"Odds scraping error: {e}")
+                self.timing.on_error()
+            
+            # Wait with jitter before next scraping cycle
+            delay = self.timing.next_delay()
+            logger.debug(f"Next odds scrape in {delay:.1f} seconds")
+            await asyncio.sleep(delay)
+
     async def scrape_oddsportal(self, sport: str = "esports") -> List[OddsData]:
         """Scrape odds from OddsPortal"""
         odds_data = []
         
         try:
             url = f"https://www.oddsportal.com/{sport}/counter-strike/"
+            response = await self._make_request(url, BookmakerSource.ODDSPORTAL)
             response = await self._fetch_with_retry(BookmakerSource.ODDSPORTAL, url)
             
             if not response:
