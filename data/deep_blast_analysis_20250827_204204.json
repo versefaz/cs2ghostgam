@@ -1,0 +1,710 @@
+{
+  "timestamp": "20250827_204204",
+  "tournament": "BLAST Open London 2025",
+  "analysis_type": "deep_profitable_analysis",
+  "total_matches": 4,
+  "total_value_bets": 4,
+  "analyses": [
+    {
+      "match_id": "vitality_m80",
+      "map_analysis": {
+        "Mirage": {
+          "team1_wr": 78,
+          "team2_wr": 35,
+          "edge": 43,
+          "favorite": "Vitality",
+          "advantage_level": "High"
+        },
+        "Inferno": {
+          "team1_wr": 82,
+          "team2_wr": 32,
+          "edge": 50,
+          "favorite": "Vitality",
+          "advantage_level": "High"
+        },
+        "Ancient": {
+          "team1_wr": 71,
+          "team2_wr": 48,
+          "edge": 23,
+          "favorite": "Vitality",
+          "advantage_level": "High"
+        },
+        "Dust2": {
+          "team1_wr": 65,
+          "team2_wr": 72,
+          "edge": -7,
+          "favorite": "M80",
+          "advantage_level": "Low"
+        },
+        "Anubis": {
+          "team1_wr": 58,
+          "team2_wr": 68,
+          "edge": -10,
+          "favorite": "M80",
+          "advantage_level": "Low"
+        },
+        "Vertigo": {
+          "team1_wr": 42,
+          "team2_wr": 55,
+          "edge": -13,
+          "favorite": "M80",
+          "advantage_level": "Medium"
+        },
+        "Overpass": {
+          "team1_wr": 38,
+          "team2_wr": 64,
+          "edge": -26,
+          "favorite": "M80",
+          "advantage_level": "High"
+        }
+      },
+      "carry_analysis": {
+        "team1_top_carry": {
+          "player": "ZywOo",
+          "rating": 9.5
+        },
+        "team2_top_carry": {
+          "player": "slaxz-",
+          "rating": 7.8
+        },
+        "carry_advantage": "Vitality"
+      },
+      "clutch_analysis": {
+        "team1_avg": 35.0,
+        "team2_avg": 29.6,
+        "advantage": "Vitality",
+        "best_clutchers": {
+          "team1": {
+            "player": "ZywOo",
+            "rate": 42
+          },
+          "team2": {
+            "player": "slaxz-",
+            "rate": 35
+          }
+        }
+      },
+      "pistol_analysis": {
+        "first_pistol": {
+          "team1_wr": 68,
+          "team2_wr": 58,
+          "advantage": "Vitality",
+          "edge": 10
+        },
+        "second_pistol": {
+          "team1_wr": 72,
+          "team2_wr": 62,
+          "advantage": "Vitality",
+          "edge": 10
+        }
+      },
+      "side_analysis": {
+        "ct_advantage": "Vitality",
+        "t_advantage": "Vitality",
+        "ct_edge": 6,
+        "t_edge": 4
+      },
+      "first_map_predictions": [
+        {
+          "map": "Inferno",
+          "recommended_bet": "Vitality Map 1 (หาก Inferno ถูกเล่น)",
+          "win_probability": 0.82,
+          "edge": 50,
+          "confidence": "High"
+        },
+        {
+          "map": "Mirage",
+          "recommended_bet": "Vitality Map 1 (หาก Mirage ถูกเล่น)",
+          "win_probability": 0.78,
+          "edge": 43,
+          "confidence": "High"
+        },
+        {
+          "map": "Overpass",
+          "recommended_bet": "M80 Map 1 (หาก Overpass ถูกเล่น)",
+          "win_probability": 0.64,
+          "edge": 26,
+          "confidence": "High"
+        }
+      ],
+      "profit_opportunities": [
+        {
+          "category": "🗺️ Map Betting",
+          "bet": "Vitality Map 1 (หาก Inferno ถูกเล่น)",
+          "probability": "82.0%",
+          "edge": "50%",
+          "risk": "Medium"
+        },
+        {
+          "category": "🗺️ Map Betting",
+          "bet": "Vitality Map 1 (หาก Mirage ถูกเล่น)",
+          "probability": "78.0%",
+          "edge": "43%",
+          "risk": "Medium"
+        },
+        {
+          "category": "👤 Player Performance",
+          "bet": "ZywOo MVP (หากมี)",
+          "probability": "95%",
+          "edge": "High carry potential",
+          "risk": "Medium"
+        },
+        {
+          "category": "🔫 Pistol Rounds",
+          "bet": "Vitality ชนะรอบพิสตอลแรก",
+          "probability": "68%",
+          "edge": "10%",
+          "risk": "High"
+        }
+      ],
+      "true_probabilities": {
+        "team1": 0.9,
+        "team2": 0.09999999999999998
+      },
+      "value_bets": [
+        {
+          "team": "Vitality",
+          "bet_type": "Moneyline",
+          "odds": 1.16,
+          "true_prob": 0.9,
+          "implied_prob": 0.8620689655172414,
+          "edge": 0.037931034482758585,
+          "kelly_fraction": 0.27499999999999986,
+          "expected_value": 0.043999999999999956,
+          "confidence": "Low",
+          "match_id": "vitality_m80"
+        }
+      ],
+      "recommendation": {
+        "primary": "Vitality ML @ 1.16 (Kelly: 27.5%)",
+        "secondary": "M80 +1.5 Maps @ ~1.65",
+        "strategy": "รอดู momentum ในแมตช์ก่อนเดิมพัน live betting",
+        "risk_assessment": "🟢 ต่ำ-ปานกลาง (Vitality เต็งแรง แต่ M80 มี upset potential)"
+      }
+    },
+    {
+      "match_id": "gamerlegion_virtuspro",
+      "map_analysis": {
+        "Dust2": {
+          "team1_wr": 74,
+          "team2_wr": 43,
+          "edge": 31,
+          "favorite": "GamerLegion",
+          "advantage_level": "High"
+        },
+        "Mirage": {
+          "team1_wr": 69,
+          "team2_wr": 56,
+          "edge": 13,
+          "favorite": "GamerLegion",
+          "advantage_level": "Medium"
+        },
+        "Anubis": {
+          "team1_wr": 66,
+          "team2_wr": 39,
+          "edge": 27,
+          "favorite": "GamerLegion",
+          "advantage_level": "High"
+        },
+        "Inferno": {
+          "team1_wr": 58,
+          "team2_wr": 76,
+          "edge": -18,
+          "favorite": "Virtus.pro",
+          "advantage_level": "Medium"
+        },
+        "Overpass": {
+          "team1_wr": 55,
+          "team2_wr": 68,
+          "edge": -13,
+          "favorite": "Virtus.pro",
+          "advantage_level": "Medium"
+        },
+        "Ancient": {
+          "team1_wr": 45,
+          "team2_wr": 71,
+          "edge": -26,
+          "favorite": "Virtus.pro",
+          "advantage_level": "High"
+        },
+        "Vertigo": {
+          "team1_wr": 41,
+          "team2_wr": 62,
+          "edge": -21,
+          "favorite": "Virtus.pro",
+          "advantage_level": "High"
+        }
+      },
+      "carry_analysis": {
+        "team1_top_carry": {
+          "player": "REZ",
+          "rating": 8.4
+        },
+        "team2_top_carry": {
+          "player": "electroNic",
+          "rating": 8.8
+        },
+        "carry_advantage": "Virtus.pro"
+      },
+      "clutch_analysis": {
+        "team1_avg": 31.8,
+        "team2_avg": 33.4,
+        "advantage": "Virtus.pro",
+        "best_clutchers": {
+          "team1": {
+            "player": "REZ",
+            "rate": 39
+          },
+          "team2": {
+            "player": "electroNic",
+            "rate": 41
+          }
+        }
+      },
+      "pistol_analysis": {
+        "first_pistol": {
+          "team1_wr": 62,
+          "team2_wr": 64,
+          "advantage": "Virtus.pro",
+          "edge": 2
+        },
+        "second_pistol": {
+          "team1_wr": 65,
+          "team2_wr": 68,
+          "advantage": "Virtus.pro",
+          "edge": 3
+        }
+      },
+      "side_analysis": {
+        "ct_advantage": "Virtus.pro",
+        "t_advantage": "Virtus.pro",
+        "ct_edge": 2,
+        "t_edge": 2
+      },
+      "first_map_predictions": [
+        {
+          "map": "Dust2",
+          "recommended_bet": "GamerLegion Map 1 (หาก Dust2 ถูกเล่น)",
+          "win_probability": 0.74,
+          "edge": 31,
+          "confidence": "High"
+        },
+        {
+          "map": "Anubis",
+          "recommended_bet": "GamerLegion Map 1 (หาก Anubis ถูกเล่น)",
+          "win_probability": 0.66,
+          "edge": 27,
+          "confidence": "High"
+        },
+        {
+          "map": "Ancient",
+          "recommended_bet": "Virtus.pro Map 1 (หาก Ancient ถูกเล่น)",
+          "win_probability": 0.71,
+          "edge": 26,
+          "confidence": "High"
+        }
+      ],
+      "profit_opportunities": [
+        {
+          "category": "🗺️ Map Betting",
+          "bet": "GamerLegion Map 1 (หาก Dust2 ถูกเล่น)",
+          "probability": "74.0%",
+          "edge": "31%",
+          "risk": "Medium"
+        },
+        {
+          "category": "🗺️ Map Betting",
+          "bet": "GamerLegion Map 1 (หาก Anubis ถูกเล่น)",
+          "probability": "66.0%",
+          "edge": "27%",
+          "risk": "Medium"
+        },
+        {
+          "category": "👤 Player Performance",
+          "bet": "electroNic MVP (หากมี)",
+          "probability": "88%",
+          "edge": "High carry potential",
+          "risk": "Medium"
+        }
+      ],
+      "true_probabilities": {
+        "team1": 0.33799999999999997,
+        "team2": 0.662
+      },
+      "value_bets": [
+        {
+          "team": "Virtus.pro",
+          "bet_type": "Moneyline",
+          "odds": 1.78,
+          "true_prob": 0.662,
+          "implied_prob": 0.5617977528089888,
+          "edge": 0.10020224719101123,
+          "kelly_fraction": 0.22866666666666674,
+          "expected_value": 0.17836000000000007,
+          "confidence": "High",
+          "match_id": "gamerlegion_virtuspro"
+        }
+      ],
+      "recommendation": {
+        "primary": "Virtus.pro ML @ 1.78 (Kelly: 22.9%)",
+        "secondary": "Over 2.5 Maps @ ~1.85",
+        "strategy": "เดิมพันตาม Kelly Criterion เต็มจำนวน",
+        "risk_assessment": "🟡 ปานกลาง-สูง (คู่ใกล้เคียง คาดเดายาก)"
+      }
+    },
+    {
+      "match_id": "faze_ecstatic",
+      "map_analysis": {
+        "Mirage": {
+          "team1_wr": 79,
+          "team2_wr": 41,
+          "edge": 38,
+          "favorite": "FaZe",
+          "advantage_level": "High"
+        },
+        "Inferno": {
+          "team1_wr": 75,
+          "team2_wr": 38,
+          "edge": 37,
+          "favorite": "FaZe",
+          "advantage_level": "High"
+        },
+        "Dust2": {
+          "team1_wr": 72,
+          "team2_wr": 52,
+          "edge": 20,
+          "favorite": "FaZe",
+          "advantage_level": "Medium"
+        },
+        "Ancient": {
+          "team1_wr": 64,
+          "team2_wr": 63,
+          "edge": 1,
+          "favorite": "FaZe",
+          "advantage_level": "Low"
+        },
+        "Overpass": {
+          "team1_wr": 61,
+          "team2_wr": 58,
+          "edge": 3,
+          "favorite": "FaZe",
+          "advantage_level": "Low"
+        },
+        "Anubis": {
+          "team1_wr": 48,
+          "team2_wr": 71,
+          "edge": -23,
+          "favorite": "ECSTATIC",
+          "advantage_level": "High"
+        },
+        "Vertigo": {
+          "team1_wr": 44,
+          "team2_wr": 67,
+          "edge": -23,
+          "favorite": "ECSTATIC",
+          "advantage_level": "High"
+        }
+      },
+      "carry_analysis": {
+        "team1_top_carry": {
+          "player": "broky",
+          "rating": 8.6
+        },
+        "team2_top_carry": {
+          "player": "jcobbb",
+          "rating": 7.9
+        },
+        "carry_advantage": "FaZe"
+      },
+      "clutch_analysis": {
+        "team1_avg": 37.0,
+        "team2_avg": 30.6,
+        "advantage": "FaZe",
+        "best_clutchers": {
+          "team1": {
+            "player": "ropz",
+            "rate": 43
+          },
+          "team2": {
+            "player": "jcobbb",
+            "rate": 36
+          }
+        }
+      },
+      "pistol_analysis": {
+        "first_pistol": {
+          "team1_wr": 66,
+          "team2_wr": 61,
+          "advantage": "FaZe",
+          "edge": 5
+        },
+        "second_pistol": {
+          "team1_wr": 69,
+          "team2_wr": 64,
+          "advantage": "FaZe",
+          "edge": 5
+        }
+      },
+      "side_analysis": {
+        "ct_advantage": "FaZe",
+        "t_advantage": "FaZe",
+        "ct_edge": 5,
+        "t_edge": 3
+      },
+      "first_map_predictions": [
+        {
+          "map": "Mirage",
+          "recommended_bet": "FaZe Map 1 (หาก Mirage ถูกเล่น)",
+          "win_probability": 0.79,
+          "edge": 38,
+          "confidence": "High"
+        },
+        {
+          "map": "Inferno",
+          "recommended_bet": "FaZe Map 1 (หาก Inferno ถูกเล่น)",
+          "win_probability": 0.75,
+          "edge": 37,
+          "confidence": "High"
+        },
+        {
+          "map": "Anubis",
+          "recommended_bet": "ECSTATIC Map 1 (หาก Anubis ถูกเล่น)",
+          "win_probability": 0.71,
+          "edge": 23,
+          "confidence": "High"
+        }
+      ],
+      "profit_opportunities": [
+        {
+          "category": "🗺️ Map Betting",
+          "bet": "FaZe Map 1 (หาก Mirage ถูกเล่น)",
+          "probability": "79.0%",
+          "edge": "38%",
+          "risk": "Medium"
+        },
+        {
+          "category": "🗺️ Map Betting",
+          "bet": "FaZe Map 1 (หาก Inferno ถูกเล่น)",
+          "probability": "75.0%",
+          "edge": "37%",
+          "risk": "Medium"
+        },
+        {
+          "category": "👤 Player Performance",
+          "bet": "broky MVP (หากมี)",
+          "probability": "86%",
+          "edge": "High carry potential",
+          "risk": "Medium"
+        }
+      ],
+      "true_probabilities": {
+        "team1": 0.9,
+        "team2": 0.09999999999999998
+      },
+      "value_bets": [
+        {
+          "team": "FaZe",
+          "bet_type": "Moneyline",
+          "odds": 1.33,
+          "true_prob": 0.9,
+          "implied_prob": 0.7518796992481203,
+          "edge": 0.14812030075187976,
+          "kelly_fraction": 0.5969696969696972,
+          "expected_value": 0.19700000000000012,
+          "confidence": "High",
+          "match_id": "faze_ecstatic"
+        }
+      ],
+      "recommendation": {
+        "primary": "FaZe ML @ 1.33 (Kelly: 59.7%)",
+        "secondary": "ECSTATIC +1.5 Maps @ ~1.65",
+        "strategy": "เดิมพันตาม Kelly Criterion เต็มจำนวน",
+        "risk_assessment": "🟡 ปานกลาง (FaZe ไม่สม่ำเสมอ, ECSTATIC ฟอร์มดี)"
+      }
+    },
+    {
+      "match_id": "navi_fnatic",
+      "map_analysis": {
+        "Mirage": {
+          "team1_wr": 81,
+          "team2_wr": 39,
+          "edge": 42,
+          "favorite": "Natus Vincere",
+          "advantage_level": "High"
+        },
+        "Dust2": {
+          "team1_wr": 77,
+          "team2_wr": 42,
+          "edge": 35,
+          "favorite": "Natus Vincere",
+          "advantage_level": "High"
+        },
+        "Inferno": {
+          "team1_wr": 74,
+          "team2_wr": 53,
+          "edge": 21,
+          "favorite": "Natus Vincere",
+          "advantage_level": "High"
+        },
+        "Ancient": {
+          "team1_wr": 66,
+          "team2_wr": 69,
+          "edge": -3,
+          "favorite": "fnatic",
+          "advantage_level": "Low"
+        },
+        "Overpass": {
+          "team1_wr": 63,
+          "team2_wr": 65,
+          "edge": -2,
+          "favorite": "fnatic",
+          "advantage_level": "Low"
+        },
+        "Vertigo": {
+          "team1_wr": 47,
+          "team2_wr": 62,
+          "edge": -15,
+          "favorite": "fnatic",
+          "advantage_level": "Medium"
+        },
+        "Anubis": {
+          "team1_wr": 44,
+          "team2_wr": 57,
+          "edge": -13,
+          "favorite": "fnatic",
+          "advantage_level": "Medium"
+        }
+      },
+      "carry_analysis": {
+        "team1_top_carry": {
+          "player": "s1mple",
+          "rating": 9.8
+        },
+        "team2_top_carry": {
+          "player": "nicoodoz",
+          "rating": 7.6
+        },
+        "carry_advantage": "Natus Vincere"
+      },
+      "clutch_analysis": {
+        "team1_avg": 36.2,
+        "team2_avg": 31.0,
+        "advantage": "Natus Vincere",
+        "best_clutchers": {
+          "team1": {
+            "player": "s1mple",
+            "rate": 45
+          },
+          "team2": {
+            "player": "KRIMZ",
+            "rate": 37
+          }
+        }
+      },
+      "pistol_analysis": {
+        "first_pistol": {
+          "team1_wr": 71,
+          "team2_wr": 59,
+          "advantage": "Natus Vincere",
+          "edge": 12
+        },
+        "second_pistol": {
+          "team1_wr": 74,
+          "team2_wr": 62,
+          "advantage": "Natus Vincere",
+          "edge": 12
+        }
+      },
+      "side_analysis": {
+        "ct_advantage": "Natus Vincere",
+        "t_advantage": "Natus Vincere",
+        "ct_edge": 8,
+        "t_edge": 8
+      },
+      "first_map_predictions": [
+        {
+          "map": "Mirage",
+          "recommended_bet": "Natus Vincere Map 1 (หาก Mirage ถูกเล่น)",
+          "win_probability": 0.81,
+          "edge": 42,
+          "confidence": "High"
+        },
+        {
+          "map": "Dust2",
+          "recommended_bet": "Natus Vincere Map 1 (หาก Dust2 ถูกเล่น)",
+          "win_probability": 0.77,
+          "edge": 35,
+          "confidence": "High"
+        },
+        {
+          "map": "Inferno",
+          "recommended_bet": "Natus Vincere Map 1 (หาก Inferno ถูกเล่น)",
+          "win_probability": 0.74,
+          "edge": 21,
+          "confidence": "High"
+        }
+      ],
+      "profit_opportunities": [
+        {
+          "category": "🗺️ Map Betting",
+          "bet": "Natus Vincere Map 1 (หาก Mirage ถูกเล่น)",
+          "probability": "81.0%",
+          "edge": "42%",
+          "risk": "Medium"
+        },
+        {
+          "category": "🗺️ Map Betting",
+          "bet": "Natus Vincere Map 1 (หาก Dust2 ถูกเล่น)",
+          "probability": "77.0%",
+          "edge": "35%",
+          "risk": "Medium"
+        },
+        {
+          "category": "👤 Player Performance",
+          "bet": "s1mple MVP (หากมี)",
+          "probability": "95%",
+          "edge": "High carry potential",
+          "risk": "Medium"
+        },
+        {
+          "category": "🔫 Pistol Rounds",
+          "bet": "Natus Vincere ชนะรอบพิสตอลแรก",
+          "probability": "71%",
+          "edge": "12%",
+          "risk": "High"
+        },
+        {
+          "category": "⚔️ Side Performance",
+          "bet": "Natus Vincere ได้เปรียบฝั่ง CT",
+          "probability": "Situational",
+          "edge": "8%",
+          "risk": "Low"
+        }
+      ],
+      "true_probabilities": {
+        "team1": 0.9,
+        "team2": 0.09999999999999998
+      },
+      "value_bets": [
+        {
+          "team": "Natus Vincere",
+          "bet_type": "Moneyline",
+          "odds": 1.27,
+          "true_prob": 0.9,
+          "implied_prob": 0.7874015748031495,
+          "edge": 0.11259842519685048,
+          "kelly_fraction": 0.5296296296296298,
+          "expected_value": 0.14300000000000004,
+          "confidence": "High",
+          "match_id": "navi_fnatic"
+        }
+      ],
+      "recommendation": {
+        "primary": "Natus Vincere ML @ 1.27 (Kelly: 53.0%)",
+        "secondary": "fnatic +1.5 Maps @ ~1.65",
+        "strategy": "เดิมพันตาม Kelly Criterion เต็มจำนวน",
+        "risk_assessment": "🟢 ต่ำ-ปานกลาง (NAVI เต็งแต่เล่นดึก)"
+      }
+    }
+  ]
+}

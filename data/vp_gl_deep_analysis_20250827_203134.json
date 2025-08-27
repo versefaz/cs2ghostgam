@@ -1,0 +1,171 @@
+{
+  "timestamp": "20250827_203134",
+  "match": "Virtus.pro vs GamerLegion",
+  "tournament": "BLAST Open London 2025",
+  "true_probabilities": {
+    "vp": 0.515891510310236,
+    "gl": 0.48410848968976405
+  },
+  "map_analysis": {
+    "vp_strong_maps": [
+      {
+        "map": "Inferno",
+        "win_rate": 76,
+        "edge": 18,
+        "style": "Banana control"
+      },
+      {
+        "map": "Overpass",
+        "win_rate": 68,
+        "edge": 13,
+        "style": "Monster control"
+      },
+      {
+        "map": "Ancient",
+        "win_rate": 71,
+        "edge": 26,
+        "style": "Mid splits"
+      },
+      {
+        "map": "Vertigo",
+        "win_rate": 62,
+        "edge": 21,
+        "style": "Ramp control"
+      }
+    ],
+    "gl_strong_maps": [
+      {
+        "map": "Dust2",
+        "win_rate": 74,
+        "edge": 31,
+        "style": "Strong CT setups"
+      },
+      {
+        "map": "Mirage",
+        "win_rate": 69,
+        "edge": 13,
+        "style": "Site executes"
+      },
+      {
+        "map": "Anubis",
+        "win_rate": 66,
+        "edge": 27,
+        "style": "Fast rotations"
+      }
+    ],
+    "map_predictions": [
+      {
+        "map": "Dust2",
+        "recommended_bet": "GamerLegion Map 1 (หาก Dust2 ถูกเล่น)",
+        "win_probability": 0.74,
+        "edge": 31,
+        "confidence": "High"
+      },
+      {
+        "map": "Anubis",
+        "recommended_bet": "GamerLegion Map 1 (หาก Anubis ถูกเล่น)",
+        "win_probability": 0.66,
+        "edge": 27,
+        "confidence": "High"
+      },
+      {
+        "map": "Ancient",
+        "recommended_bet": "Virtus.pro Map 1 (หาก Ancient ถูกเล่น)",
+        "win_probability": 0.71,
+        "edge": 26,
+        "confidence": "High"
+      }
+    ]
+  },
+  "player_analysis": {
+    "carry_analysis": {
+      "vp_top_carry": {
+        "player": "electroNic",
+        "rating": 8.8
+      },
+      "gl_top_carry": {
+        "player": "REZ",
+        "rating": 8.4
+      },
+      "advantage": "Virtus.pro"
+    },
+    "clutch_analysis": {
+      "vp_avg": 33.4,
+      "gl_avg": 31.6,
+      "advantage": "Virtus.pro",
+      "best_clutchers": {
+        "vp": {
+          "player": "electroNic",
+          "rate": 41
+        },
+        "gl": {
+          "player": "REZ",
+          "rate": 39
+        }
+      }
+    }
+  },
+  "pistol_analysis": {
+    "first_pistol": {
+      "vp_wr": 62,
+      "gl_wr": 64,
+      "advantage": "GamerLegion",
+      "edge": 2
+    },
+    "second_pistol": {
+      "vp_wr": 65,
+      "gl_wr": 68,
+      "advantage": "GamerLegion",
+      "edge": 3
+    }
+  },
+  "side_analysis": {
+    "ct_advantage": "Virtus.pro",
+    "t_advantage": "Virtus.pro",
+    "ct_edge": 2,
+    "t_edge": 2
+  },
+  "value_bets": {
+    "vp": null,
+    "gl": {
+      "kelly_fraction": 0.016514965756518802,
+      "expected_value": 0.04083325283299266,
+      "edge": 0.01899221061999662,
+      "confidence": "Low"
+    }
+  },
+  "profit_opportunities": [
+    {
+      "category": "🗺️ Map Betting",
+      "bet": "GamerLegion Map 1 (หาก Dust2 ถูกเล่น)",
+      "probability": "74.0%",
+      "edge": "31%",
+      "risk": "Medium"
+    },
+    {
+      "category": "🗺️ Map Betting",
+      "bet": "GamerLegion Map 1 (หาก Anubis ถูกเล่น)",
+      "probability": "66.0%",
+      "edge": "27%",
+      "risk": "Medium"
+    },
+    {
+      "category": "🗺️ Map Betting",
+      "bet": "Virtus.pro Map 1 (หาก Ancient ถูกเล่น)",
+      "probability": "71.0%",
+      "edge": "26%",
+      "risk": "Medium"
+    },
+    {
+      "category": "👤 Player Performance",
+      "bet": "electroNic MVP (หากมี)",
+      "probability": "88%",
+      "edge": "High carry potential",
+      "risk": "Medium"
+    }
+  ],
+  "odds": {
+    "team1": 1.78,
+    "team2": 2.15
+  }
+}
