@@ -186,7 +186,7 @@ class EnhancedTeamAnalyzer:
                 "weaknesses": ["Inconsistent against top-tier teams", "Pressure situations"],
                 "comeback_ability": 42.3,
                 "pressure_performance": 38.1,
-                "average_match_duration": 28.4
+                "avg_match_duration": 28.4
             },
             "Virtus.pro": {
                 "ranking": 15,
@@ -302,7 +302,471 @@ class EnhancedTeamAnalyzer:
                 "weaknesses": ["Inconsistent form", "Struggles vs aggressive teams"],
                 "comeback_ability": 45.7,
                 "pressure_performance": 41.2,
-                "average_match_duration": 32.1
+                "avg_match_duration": 32.1
+            },
+            "ECSTATIC": {
+                "ranking": 36,
+                "recent_form": "good",
+                "win_streak": 2,
+                "players": [
+                    {
+                        "name": "Kristou",
+                        "rating": 1.08,
+                        "kd_ratio": 1.04,
+                        "adr": 72.4,
+                        "kast": 69.8,
+                        "impact": 1.12,
+                        "recent_form": "good",
+                        "maps_played": 35,
+                        "headshot_percentage": 46.2,
+                        "clutch_success_rate": 28.9,
+                        "entry_kill_success": 51.3
+                    },
+                    {
+                        "name": "TMB",
+                        "rating": 1.05,
+                        "kd_ratio": 1.01,
+                        "adr": 69.7,
+                        "kast": 67.4,
+                        "impact": 1.09,
+                        "recent_form": "average",
+                        "maps_played": 33,
+                        "headshot_percentage": 44.8,
+                        "clutch_success_rate": 26.3,
+                        "entry_kill_success": 48.7
+                    },
+                    {
+                        "name": "Anlelele",
+                        "rating": 1.03,
+                        "kd_ratio": 0.99,
+                        "adr": 67.1,
+                        "kast": 65.9,
+                        "impact": 1.06,
+                        "recent_form": "average",
+                        "maps_played": 31,
+                        "headshot_percentage": 43.4,
+                        "clutch_success_rate": 24.7,
+                        "entry_kill_success": 46.2
+                    },
+                    {
+                        "name": "nut nut",
+                        "rating": 1.01,
+                        "kd_ratio": 0.97,
+                        "adr": 65.3,
+                        "kast": 64.2,
+                        "impact": 1.04,
+                        "recent_form": "average",
+                        "maps_played": 29,
+                        "headshot_percentage": 42.1,
+                        "clutch_success_rate": 22.8,
+                        "entry_kill_success": 44.6
+                    },
+                    {
+                        "name": "sirah",
+                        "rating": 0.98,
+                        "kd_ratio": 0.94,
+                        "adr": 62.8,
+                        "kast": 62.7,
+                        "impact": 1.01,
+                        "recent_form": "poor",
+                        "maps_played": 27,
+                        "headshot_percentage": 40.9,
+                        "clutch_success_rate": 21.4,
+                        "entry_kill_success": 42.3
+                    }
+                ],
+                "map_pool": [
+                    {
+                        "map_name": "Vertigo",
+                        "win_rate": 62.8,
+                        "rounds_won_avg": 14.6,
+                        "rounds_lost_avg": 15.4,
+                        "ct_win_rate": 57.2,
+                        "t_win_rate": 59.8,
+                        "pistol_round_win_rate": 58.4,
+                        "force_buy_success": 36.7,
+                        "eco_round_win_rate": 23.1,
+                        "recent_performance": ["W", "W", "L", "W", "L"]
+                    },
+                    {
+                        "map_name": "Overpass",
+                        "win_rate": 58.9,
+                        "rounds_won_avg": 14.3,
+                        "rounds_lost_avg": 15.7,
+                        "ct_win_rate": 54.6,
+                        "t_win_rate": 56.2,
+                        "pistol_round_win_rate": 55.8,
+                        "force_buy_success": 34.2,
+                        "eco_round_win_rate": 21.7,
+                        "recent_performance": ["L", "W", "W", "L", "W"]
+                    },
+                    {
+                        "map_name": "Mirage",
+                        "win_rate": 54.3,
+                        "rounds_won_avg": 13.9,
+                        "rounds_lost_avg": 16.1,
+                        "ct_win_rate": 51.8,
+                        "t_win_rate": 53.4,
+                        "pistol_round_win_rate": 52.6,
+                        "force_buy_success": 31.8,
+                        "eco_round_win_rate": 19.4,
+                        "recent_performance": ["W", "L", "L", "W", "W"]
+                    }
+                ],
+                "tactical_style": "Aggressive T-side with solid defaults",
+                "strengths": ["Strong Vertigo/Overpass", "Good teamwork", "Upset potential"],
+                "weaknesses": ["Inconsistent against tier 1", "Limited map pool"],
+                "comeback_ability": 38.7,
+                "pressure_performance": 34.2,
+                "avg_match_duration": 29.8
+            },
+            "FaZe": {
+                "ranking": 9,
+                "recent_form": "good",
+                "win_streak": 3,
+                "players": [
+                    {
+                        "name": "karrigan",
+                        "rating": 1.06,
+                        "kd_ratio": 1.02,
+                        "adr": 71.3,
+                        "kast": 68.9,
+                        "impact": 1.11,
+                        "recent_form": "good",
+                        "maps_played": 46,
+                        "headshot_percentage": 45.7,
+                        "clutch_success_rate": 29.4,
+                        "entry_kill_success": 49.8
+                    },
+                    {
+                        "name": "rain",
+                        "rating": 1.11,
+                        "kd_ratio": 1.07,
+                        "adr": 74.8,
+                        "kast": 71.2,
+                        "impact": 1.16,
+                        "recent_form": "good",
+                        "maps_played": 44,
+                        "headshot_percentage": 47.3,
+                        "clutch_success_rate": 31.7,
+                        "entry_kill_success": 53.2
+                    },
+                    {
+                        "name": "frozen",
+                        "rating": 1.14,
+                        "kd_ratio": 1.10,
+                        "adr": 76.9,
+                        "kast": 72.8,
+                        "impact": 1.19,
+                        "recent_form": "excellent",
+                        "maps_played": 42,
+                        "headshot_percentage": 48.9,
+                        "clutch_success_rate": 33.1,
+                        "entry_kill_success": 55.6
+                    },
+                    {
+                        "name": "broky",
+                        "rating": 1.17,
+                        "kd_ratio": 1.13,
+                        "adr": 78.4,
+                        "kast": 74.1,
+                        "impact": 1.22,
+                        "recent_form": "excellent",
+                        "maps_played": 45,
+                        "headshot_percentage": 51.2,
+                        "clutch_success_rate": 35.8,
+                        "entry_kill_success": 58.3
+                    },
+                    {
+                        "name": "jcobbb",
+                        "rating": 1.09,
+                        "kd_ratio": 1.05,
+                        "adr": 73.6,
+                        "kast": 70.4,
+                        "impact": 1.13,
+                        "recent_form": "good",
+                        "maps_played": 28,
+                        "headshot_percentage": 46.8,
+                        "clutch_success_rate": 28.9,
+                        "entry_kill_success": 51.7
+                    }
+                ],
+                "map_pool": [
+                    {
+                        "map_name": "Inferno",
+                        "win_rate": 71.4,
+                        "rounds_won_avg": 15.6,
+                        "rounds_lost_avg": 14.4,
+                        "ct_win_rate": 66.2,
+                        "t_win_rate": 68.9,
+                        "pistol_round_win_rate": 67.3,
+                        "force_buy_success": 43.8,
+                        "eco_round_win_rate": 28.4,
+                        "recent_performance": ["W", "W", "W", "L", "W"]
+                    },
+                    {
+                        "map_name": "Mirage",
+                        "win_rate": 68.7,
+                        "rounds_won_avg": 15.3,
+                        "rounds_lost_avg": 14.7,
+                        "ct_win_rate": 63.8,
+                        "t_win_rate": 66.1,
+                        "pistol_round_win_rate": 64.9,
+                        "force_buy_success": 41.2,
+                        "eco_round_win_rate": 26.7,
+                        "recent_performance": ["W", "L", "W", "W", "W"]
+                    },
+                    {
+                        "map_name": "Ancient",
+                        "win_rate": 65.3,
+                        "rounds_won_avg": 15.0,
+                        "rounds_lost_avg": 15.0,
+                        "ct_win_rate": 61.4,
+                        "t_win_rate": 63.7,
+                        "pistol_round_win_rate": 62.1,
+                        "force_buy_success": 39.6,
+                        "eco_round_win_rate": 25.3,
+                        "recent_performance": ["W", "W", "L", "W", "L"]
+                    }
+                ],
+                "tactical_style": "Structured with individual skill peaks",
+                "strengths": ["broky's AWP", "karrigan's leadership", "jcobbb debut factor"],
+                "weaknesses": ["New roster chemistry", "Pressure situations"],
+                "comeback_ability": 47.8,
+                "pressure_performance": 43.6,
+                "avg_match_duration": 31.2
+            },
+            "NAVI": {
+                "ranking": 6,
+                "recent_form": "average",
+                "win_streak": 2,
+                "players": [
+                    {
+                        "name": "Aleksib",
+                        "rating": 1.07,
+                        "kd_ratio": 1.03,
+                        "adr": 72.8,
+                        "kast": 70.1,
+                        "impact": 1.12,
+                        "recent_form": "good",
+                        "maps_played": 43,
+                        "headshot_percentage": 46.4,
+                        "clutch_success_rate": 30.2,
+                        "entry_kill_success": 50.7
+                    },
+                    {
+                        "name": "iM",
+                        "rating": 1.13,
+                        "kd_ratio": 1.09,
+                        "adr": 76.2,
+                        "kast": 73.4,
+                        "impact": 1.18,
+                        "recent_form": "excellent",
+                        "maps_played": 41,
+                        "headshot_percentage": 48.7,
+                        "clutch_success_rate": 32.8,
+                        "entry_kill_success": 54.9
+                    },
+                    {
+                        "name": "b1t",
+                        "rating": 1.16,
+                        "kd_ratio": 1.12,
+                        "adr": 78.9,
+                        "kast": 75.2,
+                        "impact": 1.21,
+                        "recent_form": "excellent",
+                        "maps_played": 45,
+                        "headshot_percentage": 50.3,
+                        "clutch_success_rate": 34.7,
+                        "entry_kill_success": 57.1
+                    },
+                    {
+                        "name": "w0nderful",
+                        "rating": 1.19,
+                        "kd_ratio": 1.15,
+                        "adr": 81.4,
+                        "kast": 76.8,
+                        "impact": 1.24,
+                        "recent_form": "excellent",
+                        "maps_played": 42,
+                        "headshot_percentage": 52.1,
+                        "clutch_success_rate": 36.9,
+                        "entry_kill_success": 59.3
+                    },
+                    {
+                        "name": "makazze",
+                        "rating": 1.04,
+                        "kd_ratio": 1.00,
+                        "adr": 69.7,
+                        "kast": 67.9,
+                        "impact": 1.08,
+                        "recent_form": "average",
+                        "maps_played": 38,
+                        "headshot_percentage": 44.8,
+                        "clutch_success_rate": 27.4,
+                        "entry_kill_success": 47.6
+                    }
+                ],
+                "map_pool": [
+                    {
+                        "map_name": "Dust2",
+                        "win_rate": 73.8,
+                        "rounds_won_avg": 15.7,
+                        "rounds_lost_avg": 14.3,
+                        "ct_win_rate": 68.4,
+                        "t_win_rate": 70.2,
+                        "pistol_round_win_rate": 69.1,
+                        "force_buy_success": 44.7,
+                        "eco_round_win_rate": 29.3,
+                        "recent_performance": ["W", "W", "W", "L", "W"]
+                    },
+                    {
+                        "map_name": "Mirage",
+                        "win_rate": 69.2,
+                        "rounds_won_avg": 15.4,
+                        "rounds_lost_avg": 14.6,
+                        "ct_win_rate": 64.7,
+                        "t_win_rate": 66.8,
+                        "pistol_round_win_rate": 65.9,
+                        "force_buy_success": 42.1,
+                        "eco_round_win_rate": 27.8,
+                        "recent_performance": ["W", "L", "W", "W", "W"]
+                    },
+                    {
+                        "map_name": "Inferno",
+                        "win_rate": 66.4,
+                        "rounds_won_avg": 15.1,
+                        "rounds_lost_avg": 14.9,
+                        "ct_win_rate": 61.8,
+                        "t_win_rate": 64.3,
+                        "pistol_round_win_rate": 63.2,
+                        "force_buy_success": 40.6,
+                        "eco_round_win_rate": 26.1,
+                        "recent_performance": ["W", "W", "L", "W", "L"]
+                    }
+                ],
+                "tactical_style": "Individual skill with tactical depth",
+                "strengths": ["w0nderful's star power", "b1t's consistency", "Strong Dust2"],
+                "weaknesses": ["Inconsistent team coordination", "Pressure in big matches"],
+                "comeback_ability": 52.3,
+                "pressure_performance": 46.8,
+                "average_match_duration": 30.7
+            },
+            "Fnatic": {
+                "ranking": 34,
+                "recent_form": "average",
+                "win_streak": 1,
+                "players": [
+                    {
+                        "name": "KRIMZ",
+                        "rating": 1.05,
+                        "kd_ratio": 1.01,
+                        "adr": 70.4,
+                        "kast": 68.7,
+                        "impact": 1.09,
+                        "recent_form": "good",
+                        "maps_played": 39,
+                        "headshot_percentage": 45.3,
+                        "clutch_success_rate": 28.7,
+                        "entry_kill_success": 48.9
+                    },
+                    {
+                        "name": "blameF",
+                        "rating": 1.08,
+                        "kd_ratio": 1.04,
+                        "adr": 73.1,
+                        "kast": 70.2,
+                        "impact": 1.12,
+                        "recent_form": "good",
+                        "maps_played": 37,
+                        "headshot_percentage": 46.8,
+                        "clutch_success_rate": 30.4,
+                        "entry_kill_success": 51.6
+                    },
+                    {
+                        "name": "fear",
+                        "rating": 1.02,
+                        "kd_ratio": 0.98,
+                        "adr": 67.8,
+                        "kast": 66.4,
+                        "impact": 1.06,
+                        "recent_form": "average",
+                        "maps_played": 35,
+                        "headshot_percentage": 43.7,
+                        "clutch_success_rate": 26.1,
+                        "entry_kill_success": 46.3
+                    },
+                    {
+                        "name": "CYPHER",
+                        "rating": 1.01,
+                        "kd_ratio": 0.97,
+                        "adr": 66.2,
+                        "kast": 65.1,
+                        "impact": 1.04,
+                        "recent_form": "average",
+                        "maps_played": 33,
+                        "headshot_percentage": 42.4,
+                        "clutch_success_rate": 24.8,
+                        "entry_kill_success": 44.7
+                    },
+                    {
+                        "name": "jambo",
+                        "rating": 0.96,
+                        "kd_ratio": 0.92,
+                        "adr": 63.5,
+                        "kast": 62.8,
+                        "impact": 1.00,
+                        "recent_form": "poor",
+                        "maps_played": 31,
+                        "headshot_percentage": 40.9,
+                        "clutch_success_rate": 22.3,
+                        "entry_kill_success": 41.8
+                    }
+                ],
+                "map_pool": [
+                    {
+                        "map_name": "Cache",
+                        "win_rate": 59.7,
+                        "rounds_won_avg": 14.4,
+                        "rounds_lost_avg": 15.6,
+                        "ct_win_rate": 55.2,
+                        "t_win_rate": 57.8,
+                        "pistol_round_win_rate": 56.4,
+                        "force_buy_success": 35.1,
+                        "eco_round_win_rate": 22.7,
+                        "recent_performance": ["W", "L", "W", "L", "L"]
+                    },
+                    {
+                        "map_name": "Inferno",
+                        "win_rate": 56.3,
+                        "rounds_won_avg": 14.1,
+                        "rounds_lost_avg": 15.9,
+                        "ct_win_rate": 52.7,
+                        "t_win_rate": 54.9,
+                        "pistol_round_win_rate": 53.8,
+                        "force_buy_success": 33.4,
+                        "eco_round_win_rate": 21.2,
+                        "recent_performance": ["L", "W", "L", "W", "W"]
+                    },
+                    {
+                        "map_name": "Mirage",
+                        "win_rate": 52.8,
+                        "rounds_won_avg": 13.8,
+                        "rounds_lost_avg": 16.2,
+                        "ct_win_rate": 49.6,
+                        "t_win_rate": 51.4,
+                        "pistol_round_win_rate": 50.7,
+                        "force_buy_success": 31.2,
+                        "eco_round_win_rate": 19.8,
+                        "recent_performance": ["L", "L", "W", "L", "W"]
+                    }
+                ],
+                "tactical_style": "Traditional with veteran experience",
+                "strengths": ["KRIMZ experience", "blameF leadership", "Upset potential"],
+                "weaknesses": ["Lower individual skill", "Inconsistent performance"],
+                "comeback_ability": 41.2,
+                "pressure_performance": 37.8,
+                "average_match_duration": 32.4
             },
             "Vitality": {
                 "ranking": 1,
