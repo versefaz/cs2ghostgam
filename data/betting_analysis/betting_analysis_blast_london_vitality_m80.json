@@ -1,0 +1,28 @@
+{
+  "match_id": "blast_london_vitality_m80",
+  "analysis_time": "2025-08-27T17:28:18.073678",
+  "recommendations": [
+    {
+      "bet_type": "match_winner",
+      "selection": "M80",
+      "odds": 8.5,
+      "win_probability": 0.35612321562734783,
+      "expected_value": 2.0270473328324567,
+      "confidence_level": "HIGH",
+      "reasoning": "M80 shows 202.7% positive expected value based on recent form and historical performance",
+      "risk_level": "MEDIUM",
+      "stake_recommendation": 0.05
+    },
+    {
+      "bet_type": "first_map",
+      "selection": "Vitality first map",
+      "odds": 1.79,
+      "win_probability": 0.609375,
+      "expected_value": 0.09078125000000004,
+      "confidence_level": "LOW",
+      "reasoning": "Vitality has strong map win rate (78.0%) and good recent form",
+      "risk_level": "HIGH",
+      "stake_recommendation": 0.013617187500000004
+    }
+  ]
+}

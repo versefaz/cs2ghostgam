@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-08-27T16:34:22.553746",
+  "matches": [
+    {
+      "match_id": "blast_london_004",
+      "team1": "Natus Vincere",
+      "team2": "fnatic",
+      "scheduled_time": "00:30",
+      "event": "BLAST Open London 2025",
+      "odds": "1.22 / 4.20",
+      "predicted_winner": "Natus Vincere",
+      "confidence": "72.1%",
+      "reasoning": "Natus Vincere heavily favored by bookmakers (odds 1.26). Natus Vincere is a top-tier team with consistent performance. BLAST Open London is a high-stakes tournament.",
+      "odds_team1": 1.22,
+      "odds_team2": 4.2,
+      "real_odds_data": [
+        

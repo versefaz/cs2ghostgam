@@ -1,0 +1,39 @@
+{
+  "match_id": "blast_london_faze_ecstatic",
+  "analysis_time": "2025-08-27T17:28:18.074438",
+  "recommendations": [
+    {
+      "bet_type": "match_winner",
+      "selection": "ECSTATIC",
+      "odds": 3.65,
+      "win_probability": 0.4023166023166024,
+      "expected_value": 0.4684555984555987,
+      "confidence_level": "HIGH",
+      "reasoning": "ECSTATIC shows 46.8% positive expected value based on recent form and historical performance",
+      "risk_level": "MEDIUM",
+      "stake_recommendation": 0.05
+    },
+    {
+      "bet_type": "first_map",
+      "selection": "FaZe first map",
+      "odds": 1.93,
+      "win_probability": 0.5669291338582677,
+      "expected_value": 0.0941732283464567,
+      "confidence_level": "LOW",
+      "reasoning": "FaZe has strong map win rate (72.0%) and good recent form",
+      "risk_level": "HIGH",
+      "stake_recommendation": 0.014125984251968503
+    },
+    {
+      "bet_type": "handicap",
+      "selection": "FaZe -1.5",
+      "odds": 1.85,
+      "win_probability": 0.5780000000000001,
+      "expected_value": 0.06930000000000014,
+      "confidence_level": "MEDIUM",
+      "reasoning": "FaZe has strong handicap performance (68.0%) and form advantage",
+      "risk_level": "HIGH",
+      "stake_recommendation": 0.013860000000000029
+    }
+  ]
+}

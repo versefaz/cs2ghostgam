@@ -1,0 +1,17 @@
+{
+  "match_id": "blast_london_gamerlegion_virtus.pro",
+  "analysis_time": "2025-08-27T17:28:18.074093",
+  "recommendations": [
+    {
+      "bet_type": "first_map",
+      "selection": "GamerLegion first map",
+      "odds": 2.39,
+      "win_probability": 0.46874999999999994,
+      "expected_value": 0.12031249999999982,
+      "confidence_level": "MEDIUM",
+      "reasoning": "GamerLegion has strong map win rate (60.0%) and good recent form",
+      "risk_level": "HIGH",
+      "stake_recommendation": 0.018046874999999973
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "match_id": "blast_london_natus vincere_fnatic",
+  "analysis_time": "2025-08-27T17:28:18.073049",
+  "recommendations": [
+    {
+      "bet_type": "match_winner",
+      "selection": "fnatic",
+      "odds": 4.2,
+      "win_probability": 0.4401650618982118,
+      "expected_value": 0.8486932599724897,
+      "confidence_level": "HIGH",
+      "reasoning": "fnatic shows 84.9% positive expected value based on recent form and historical performance",
+      "risk_level": "MEDIUM",
+      "stake_recommendation": 0.05
+    },
+    {
+      "bet_type": "first_map",
+      "selection": "Natus Vincere first map",
+      "odds": 2.06,
+      "win_probability": 0.5357142857142857,
+      "expected_value": 0.10357142857142865,
+      "confidence_level": "MEDIUM",
+      "reasoning": "Natus Vincere has strong map win rate (75.0%) and good recent form",
+      "risk_level": "HIGH",
+      "stake_recommendation": 0.015535714285714297
+    },
+    {
+      "bet_type": "handicap",
+      "selection": "Natus Vincere -1.5",
+      "odds": 1.75,
+      "win_probability": 0.595,
+      "expected_value": 0.04125000000000001,
+      "confidence_level": "LOW",
+      "reasoning": "Natus Vincere has strong handicap performance (70.0%) and form advantage",
+      "risk_level": "HIGH",
+      "stake_recommendation": 0.008250000000000002
+    }
+  ]
+}

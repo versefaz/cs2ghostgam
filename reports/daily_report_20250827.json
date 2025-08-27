@@ -1,13 +1,21 @@
 {
   "daily_performance": {
     "date": "2025-08-27",
-    "matches_analyzed": 4,
-    "predictions_made": 4,
-    "correct_predictions": 3,
+    "matches_analyzed": 8,
+    "predictions_made": 8,
+    "correct_predictions": 6,
     "daily_accuracy": 75.0,
-    "daily_profit_loss": 185.0,
+    "daily_profit_loss": 370.0,
     "daily_roi": 0.0,
     "top_matches": [
+      {
+        "teams": "Cloud9 vs Liquid",
+        "predicted_winner": "Liquid",
+        "actual_winner": "Liquid",
+        "confidence": 0.91,
+        "correct": true,
+        "profit_loss": 110.00000000000001
+      },
       {
         "teams": "Cloud9 vs Liquid",
         "predicted_winner": "Liquid",
@@ -25,36 +33,36 @@
         "profit_loss": 89.99999999999999
       },
       {
+        "teams": "Astralis vs G2 Esports",
+        "predicted_winner": "Astralis",
+        "actual_winner": "Astralis",
+        "confidence": 0.82,
+        "correct": true,
+        "profit_loss": 89.99999999999999
+      },
+      {
         "teams": "Natus Vincere vs FaZe Clan",
         "predicted_winner": "Natus Vincere",
         "actual_winner": "Natus Vincere",
         "confidence": 0.75,
         "correct": true,
         "profit_loss": 85.00000000000001
-      },
-      {
-        "teams": "ENCE vs Vitality",
-        "predicted_winner": "Vitality",
-        "actual_winner": "ENCE",
-        "confidence": 0.68,
-        "correct": false,
-        "profit_loss": -100.0
       }
     ]
   },
   "overall_performance": {
-    "total_predictions": 4,
-    "correct_predictions": 3,
+    "total_predictions": 8,
+    "correct_predictions": 6,
     "accuracy_rate": 75.0,
-    "total_profit_loss": 185.0,
-    "total_bet_amount": 400.0,
+    "total_profit_loss": 370.0,
+    "total_bet_amount": 800.0,
     "roi": 46.25,
     "win_rate": 75.0,
     "average_confidence": 0.79,
-    "best_streak": 2,
+    "best_streak": 3,
     "current_streak": 1,
-    "last_updated": "2025-08-27T08:55:55.341943"
+    "last_updated": "2025-08-27T08:59:00.371701"
   },
   "active_matches": 0,
-  "report_generated_at": "2025-08-27T08:55:55.350823"
+  "report_generated_at": "2025-08-27T08:59:00.383289"
 }
