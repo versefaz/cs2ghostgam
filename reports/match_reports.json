@@ -1,0 +1,100 @@
+{
+  "completed_reports": [
+    {
+      "match_id": "test_match_001",
+      "timestamp": "2025-08-27T08:55:50.184527",
+      "team1": "Natus Vincere",
+      "team2": "FaZe Clan",
+      "predicted_winner": "Natus Vincere",
+      "actual_winner": "Natus Vincere",
+      "confidence": 0.75,
+      "odds_team1": 1.85,
+      "odds_team2": 2.15,
+      "prediction_correct": true,
+      "profit_loss": 85.00000000000001,
+      "bet_amount": 100.0,
+      "roi": 85.00000000000001,
+      "match_status": "completed",
+      "event_name": "Test Tournament",
+      "map_predictions": {
+        "dust2": 0.8,
+        "mirage": 0.7
+      },
+      "market_analysis": {
+        "volume": "high",
+        "trend": "stable"
+      }
+    },
+    {
+      "match_id": "sim_001",
+      "timestamp": "2025-08-27T08:55:55.332813",
+      "team1": "Astralis",
+      "team2": "G2 Esports",
+      "predicted_winner": "Astralis",
+      "actual_winner": "Astralis",
+      "confidence": 0.82,
+      "odds_team1": 1.9,
+      "odds_team2": 2.1,
+      "prediction_correct": true,
+      "profit_loss": 89.99999999999999,
+      "bet_amount": 100.0,
+      "roi": 89.99999999999999,
+      "match_status": "completed",
+      "event_name": "Simulation Tournament",
+      "map_predictions": null,
+      "market_analysis": null
+    },
+    {
+      "match_id": "sim_002",
+      "timestamp": "2025-08-27T08:55:55.337717",
+      "team1": "ENCE",
+      "team2": "Vitality",
+      "predicted_winner": "Vitality",
+      "actual_winner": "ENCE",
+      "confidence": 0.68,
+      "odds_team1": 1.9,
+      "odds_team2": 2.1,
+      "prediction_correct": false,
+      "profit_loss": -100.0,
+      "bet_amount": 100.0,
+      "roi": -100.0,
+      "match_status": "completed",
+      "event_name": "Simulation Tournament",
+      "map_predictions": null,
+      "market_analysis": null
+    },
+    {
+      "match_id": "sim_003",
+      "timestamp": "2025-08-27T08:55:55.341534",
+      "team1": "Cloud9",
+      "team2": "Liquid",
+      "predicted_winner": "Liquid",
+      "actual_winner": "Liquid",
+      "confidence": 0.91,
+      "odds_team1": 1.9,
+      "odds_team2": 2.1,
+      "prediction_correct": true,
+      "profit_loss": 110.00000000000001,
+      "bet_amount": 100.0,
+      "roi": 110.00000000000001,
+      "match_status": "completed",
+      "event_name": "Simulation Tournament",
+      "map_predictions": null,
+      "market_analysis": null
+    }
+  ],
+  "performance_metrics": {
+    "total_predictions": 4,
+    "correct_predictions": 3,
+    "accuracy_rate": 75.0,
+    "total_profit_loss": 185.0,
+    "total_bet_amount": 400.0,
+    "roi": 46.25,
+    "win_rate": 75.0,
+    "average_confidence": 0.79,
+    "best_streak": 2,
+    "current_streak": 1,
+    "last_updated": "2025-08-27T08:55:55.341943"
+  },
+  "generated_at": "2025-08-27T08:55:55.342380"
+}

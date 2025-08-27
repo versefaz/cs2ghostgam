@@ -1,0 +1,35 @@
+{
+  "test_run_id": "test_20250827_085548",
+  "start_time": "2025-08-27T08:55:48.688439",
+  "end_time": "2025-08-27T08:55:55.362345",
+  "duration_seconds": 6.673906,
+  "total_tests": 6,
+  "passed_tests": 6,
+  "success_rate": 100.0,
+  "test_results": {
+    "Core Components Test": {
+      "status": "PASS",
+      "details": true
+    },
+    "Reporter System Test": {
+      "status": "PASS",
+      "details": true
+    },
+    "Pipeline Integration Test": {
+      "status": "PASS",
+      "details": true
+    },
+    "Mock Match Simulation": {
+      "status": "PASS",
+      "details": true
+    },
+    "Performance Metrics Test": {
+      "status": "PASS",
+      "details": true
+    },
+    "System Cleanup Test": {
+      "status": "PASS",
+      "details": true
+    }
+  }
+}

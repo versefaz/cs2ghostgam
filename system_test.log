@@ -1,0 +1,53 @@
+2025-08-27 15:55:48,688 - __main__ - INFO - ============================================================
+2025-08-27 15:55:48,688 - __main__ - INFO - STARTING COMPLETE CS2 BETTING SYSTEM TEST
+2025-08-27 15:55:48,689 - __main__ - INFO - ============================================================
+2025-08-27 15:55:50,170 - core.integrated_pipeline - WARNING - CS2 prediction model not available, using fallback
+2025-08-27 15:55:50,179 - core.pubsub.publisher - WARNING - Redis disabled via flag; using NullPublisher
+2025-08-27 15:55:50,184 - core.match_reporter - INFO - Created match report: Natus Vincere vs FaZe Clan (ID: test_match_001)
+2025-08-27 15:55:50,186 - core.match_reporter - INFO - Performance metrics updated: 100.0% accuracy, 85.0% ROI
+2025-08-27 15:55:50,186 - core.match_reporter - INFO - Match completed: Natus Vincere vs FaZe Clan, Winner: Natus Vincere
+2025-08-27 15:55:50,194 - core.match_reporter - INFO - Daily report generated: 1 matches, 100.0% accuracy
+2025-08-27 15:55:50,201 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:55:50,201 - core.utils.timing - INFO - Pipeline startup initiated
+2025-08-27 15:55:50,201 - core.pubsub.publisher - WARNING - Redis disabled via flag; using NullPublisher
+2025-08-27 15:55:50,204 - core.integrated_pipeline - INFO - Created default CS2 prediction model
+2025-08-27 15:55:50,204 - core.integrated_pipeline - INFO - Started 5 background tasks
+2025-08-27 15:55:50,205 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:55:50,206 - core.integrated_pipeline - INFO - [MATCH] Monitoring CS2 matches...
+2025-08-27 15:55:50,207 - core.utils.timing - INFO - Startup delay: 3.5 seconds
+2025-08-27 15:55:50,207 - core.integrated_pipeline - INFO - [ODDS] Scraping odds from bookmakers...
+2025-08-27 15:55:50,207 - core.integrated_pipeline - INFO - [ODDS] Scraped odds from 3 sources: 1xBet, Unikrn, GG.BET
+2025-08-27 15:55:50,207 - core.integrated_pipeline - INFO - [ODDS] Unikrn: 4.24 vs 2.52
+2025-08-27 15:55:50,207 - core.integrated_pipeline - INFO - [ODDS] Unikrn: 3.61 vs 1.69
+2025-08-27 15:55:50,207 - core.integrated_pipeline - INFO - [SIGNAL] Generating betting signals...
+2025-08-27 15:55:50,207 - core.integrated_pipeline - INFO - [SIGNAL] Generated 2 high-confidence betting signals
+2025-08-27 15:55:50,208 - core.integrated_pipeline - INFO - [METRICS] Reporting system metrics...
+2025-08-27 15:55:50,208 - core.integrated_pipeline - INFO - [METRICS] System metrics: {'pipeline_status': 'running', 'publisher_mode': 'null', 'model_loaded': True, 'feature_engine_ready': True, 'uptime_minutes': 5}
+2025-08-27 15:55:50,208 - core.integrated_pipeline - INFO - [REPORTER] Generating performance reports...
+2025-08-27 15:55:50,209 - core.match_reporter - INFO - Daily report generated: 1 matches, 100.0% accuracy
+2025-08-27 15:55:50,210 - core.integrated_pipeline - INFO - [REPORTER] Performance Summary: 100.0% accuracy, 85.0% ROI, 0 active matches
+2025-08-27 15:55:53,731 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:55:55,326 - core.session.session_manager - INFO - SessionManager closed all sessions
+2025-08-27 15:55:55,326 - core.integrated_pipeline - INFO - Pipeline stopped and cleaned up
+2025-08-27 15:55:55,332 - core.match_reporter - INFO - Created match report: Astralis vs G2 Esports (ID: sim_001)
+2025-08-27 15:55:55,333 - core.match_reporter - INFO - Performance metrics updated: 100.0% accuracy, 87.5% ROI
+2025-08-27 15:55:55,333 - core.match_reporter - INFO - Match completed: Astralis vs G2 Esports, Winner: Astralis
+2025-08-27 15:55:55,337 - core.match_reporter - INFO - Created match report: ENCE vs Vitality (ID: sim_002)
+2025-08-27 15:55:55,338 - core.match_reporter - INFO - Performance metrics updated: 66.7% accuracy, 25.0% ROI
+2025-08-27 15:55:55,338 - core.match_reporter - INFO - Match completed: ENCE vs Vitality, Winner: ENCE
+2025-08-27 15:55:55,341 - core.match_reporter - INFO - Created match report: Cloud9 vs Liquid (ID: sim_003)
+2025-08-27 15:55:55,341 - core.match_reporter - INFO - Performance metrics updated: 75.0% accuracy, 46.2% ROI
+2025-08-27 15:55:55,342 - core.match_reporter - INFO - Match completed: Cloud9 vs Liquid, Winner: Liquid
+2025-08-27 15:55:55,351 - core.match_reporter - INFO - Daily report generated: 4 matches, 75.0% accuracy
+2025-08-27 15:55:55,357 - core.session.session_manager - INFO - SessionManager closed all sessions
+2025-08-27 15:55:55,362 - __main__ - INFO - 
+============================================================
+2025-08-27 15:55:55,362 - __main__ - INFO - SYSTEM TEST RESULTS SUMMARY
+2025-08-27 15:55:55,362 - __main__ - INFO - ============================================================
+2025-08-27 15:55:55,362 - __main__ - INFO - Total Tests: 6
+2025-08-27 15:55:55,362 - __main__ - INFO - Passed: 6
+2025-08-27 15:55:55,362 - __main__ - INFO - Failed: 0
+2025-08-27 15:55:55,362 - __main__ - INFO - Success Rate: 100.0%
+2025-08-27 15:55:55,362 - __main__ - INFO - Duration: 6.67 seconds
+2025-08-27 15:55:55,362 - __main__ - INFO - 
+Detailed Results:

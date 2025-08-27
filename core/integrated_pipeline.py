@@ -21,6 +21,7 @@ from core.ml.feature_engineer import FeatureEngineer, load_feature_config
 from core.pubsub.publisher import get_publisher
 from core.session.session_manager import session_manager
 from core.utils.timing import log_startup_delay
+from core.match_reporter import get_reporter
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +76,7 @@ class IntegratedPipeline:
         self.hltv_scraper = None
         self.odds_scraper = None
         self.signal_generator = None
+        self.reporter = None
     
     async def start(self):
         if self._started:
@@ -98,12 +100,15 @@ class IntegratedPipeline:
                 self.fe = FeatureEngineer(config=feature_cfg)
                 # 3) Model
                 self.model = await self._load_model()
-                # 4) Start background tasks exactly once
+                # 4) Reporter
+                self.reporter = get_reporter()
+                # 5) Start background tasks exactly once
                 self._bg_tasks = {
                     asyncio.create_task(self._monitor_matches()),
                     asyncio.create_task(self._scrape_odds()),
                     asyncio.create_task(self._generate_signals()),
                     asyncio.create_task(self._metrics_loop()),
+                    asyncio.create_task(self._reporting_loop()),
                 }
                 self.logger.info("Started %d background tasks", len(self._bg_tasks))
                 self._started = True
@@ -188,6 +193,10 @@ class IntegratedPipeline:
                                     match.get('team1', 'TBD'), 
                                     match.get('team2', 'TBD'),
                                     match.get('time', 'TBD'))
+                                
+                                # Create match reports for new matches
+                                if self.reporter:
+                                    await self.reporter.create_match_report(match)
                         else:
                             self.logger.info("[MATCH] No upcoming matches found")
                             
@@ -278,6 +287,42 @@ class IntegratedPipeline:
                 await asyncio.sleep(300)  # 5 minutes
             except Exception as e:
                 self.logger.error(f"Error in metrics: {e}")
+                await asyncio.sleep(300)
+    
+    async def _reporting_loop(self):
+        """Background task for generating reports and analytics"""
+        while self._started:
+            try:
+                self.logger.info("[REPORTER] Generating performance reports...")
+                
+                if self.reporter:
+                    # Generate daily report
+                    daily_report = await self.reporter.generate_daily_report()
+                    
+                    # Get performance summary
+                    performance = await self.reporter.get_performance_summary()
+                    
+                    self.logger.info("[REPORTER] Performance Summary: %s accuracy, %s ROI, %d active matches",
+                                   performance.get('accuracy_rate', '0%'),
+                                   performance.get('roi', '0%'),
+                                   performance.get('active_matches', 0))
+                    
+                    # Cleanup old reports weekly
+                    import time
+                    if int(time.time()) % (7 * 24 * 3600) < 300:  # Once per week
+                        await self.reporter.cleanup_old_reports(days_to_keep=30)
+                        self.logger.info("[REPORTER] Cleaned up old reports")
+                    
+                    # Publish performance metrics to Redis
+                    await self.publisher.publish("cs2_performance", {
+                        "performance_summary": performance,
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "publisher_mode": self.publisher.mode
+                    })
+                
+                await asyncio.sleep(1800)  # 30 minutes
+            except Exception as e:
+                self.logger.error(f"Error in reporting: {e}")
                 await asyncio.sleep(300)
     
     
