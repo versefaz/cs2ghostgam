@@ -1,0 +1,178 @@
+{
+  "timestamp": "20250827_194433",
+  "tournament": "BLAST Open London 2025",
+  "analysis_type": "targeted_matches",
+  "matches_analyzed": 4,
+  "analyses": [
+    {
+      "match_info": {
+        "teams": "Vitality vs M80",
+        "time": "LIVE",
+        "status": "live",
+        "tournament": "BLAST Open London 2025"
+      },
+      "odds_analysis": {
+        "favorite": "Vitality",
+        "underdog": "M80",
+        "odds": {
+          "team1": 1.16,
+          "team2": 4.9
+        },
+        "implied_probability": {
+          "Vitality": 86.2,
+          "M80": 20.4
+        }
+      },
+      "quick_assessment": {
+        "team1_strengths": [
+          "ZywOo superstar",
+          "Strong T-side",
+          "Experience"
+        ],
+        "team2_strengths": [
+          "Upset potential",
+          "Young talent",
+          "Aggressive style"
+        ],
+        "key_factors": [
+          "🔴 แมตช์กำลังแข่งอยู่",
+          "📊 ต่างกันมาก - มีโอกาสอัปเซ็ต"
+        ],
+        "prediction_confidence": "🟢 สูง - เต็งชัดเจน"
+      },
+      "betting_recommendation": {
+        "primary_bet": "🎯 Vitality ML (ราคาต่ำแต่ปลอดภัย)",
+        "alternative_bet": "💰 M80 +1.5 Maps (value bet)",
+        "stake_suggestion": "เดิมพันปานกลาง",
+        "risk_level": "🟢 ต่ำ"
+      }
+    },
+    {
+      "match_info": {
+        "teams": "GamerLegion vs Virtus.pro",
+        "time": "19:30",
+        "status": "upcoming",
+        "tournament": "BLAST Open London 2025"
+      },
+      "odds_analysis": {
+        "favorite": "Virtus.pro",
+        "underdog": "GamerLegion",
+        "odds": {
+          "team1": 2.07,
+          "team2": 1.78
+        },
+        "implied_probability": {
+          "GamerLegion": 48.3,
+          "Virtus.pro": 56.2
+        }
+      },
+      "quick_assessment": {
+        "team1_strengths": [
+          "REZ leadership",
+          "Tactical discipline",
+          "Map pool depth"
+        ],
+        "team2_strengths": [
+          "electroNic skill",
+          "CIS aggression",
+          "Clutch ability"
+        ],
+        "key_factors": [
+          "⚖️ ใกล้เคียงกัน - แมตช์คาดเดายาก"
+        ],
+        "prediction_confidence": "🔴 ต่ำ - ใกล้เคียงกันมาก"
+      },
+      "betting_recommendation": {
+        "primary_bet": "⚖️ Virtus.pro ML หรือ Handicap",
+        "alternative_bet": "🎲 Over 2.5 Maps",
+        "stake_suggestion": "เดิมพันปกติ",
+        "risk_level": "🟡 ปานกลาง"
+      }
+    },
+    {
+      "match_info": {
+        "teams": "FaZe vs ECSTATIC",
+        "time": "22:00",
+        "status": "upcoming",
+        "tournament": "BLAST Open London 2025"
+      },
+      "odds_analysis": {
+        "favorite": "FaZe",
+        "underdog": "ECSTATIC",
+        "odds": {
+          "team1": 1.33,
+          "team2": 3.29
+        },
+        "implied_probability": {
+          "FaZe": 75.2,
+          "ECSTATIC": 30.4
+        }
+      },
+      "quick_assessment": {
+        "team1_strengths": [
+          "Individual skill",
+          "Firepower",
+          "International experience"
+        ],
+        "team2_strengths": [
+          "Team chemistry",
+          "Tactical innovation",
+          "Underdog motivation"
+        ],
+        "key_factors": [
+          "🌙 แข่งดึก - อาจมีผลต่อฟอร์ม"
+        ],
+        "prediction_confidence": "🟡 ปานกลาง - มีเต็งแต่ไม่แน่นอน"
+      },
+      "betting_recommendation": {
+        "primary_bet": "🎯 FaZe ML (ราคาต่ำแต่ปลอดภัย)",
+        "alternative_bet": "💰 ECSTATIC +1.5 Maps (value bet)",
+        "stake_suggestion": "เดิมพันปานกลาง",
+        "risk_level": "🟢 ต่ำ"
+      }
+    },
+    {
+      "match_info": {
+        "teams": "Natus Vincere vs fnatic",
+        "time": "00:30",
+        "status": "upcoming",
+        "tournament": "BLAST Open London 2025"
+      },
+      "odds_analysis": {
+        "favorite": "Natus Vincere",
+        "underdog": "fnatic",
+        "odds": {
+          "team1": 1.27,
+          "team2": 3.69
+        },
+        "implied_probability": {
+          "Natus Vincere": 78.7,
+          "fnatic": 27.1
+        }
+      },
+      "quick_assessment": {
+        "team1_strengths": [
+          "s1mple factor",
+          "Tournament experience",
+          "Strategic depth"
+        ],
+        "team2_strengths": [
+          "Swedish CS legacy",
+          "Tactical flexibility",
+          "LAN experience"
+        ],
+        "key_factors": [
+          "📊 ต่างกันมาก - มีโอกาสอัปเซ็ต",
+          "🌙 แข่งดึก - อาจมีผลต่อฟอร์ม"
+        ],
+        "prediction_confidence": "🟡 ปานกลาง - มีเต็งแต่ไม่แน่นอน"
+      },
+      "betting_recommendation": {
+        "primary_bet": "🎯 Natus Vincere ML (ราคาต่ำแต่ปลอดภัย)",
+        "alternative_bet": "💰 fnatic +1.5 Maps (value bet)",
+        "stake_suggestion": "เดิมพันปานกลาง",
+        "risk_level": "🟢 ต่ำ"
+      }
+    }
+  ]
+}

@@ -17,8 +17,12 @@ from enum import Enum
 # Fix Windows console encoding
 if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
+    try:
+        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+        sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
+    except AttributeError:
+        # Already detached or not available
+        pass
 
 # เพิ่ม path สำหรับ import
 sys.path.append(str(Path(__file__).parent.parent))

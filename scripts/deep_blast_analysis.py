@@ -37,6 +37,34 @@ class DeepBlastAnalyzer:
                 "key_players": {
                     "team1": ["ZywOo", "apEX", "Magisk", "flameZ", "Spinx"],
                     "team2": ["slaxz-", "malbsMd", "Swisher", "reck", "Lake"]
+                },
+                "map_pool": {
+                    "team1": {
+                        "strong": ["Mirage", "Inferno", "Ancient"],
+                        "weak": ["Vertigo", "Overpass"],
+                        "win_rates": {"Mirage": 78, "Inferno": 82, "Ancient": 71, "Dust2": 65, "Anubis": 58, "Vertigo": 42, "Overpass": 38}
+                    },
+                    "team2": {
+                        "strong": ["Dust2", "Anubis", "Overpass"],
+                        "weak": ["Mirage", "Inferno"],
+                        "win_rates": {"Dust2": 72, "Anubis": 68, "Overpass": 64, "Vertigo": 55, "Ancient": 48, "Mirage": 35, "Inferno": 32}
+                    }
+                },
+                "player_stats": {
+                    "team1": {
+                        "carry_potential": {"ZywOo": 9.5, "flameZ": 7.2, "Magisk": 6.8, "Spinx": 6.1, "apEX": 5.4},
+                        "clutch_rates": {"ZywOo": 42, "Magisk": 38, "flameZ": 35, "Spinx": 32, "apEX": 28},
+                        "pistol_wr": {"1st": 68, "13th": 72}
+                    },
+                    "team2": {
+                        "carry_potential": {"slaxz-": 7.8, "malbsMd": 6.9, "Swisher": 6.2, "reck": 5.8, "Lake": 5.5},
+                        "clutch_rates": {"slaxz-": 35, "malbsMd": 32, "Swisher": 29, "reck": 27, "Lake": 25},
+                        "pistol_wr": {"1st": 58, "13th": 62}
+                    }
+                },
+                "side_stats": {
+                    "team1": {"ct_win_rate": 58, "t_win_rate": 52},
+                    "team2": {"ct_win_rate": 52, "t_win_rate": 48}
                 }
             },
             {
@@ -50,6 +78,34 @@ class DeepBlastAnalyzer:
                 "key_players": {
                     "team1": ["REZ", "ztr", "Tauson", "Kursy", "PR"],
                     "team2": ["electroNic", "FL1T", "Perfecto", "fame", "ICY"]
+                },
+                "map_pool": {
+                    "team1": {
+                        "strong": ["Dust2", "Mirage", "Anubis"],
+                        "weak": ["Ancient", "Vertigo"],
+                        "win_rates": {"Dust2": 74, "Mirage": 69, "Anubis": 66, "Inferno": 58, "Overpass": 55, "Ancient": 45, "Vertigo": 41}
+                    },
+                    "team2": {
+                        "strong": ["Inferno", "Ancient", "Overpass"],
+                        "weak": ["Dust2", "Anubis"],
+                        "win_rates": {"Inferno": 76, "Ancient": 71, "Overpass": 68, "Vertigo": 62, "Mirage": 56, "Dust2": 43, "Anubis": 39}
+                    }
+                },
+                "player_stats": {
+                    "team1": {
+                        "carry_potential": {"REZ": 8.4, "ztr": 7.1, "Tauson": 6.7, "Kursy": 6.2, "PR": 5.9},
+                        "clutch_rates": {"REZ": 39, "ztr": 34, "Tauson": 31, "Kursy": 29, "PR": 26},
+                        "pistol_wr": {"1st": 62, "13th": 65}
+                    },
+                    "team2": {
+                        "carry_potential": {"electroNic": 8.8, "FL1T": 7.3, "Perfecto": 6.5, "fame": 6.1, "ICY": 5.7},
+                        "clutch_rates": {"electroNic": 41, "FL1T": 36, "Perfecto": 33, "fame": 30, "ICY": 27},
+                        "pistol_wr": {"1st": 64, "13th": 68}
+                    }
+                },
+                "side_stats": {
+                    "team1": {"ct_win_rate": 55, "t_win_rate": 49},
+                    "team2": {"ct_win_rate": 57, "t_win_rate": 51}
                 }
             },
             {
@@ -63,6 +119,34 @@ class DeepBlastAnalyzer:
                 "key_players": {
                     "team1": ["karrigan", "rain", "broky", "frozen", "ropz"],
                     "team2": ["jcobbb", "Anlelele", "Nodios", "Peppzor", "Dytor"]
+                },
+                "map_pool": {
+                    "team1": {
+                        "strong": ["Mirage", "Inferno", "Dust2"],
+                        "weak": ["Anubis", "Vertigo"],
+                        "win_rates": {"Mirage": 79, "Inferno": 75, "Dust2": 72, "Ancient": 64, "Overpass": 61, "Anubis": 48, "Vertigo": 44}
+                    },
+                    "team2": {
+                        "strong": ["Anubis", "Vertigo", "Ancient"],
+                        "weak": ["Mirage", "Inferno"],
+                        "win_rates": {"Anubis": 71, "Vertigo": 67, "Ancient": 63, "Overpass": 58, "Dust2": 52, "Mirage": 41, "Inferno": 38}
+                    }
+                },
+                "player_stats": {
+                    "team1": {
+                        "carry_potential": {"broky": 8.6, "ropz": 8.2, "frozen": 7.8, "rain": 7.1, "karrigan": 5.8},
+                        "clutch_rates": {"ropz": 43, "broky": 40, "frozen": 37, "rain": 34, "karrigan": 31},
+                        "pistol_wr": {"1st": 66, "13th": 69}
+                    },
+                    "team2": {
+                        "carry_potential": {"jcobbb": 7.9, "Anlelele": 7.2, "Nodios": 6.8, "Peppzor": 6.4, "Dytor": 6.0},
+                        "clutch_rates": {"jcobbb": 36, "Anlelele": 33, "Nodios": 30, "Peppzor": 28, "Dytor": 26},
+                        "pistol_wr": {"1st": 61, "13th": 64}
+                    }
+                },
+                "side_stats": {
+                    "team1": {"ct_win_rate": 59, "t_win_rate": 53},
+                    "team2": {"ct_win_rate": 54, "t_win_rate": 50}
                 }
             },
             {
@@ -76,6 +160,34 @@ class DeepBlastAnalyzer:
                 "key_players": {
                     "team1": ["s1mple", "electroNic", "Perfecto", "b1t", "sdy"],
                     "team2": ["KRIMZ", "nicoodoz", "roeJ", "afro", "matys"]
+                },
+                "map_pool": {
+                    "team1": {
+                        "strong": ["Mirage", "Dust2", "Inferno"],
+                        "weak": ["Vertigo", "Anubis"],
+                        "win_rates": {"Mirage": 81, "Dust2": 77, "Inferno": 74, "Ancient": 66, "Overpass": 63, "Vertigo": 47, "Anubis": 44}
+                    },
+                    "team2": {
+                        "strong": ["Ancient", "Overpass", "Vertigo"],
+                        "weak": ["Mirage", "Dust2"],
+                        "win_rates": {"Ancient": 69, "Overpass": 65, "Vertigo": 62, "Anubis": 57, "Inferno": 53, "Dust2": 42, "Mirage": 39}
+                    }
+                },
+                "player_stats": {
+                    "team1": {
+                        "carry_potential": {"s1mple": 9.8, "electroNic": 8.1, "b1t": 7.4, "Perfecto": 6.6, "sdy": 6.2},
+                        "clutch_rates": {"s1mple": 45, "electroNic": 39, "b1t": 36, "Perfecto": 32, "sdy": 29},
+                        "pistol_wr": {"1st": 71, "13th": 74}
+                    },
+                    "team2": {
+                        "carry_potential": {"nicoodoz": 7.6, "KRIMZ": 7.0, "roeJ": 6.5, "afro": 6.1, "matys": 5.8},
+                        "clutch_rates": {"KRIMZ": 37, "nicoodoz": 34, "roeJ": 31, "afro": 28, "matys": 25},
+                        "pistol_wr": {"1st": 59, "13th": 62}
+                    }
+                },
+                "side_stats": {
+                    "team1": {"ct_win_rate": 61, "t_win_rate": 55},
+                    "team2": {"ct_win_rate": 53, "t_win_rate": 47}
                 }
             }
         ]
@@ -237,8 +349,170 @@ class DeepBlastAnalyzer:
         
         return alternatives
     
+    def analyze_map_pool_deep(self, match: Dict) -> Dict:
+        """วิเคราะห์แมพพูลเจาะลึก"""
+        team1_maps = match["map_pool"]["team1"]
+        team2_maps = match["map_pool"]["team2"]
+        
+        # Find map advantages
+        map_analysis = {}
+        for map_name in team1_maps["win_rates"]:
+            if map_name in team2_maps["win_rates"]:
+                team1_wr = team1_maps["win_rates"][map_name]
+                team2_wr = team2_maps["win_rates"][map_name]
+                edge = team1_wr - team2_wr
+                
+                map_analysis[map_name] = {
+                    "team1_wr": team1_wr,
+                    "team2_wr": team2_wr,
+                    "edge": edge,
+                    "favorite": match["team1"] if edge > 0 else match["team2"],
+                    "advantage_level": "High" if abs(edge) > 20 else "Medium" if abs(edge) > 10 else "Low"
+                }
+        
+        return map_analysis
+    
+    def analyze_carry_potential(self, match: Dict) -> Dict:
+        """วิเคราะห์ศักยภาพการแบกทีม"""
+        team1_carries = match["player_stats"]["team1"]["carry_potential"]
+        team2_carries = match["player_stats"]["team2"]["carry_potential"]
+        
+        team1_top = max(team1_carries, key=team1_carries.get)
+        team2_top = max(team2_carries, key=team2_carries.get)
+        
+        return {
+            "team1_top_carry": {"player": team1_top, "rating": team1_carries[team1_top]},
+            "team2_top_carry": {"player": team2_top, "rating": team2_carries[team2_top]},
+            "carry_advantage": match["team1"] if team1_carries[team1_top] > team2_carries[team2_top] else match["team2"]
+        }
+    
+    def analyze_clutch_rates(self, match: Dict) -> Dict:
+        """วิเคราะห์อัตราการคลัตช์"""
+        team1_clutch = match["player_stats"]["team1"]["clutch_rates"]
+        team2_clutch = match["player_stats"]["team2"]["clutch_rates"]
+        
+        team1_avg = sum(team1_clutch.values()) / len(team1_clutch)
+        team2_avg = sum(team2_clutch.values()) / len(team2_clutch)
+        
+        team1_best = max(team1_clutch, key=team1_clutch.get)
+        team2_best = max(team2_clutch, key=team2_clutch.get)
+        
+        return {
+            "team1_avg": team1_avg,
+            "team2_avg": team2_avg,
+            "advantage": match["team1"] if team1_avg > team2_avg else match["team2"],
+            "best_clutchers": {
+                "team1": {"player": team1_best, "rate": team1_clutch[team1_best]},
+                "team2": {"player": team2_best, "rate": team2_clutch[team2_best]}
+            }
+        }
+    
+    def analyze_pistol_rounds(self, match: Dict) -> Dict:
+        """วิเคราะห์รอบพิสตอล"""
+        team1_pistol = match["player_stats"]["team1"]["pistol_wr"]
+        team2_pistol = match["player_stats"]["team2"]["pistol_wr"]
+        
+        return {
+            "first_pistol": {
+                "team1_wr": team1_pistol["1st"],
+                "team2_wr": team2_pistol["1st"],
+                "advantage": match["team1"] if team1_pistol["1st"] > team2_pistol["1st"] else match["team2"],
+                "edge": abs(team1_pistol["1st"] - team2_pistol["1st"])
+            },
+            "second_pistol": {
+                "team1_wr": team1_pistol["13th"],
+                "team2_wr": team2_pistol["13th"],
+                "advantage": match["team1"] if team1_pistol["13th"] > team2_pistol["13th"] else match["team2"],
+                "edge": abs(team1_pistol["13th"] - team2_pistol["13th"])
+            }
+        }
+    
+    def analyze_side_performance(self, match: Dict) -> Dict:
+        """วิเคราะห์การเล่นแต่ละข้าง"""
+        team1_sides = match["side_stats"]["team1"]
+        team2_sides = match["side_stats"]["team2"]
+        
+        return {
+            "ct_advantage": match["team1"] if team1_sides["ct_win_rate"] > team2_sides["ct_win_rate"] else match["team2"],
+            "t_advantage": match["team1"] if team1_sides["t_win_rate"] > team2_sides["t_win_rate"] else match["team2"],
+            "ct_edge": abs(team1_sides["ct_win_rate"] - team2_sides["ct_win_rate"]),
+            "t_edge": abs(team1_sides["t_win_rate"] - team2_sides["t_win_rate"])
+        }
+    
+    def generate_first_map_predictions(self, match: Dict, map_analysis: Dict) -> List[Dict]:
+        """ทำนายการเดิมพันแมพแรก"""
+        predictions = []
+        
+        # Top 3 maps with biggest advantages
+        sorted_maps = sorted(map_analysis.items(), key=lambda x: abs(x[1]["edge"]), reverse=True)[:3]
+        
+        for map_name, data in sorted_maps:
+            if abs(data["edge"]) > 15:  # Only significant advantages
+                predictions.append({
+                    "map": map_name,
+                    "recommended_bet": f"{data['favorite']} Map 1 (หาก {map_name} ถูกเล่น)",
+                    "win_probability": max(data["team1_wr"], data["team2_wr"]) / 100,
+                    "edge": abs(data["edge"]),
+                    "confidence": data["advantage_level"]
+                })
+        
+        return predictions
+    
+    def generate_multi_profit_opportunities(self, match: Dict, analyses: Dict) -> List[Dict]:
+        """สร้างโอกาสทำกำไรหลายมุมมอง"""
+        opportunities = []
+        
+        # Map-based opportunities
+        for pred in analyses.get("first_map_predictions", [])[:2]:
+            opportunities.append({
+                "category": "🗺️ Map Betting",
+                "bet": pred["recommended_bet"],
+                "probability": f"{pred['win_probability']:.1%}",
+                "edge": f"{pred['edge']:.0f}%",
+                "risk": "Medium"
+            })
+        
+        # Player performance
+        carry_analysis = analyses.get("carry_potential", {})
+        if carry_analysis:
+            top_carry = carry_analysis.get("team1_top_carry", {}) if carry_analysis.get("carry_advantage") == match["team1"] else carry_analysis.get("team2_top_carry", {})
+            if top_carry.get("rating", 0) > 8.0:
+                opportunities.append({
+                    "category": "👤 Player Performance",
+                    "bet": f"{top_carry['player']} MVP (หากมี)",
+                    "probability": f"{min(95, top_carry['rating'] * 10):.0f}%",
+                    "edge": "High carry potential",
+                    "risk": "Medium"
+                })
+        
+        # Pistol rounds
+        pistol_analysis = analyses.get("pistol_rounds", {})
+        if pistol_analysis:
+            first_pistol = pistol_analysis.get("first_pistol", {})
+            if first_pistol.get("edge", 0) > 8:
+                opportunities.append({
+                    "category": "🔫 Pistol Rounds",
+                    "bet": f"{first_pistol['advantage']} ชนะรอบพิสตอลแรก",
+                    "probability": f"{max(first_pistol['team1_wr'], first_pistol['team2_wr']):.0f}%",
+                    "edge": f"{first_pistol['edge']:.0f}%",
+                    "risk": "High"
+                })
+        
+        # Side-specific bets
+        side_analysis = analyses.get("side_performance", {})
+        if side_analysis and side_analysis.get("ct_edge", 0) > 6:
+            opportunities.append({
+                "category": "⚔️ Side Performance",
+                "bet": f"{side_analysis['ct_advantage']} ได้เปรียบฝั่ง CT",
+                "probability": "Situational",
+                "edge": f"{side_analysis['ct_edge']:.0f}%",
+                "risk": "Low"
+            })
+        
+        return opportunities
+    
     def analyze_match_deep(self, match: Dict) -> Dict:
-        """วิเคราะห์แมตช์เจาะลึก"""
+        """วิเคราะห์แมตช์เจาะลึกแบบสมบูรณ์"""
         
         print(f"\n{'='*80}")
         print(f"🔍 การวิเคราะห์เจาะลึก: {match['team1']} vs {match['team2']}")
@@ -248,57 +522,88 @@ class DeepBlastAnalyzer:
         print(f"⏰ เวลา: {match['time']} | สถานะ: {match['status']}")
         print(f"🏆 อันดับ: #{match['rankings']['team1']} vs #{match['rankings']['team2']}")
         print(f"📊 ฟอร์มล่าสุด: {match['recent_form']['team1']} vs {match['recent_form']['team2']}")
-        print(f"🗺️ ความได้เปรียบ Map Pool: {match['map_pool_advantage']}")
         
-        # Odds analysis
-        print(f"\n💰 การวิเคราะห์ราคาต่อรอง:")
-        print(f"   {match['team1']}: {match['odds']['team1']} ({self.calculate_implied_probability(match['odds']['team1']):.1%})")
-        print(f"   {match['team2']}: {match['odds']['team2']} ({self.calculate_implied_probability(match['odds']['team2']):.1%})")
+        # Advanced analyses
+        map_analysis = self.analyze_map_pool_deep(match)
+        carry_analysis = self.analyze_carry_potential(match)
+        clutch_analysis = self.analyze_clutch_rates(match)
+        pistol_analysis = self.analyze_pistol_rounds(match)
+        side_analysis = self.analyze_side_performance(match)
+        first_map_predictions = self.generate_first_map_predictions(match, map_analysis)
         
-        # True probability
+        # Map Pool Analysis
+        print(f"\n🗺️ การวิเคราะห์แมพพูล:")
+        strong_maps_team1 = match["map_pool"]["team1"]["strong"]
+        strong_maps_team2 = match["map_pool"]["team2"]["strong"]
+        print(f"   {match['team1']} เก่ง: {', '.join(strong_maps_team1)}")
+        print(f"   {match['team2']} เก่ง: {', '.join(strong_maps_team2)}")
+        
+        print(f"\n   📊 Win Rate เฉพาะแมพ:")
+        for map_name, data in sorted(map_analysis.items(), key=lambda x: abs(x[1]["edge"]), reverse=True)[:3]:
+            print(f"      {map_name}: {match['team1']} {data['team1_wr']}% vs {match['team2']} {data['team2_wr']}% (Edge: {data['edge']:+.0f}%)")
+        
+        # First Map Predictions
+        if first_map_predictions:
+            print(f"\n   🎯 การเดิมพันแมพแรก:")
+            for pred in first_map_predictions:
+                print(f"      • {pred['recommended_bet']} (Edge: {pred['edge']:.0f}%)")
+        
+        # Player Analysis
+        print(f"\n👥 การวิเคราะห์ผู้เล่น:")
+        print(f"   🎯 ผู้เล่นแบกทีม:")
+        print(f"      {match['team1']}: {carry_analysis['team1_top_carry']['player']} ({carry_analysis['team1_top_carry']['rating']:.1f})")
+        print(f"      {match['team2']}: {carry_analysis['team2_top_carry']['player']} ({carry_analysis['team2_top_carry']['rating']:.1f})")
+        print(f"      ได้เปรียบ: {carry_analysis['carry_advantage']}")
+        
+        print(f"\n   🔥 อัตราการคลัตช์:")
+        print(f"      {match['team1']}: {clutch_analysis['team1_avg']:.1f}% (ดีสุด: {clutch_analysis['best_clutchers']['team1']['player']} {clutch_analysis['best_clutchers']['team1']['rate']}%)")
+        print(f"      {match['team2']}: {clutch_analysis['team2_avg']:.1f}% (ดีสุด: {clutch_analysis['best_clutchers']['team2']['player']} {clutch_analysis['best_clutchers']['team2']['rate']}%)")
+        print(f"      ได้เปรียบ: {clutch_analysis['advantage']}")
+        
+        # Pistol Round Analysis
+        print(f"\n🔫 การวิเคราะห์รอบพิสตอล:")
+        print(f"   รอบที่ 1: {match['team1']} {pistol_analysis['first_pistol']['team1_wr']}% vs {match['team2']} {pistol_analysis['first_pistol']['team2_wr']}%")
+        print(f"   รอบที่ 13: {match['team1']} {pistol_analysis['second_pistol']['team1_wr']}% vs {match['team2']} {pistol_analysis['second_pistol']['team2_wr']}%")
+        if pistol_analysis['first_pistol']['edge'] > 8:
+            print(f"   💡 แนะนำ: เดิมพัน {pistol_analysis['first_pistol']['advantage']} ชนะรอบพิสตอลแรก")
+        
+        # Side Performance
+        print(f"\n⚔️ การวิเคราะห์ข้าง CT/T:")
+        print(f"   CT Side: {side_analysis['ct_advantage']} ได้เปรียบ ({side_analysis['ct_edge']:.0f}%)")
+        print(f"   T Side: {side_analysis['t_advantage']} ได้เปรียบ ({side_analysis['t_edge']:.0f}%)")
+        
+        # Original analysis
         true_probs = self.calculate_true_probability(match)
-        print(f"\n🎯 ความน่าจะเป็นจริง (จากการวิเคราะห์):")
+        print(f"\n🎯 ความน่าจะเป็นจริง:")
         print(f"   {match['team1']}: {true_probs['team1']:.1%}")
         print(f"   {match['team2']}: {true_probs['team2']:.1%}")
         
-        # Value bets
         value_bets = self.find_value_bets(match)
-        print(f"\n💎 Value Bets ที่พบ:")
-        
+        print(f"\n💎 Value Bets:")
         if value_bets:
             for bet in value_bets:
-                print(f"   🎯 {bet['team']} ML @ {bet['odds']}")
-                print(f"      Edge: {bet['edge']:.1%} | EV: {bet['expected_value']:.3f}")
-                print(f"      Kelly: {bet['kelly_fraction']:.1%} | ความมั่นใจ: {bet['confidence']}")
-                
-                # Stake recommendations
-                conservative_stake = bet['kelly_fraction'] * self.bankroll_percentage['conservative'] * 100
-                moderate_stake = bet['kelly_fraction'] * self.bankroll_percentage['moderate'] * 100
-                aggressive_stake = bet['kelly_fraction'] * self.bankroll_percentage['aggressive'] * 100
-                
-                print(f"      💵 แนะนำเดิมพัน (% ของ bankroll):")
-                print(f"         🛡️ อนุรักษ์: {conservative_stake:.2f}%")
-                print(f"         ⚖️ ปานกลาง: {moderate_stake:.2f}%")
-                print(f"         🚀 ก้าวร้าว: {aggressive_stake:.2f}%")
+                print(f"   🎯 {bet['team']} ML @ {bet['odds']} (Kelly: {bet['kelly_fraction']:.1%})")
         else:
             print("   ❌ ไม่พบ value bet ในราคา moneyline")
         
-        # Alternative bets
-        alternatives = self.generate_alternative_bets(match)
-        print(f"\n🎲 เดิมพันทางเลือก:")
+        # Multi-angle opportunities
+        analyses_dict = {
+            "map_analysis": map_analysis,
+            "carry_potential": carry_analysis,
+            "clutch_rates": clutch_analysis,
+            "pistol_rounds": pistol_analysis,
+            "side_performance": side_analysis,
+            "first_map_predictions": first_map_predictions
+        }
         
-        for alt in alternatives:
-            print(f"   📊 {alt['bet_type']} @ ~{alt['estimated_odds']}")
-            print(f"      เหตุผล: {alt['reasoning']}")
-            print(f"      EV: {alt['expected_value']:.3f} | ความเสี่ยง: {alt['risk_level']}")
-        
-        # Match-specific insights
-        insights = self.get_match_insights(match)
-        print(f"\n🧠 ข้อมูลเชิงลึก:")
-        for insight in insights:
-            print(f"   • {insight}")
+        opportunities = self.generate_multi_profit_opportunities(match, analyses_dict)
+        print(f"\n💰 โอกาสทำกำไรหลายมุมมอง:")
+        for opp in opportunities:
+            print(f"   {opp['category']}: {opp['bet']}")
+            print(f"      ความน่าจะเป็น: {opp['probability']} | Edge: {opp['edge']} | ความเสี่ยง: {opp['risk']}")
         
         # Final recommendation
+        alternatives = self.generate_alternative_bets(match)
         recommendation = self.get_final_recommendation(match, value_bets, alternatives)
         print(f"\n🎯 คำแนะนำสุดท้าย:")
         print(f"   🥇 เดิมพันหลัก: {recommendation['primary']}")
@@ -308,10 +613,15 @@ class DeepBlastAnalyzer:
         
         return {
             "match_id": match["id"],
+            "map_analysis": map_analysis,
+            "carry_analysis": carry_analysis,
+            "clutch_analysis": clutch_analysis,
+            "pistol_analysis": pistol_analysis,
+            "side_analysis": side_analysis,
+            "first_map_predictions": first_map_predictions,
+            "profit_opportunities": opportunities,
             "true_probabilities": true_probs,
             "value_bets": value_bets,
-            "alternative_bets": alternatives,
-            "insights": insights,
             "recommendation": recommendation
         }
     

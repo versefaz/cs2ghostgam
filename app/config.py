@@ -30,9 +30,9 @@ def get_default_scraper_config() -> Dict[str, Any]:
     """Default scraper configuration as fallback"""
     return {
         'hltv': {
-            'base_interval_sec': 480,
-            'jitter_pct': 0.30,
-            'max_backoff': 4
+            'base_interval_sec': 15,
+            'jitter_pct': 0.20,
+            'max_backoff': 3
         },
         'odds': {
             'base_interval_sec': 360,
@@ -50,9 +50,9 @@ def get_default_scraper_config() -> Dict[str, Any]:
             'max_backoff': 5
         },
         'concurrency': {
-            'max_connections': 3,
-            'connection_timeout': 30,
-            'read_timeout': 45
+            'max_connections': 8,
+            'connection_timeout': 10,
+            'read_timeout': 15
         },
         'user_agents': [
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -63,8 +63,8 @@ def get_default_scraper_config() -> Dict[str, Any]:
         ],
         'rate_limiting': {
             'respect_robots_txt': True,
-            'min_delay_between_requests': 2,
-            'retry_attempts': 3
+            'min_delay_between_requests': 0.5,
+            'retry_attempts': 2
         },
         'http_handling': {
             'rate_limit_codes': [429, 503, 502],
