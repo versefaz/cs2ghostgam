@@ -1,0 +1,85 @@
+{
+  "date": "2025-08-28",
+  "timestamp": "2025-08-27T16:22:01.081244",
+  "tournament": "BLAST Premier Fall Final 2024",
+  "location": "Lisbon, Portugal",
+  "matches": [
+    {
+      "match_id": "blast_lisbon_20250828_001",
+      "team1": "Vitality",
+      "team2": "MOUZ",
+      "event_name": "BLAST Premier Fall Final 2024",
+      "tournament": "BLAST Premier",
+      "location": "Lisbon, Portugal",
+      "match_time": "14:00",
+      "scheduled_time": "2025-08-28T14:00:00",
+      "match_format": "BO3",
+      "stage": "Group Stage",
+      "stream_url": "https://www.twitch.tv/blastpremier",
+      "estimated_odds": {
+        "team1_odds": 1.45,
+        "team2_odds": 2.75
+      },
+      "source": "realistic_mock_data",
+      "confidence": "high"
+    },
+    {
+      "match_id": "blast_lisbon_20250828_002",
+      "team1": "FaZe Clan",
+      "team2": "Astralis",
+      "event_name": "BLAST Premier Fall Final 2024",
+      "tournament": "BLAST Premier",
+      "location": "Lisbon, Portugal",
+      "match_time": "16:30",
+      "scheduled_time": "2025-08-28T16:30:00",
+      "match_format": "BO3",
+      "stage": "Group Stage",
+      "stream_url": "https://www.twitch.tv/blastpremier",
+      "estimated_odds": {
+        "team1_odds": 1.9,
+        "team2_odds": 1.9
+      },
+      "source": "realistic_mock_data",
+      "confidence": "high"
+    },
+    {
+      "match_id": "blast_lisbon_20250828_003",
+      "team1": "Natus Vincere",
+      "team2": "G2 Esports",
+      "event_name": "BLAST Premier Fall Final 2024",
+      "tournament": "BLAST Premier",
+      "location": "Lisbon, Portugal",
+      "match_time": "19:00",
+      "scheduled_time": "2025-08-28T19:00:00",
+      "match_format": "BO3",
+      "stage": "Playoffs",
+      "stream_url": "https://www.twitch.tv/blastpremier",
+      "estimated_odds": {
+        "team1_odds": 1.45,
+        "team2_odds": 2.75
+      },
+      "source": "realistic_mock_data",
+      "confidence": "high"
+    },
+    {
+      "match_id": "blast_lisbon_20250828_004",
+      "team1": "Team Liquid",
+      "team2": "Heroic",
+      "event_name": "BLAST Premier Fall Final 2024",
+      "tournament": "BLAST Premier",
+      "location": "Lisbon, Portugal",
+      "match_time": "21:30",
+      "scheduled_time": "2025-08-28T21:30:00",
+      "match_format": "BO3",
+      "stage": "Playoffs",
+      "stream_url": "https://www.twitch.tv/blastpremier",
+      "estimated_odds": {
+        "team1_odds": 1.9,
+        "team2_odds": 1.9
+      },
+      "source": "realistic_mock_data",
+      "confidence": "medium"
+    }
+  ],
+  "total_matches": 4
+}
