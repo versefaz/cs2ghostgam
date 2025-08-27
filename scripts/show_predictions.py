@@ -24,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from core.upcoming_matches_predictor import get_predictor
 from core.advanced_betting_analyzer import get_betting_analyzer
+from core.real_odds_scraper import update_matches_with_real_odds
 from app.utils.logger import setup_logger
 
 
@@ -168,9 +169,18 @@ async def save_predictions_snapshot(matches: List[Dict[str, Any]], summary: Dict
             "avg_expected_value": sum(r.get('expected_value', 0) for m in matches for r in m.get('betting_recommendations', [])) / max(1, sum(len(m.get('betting_recommendations', [])) for m in matches))
         }
         
+        # Clean matches data for JSON serialization
+        clean_matches = []
+        for match in matches:
+            clean_match = match.copy()
+            # Remove non-serializable real_odds_data if present
+            if 'real_odds_data' in clean_match:
+                del clean_match['real_odds_data']
+            clean_matches.append(clean_match)
+        
         snapshot_data = {
             "timestamp": datetime.now().isoformat(),
-            "matches": matches,
+            "matches": clean_matches,
             "summary": summary,
             "betting_analysis": betting_summary
         }
@@ -218,6 +228,16 @@ async def main():
             logger.error(f"Failed to retrieve matches: {e}")
             return
         
+        # Update matches with real odds data
+        print("\n[ODDS] Fetching real-time odds data...")
+        try:
+            matches = await update_matches_with_real_odds(matches)
+            updated_count = sum(1 for m in matches if m.get('odds_updated', False))
+            print(f"[OK] Updated {updated_count}/{len(matches)} matches with real odds!")
+        except Exception as e:
+            print(f"[WARN] Could not update with real odds: {e}")
+            logger.warning(f"Real odds update failed: {e}")
+        
         # Generate betting analysis for each match
         print("\n[BETTING] Analyzing betting opportunities...")
         try:
@@ -244,7 +264,7 @@ async def main():
                 match['betting_recommendations'] = []
         
         # Display matches with betting analysis
-        print(f"\n[MATCHES] Today's Matches with Betting Analysis ({len(matches)} total)")
+        print(f"\n[MATCHES] Today's Matches with Real Odds & Betting Analysis ({len(matches)} total)")
         for i, match in enumerate(matches, 1):
             print_match_card(i, match)
         

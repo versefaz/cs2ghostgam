@@ -13,6 +13,7 @@ from enum import Enum
 import statistics
 import json
 from pathlib import Path
+from .real_odds_scraper import get_real_odds_scraper
 
 logger = logging.getLogger(__name__)
 
@@ -174,12 +175,51 @@ class AdvancedBettingAnalyzer:
         return []
     
     async def get_enhanced_odds_data(self, match_id: str, team1: str, team2: str) -> List[OddsData]:
-        """Get comprehensive odds data from multiple bookmakers"""
+        """Get comprehensive odds data from multiple bookmakers using real odds"""
         
-        # Mock enhanced odds data - in production, scrape from bookmakers
-        bookmakers_odds = []
+        # Get real odds scraper
+        odds_scraper = get_real_odds_scraper()
         
-        # Pinnacle odds (typically sharp)
+        try:
+            # Get real odds data
+            real_odds_list = await odds_scraper.get_real_odds(team1, team2)
+            
+            if not real_odds_list:
+                self.logger.warning(f"No real odds found for {team1} vs {team2}, using fallback")
+                return await self._get_fallback_odds(team1, team2)
+            
+            bookmakers_odds = []
+            
+            for real_odds in real_odds_list:
+                odds_data = OddsData(
+                    bookmaker=real_odds.bookmaker.title(),
+                    match_winner_team1=real_odds.team1_odds,
+                    match_winner_team2=real_odds.team2_odds,
+                    handicap_team1_minus_1_5=real_odds.team1_handicap_minus_1_5,
+                    handicap_team1_plus_1_5=real_odds.team1_handicap_plus_1_5,
+                    handicap_team2_minus_1_5=real_odds.team2_handicap_minus_1_5,
+                    handicap_team2_plus_1_5=real_odds.team2_handicap_plus_1_5,
+                    over_26_5_rounds=real_odds.over_26_5,
+                    under_26_5_rounds=real_odds.under_26_5,
+                    over_24_5_rounds=real_odds.over_24_5,
+                    under_24_5_rounds=real_odds.under_24_5,
+                    first_map_team1=self._calculate_first_map_odds(team1, team2)[0],
+                    first_map_team2=self._calculate_first_map_odds(team1, team2)[1],
+                    total_maps_over_2_5=1.85,
+                    total_maps_under_2_5=1.95
+                )
+                bookmakers_odds.append(odds_data)
+            
+            self.logger.info(f"Retrieved real odds from {len(bookmakers_odds)} bookmakers for {team1} vs {team2}")
+            return bookmakers_odds
+            
+        except Exception as e:
+            self.logger.error(f"Error getting real odds for {team1} vs {team2}: {e}")
+            return await self._get_fallback_odds(team1, team2)
+    
+    async def _get_fallback_odds(self, team1: str, team2: str) -> List[OddsData]:
+        """Fallback odds calculation when real odds are unavailable"""
+        
         pinnacle_odds = OddsData(
             bookmaker="Pinnacle",
             match_winner_team1=self._get_match_winner_odds(team1, team2)[0],
@@ -197,9 +237,8 @@ class AdvancedBettingAnalyzer:
             total_maps_over_2_5=1.85,
             total_maps_under_2_5=1.95
         )
-        bookmakers_odds.append(pinnacle_odds)
         
-        return bookmakers_odds
+        return [pinnacle_odds]
     
     def _get_match_winner_odds(self, team1: str, team2: str, margin: float = 0.03) -> Tuple[float, float]:
         """Calculate match winner odds based on team strength"""
