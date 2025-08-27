@@ -7,20 +7,22 @@ Fetches odds from multiple bookmakers with fallback, validation, and retry logic
 import asyncio
 import json
 import logging
+import random
+import aiohttp
+import backoff
+from typing import List, Dict, Any, Optional, Set, Tuple
 from datetime import datetime, timedelta
-from typing import List, Dict, Any, Optional, Tuple, Set
 from dataclasses import dataclass, asdict
-from enum import Enum
+from bs4 import BeautifulSoup
 import re
 from urllib.parse import urljoin, urlparse
 import statistics
+from fake_useragent import UserAgent
+from enum import Enum
 
 # Import timing utilities and config
 from core.utils.timing import HumanLikeTiming, TimingConfig, RateLimitError, RequestThrottler, random_startup_delay
 from app.config import SCRAPER_SETTINGS, USER_AGENTS, RATE_LIMIT_CODES, SUCCESS_CODES
-from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
-import backoff
 
 logger = logging.getLogger(__name__)
 
