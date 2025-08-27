@@ -21,3 +21,225 @@ client_session: <aiohttp.client.ClientSession object at 0x0000028622CE1BE0>
 2025-08-27 14:57:57,423 - __main__ - ERROR - Error during cleanup: 'IntegratedPipeline' object has no attribute 'shutdown'
 2025-08-27 14:57:57,645 - asyncio - ERROR - Unclosed client session
 client_session: <aiohttp.client.ClientSession object at 0x0000024710761BE0>
+2025-08-27 15:00:45,828 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:00:45,829 - __main__ - INFO - Performance optimizer initialized
+2025-08-27 15:00:45,835 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:00:45,836 - core.utils.timing - INFO - Startup delay: 2.9 seconds
+2025-08-27 15:00:48,786 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:00:48,787 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:00:48,788 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:00:48,788 - core.integrated_pipeline - ERROR - Pipeline initialization failed: 'RobustOddsScraper' object has no attribute 'sessions'
+2025-08-27 15:00:48,804 - __main__ - INFO - Shutting down integrated pipeline...
+2025-08-27 15:00:48,804 - __main__ - ERROR - Error during cleanup: 'IntegratedPipeline' object has no attribute 'shutdown'
+2025-08-27 15:00:48,978 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001982E621D30>
+2025-08-27 15:03:50,068 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:03:50,068 - __main__ - INFO - Performance optimizer initialized
+2025-08-27 15:03:50,153 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:03:50,154 - core.utils.timing - INFO - Startup delay: 14.5 seconds
+2025-08-27 15:04:04,687 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:04:04,688 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:04:04,690 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:04:04,690 - core.integrated_pipeline - WARNING - Redis schema not available, using fallback
+2025-08-27 15:04:04,734 - core.integrated_pipeline - WARNING - Redis publisher not available, using fallback
+2025-08-27 15:04:08,926 - core.production_signal_generator - WARNING - Redis connection failed: Error 22 connecting to localhost:6379. The remote computer refused the network connection.
+2025-08-27 15:04:08,927 - risk_management.cooldown_manager - INFO - CooldownManager initialized
+2025-08-27 15:04:08,927 - core.production_signal_generator - INFO - ProductionSignalGenerator initialized successfully
+2025-08-27 15:04:08,939 - core.integrated_pipeline - WARNING - ML pipeline initialization failed: FeatureEngineer.__init__() missing 1 required positional argument: 'config'
+2025-08-27 15:04:08,939 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:04:08,939 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:04:08,939 - __main__ - INFO - All components initialized successfully
+2025-08-27 15:04:08,940 - __main__ - INFO - System is now monitoring matches and generating signals
+2025-08-27 15:04:08,940 - __main__ - INFO - Press Ctrl+C to stop
+2025-08-27 15:04:08,940 - core.integrated_pipeline - INFO - Starting integrated CS2 betting pipeline...
+2025-08-27 15:04:08,941 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:04:08,941 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000020CEBB25BE0>
+2025-08-27 15:04:08,941 - core.utils.timing - INFO - Startup delay: 2.1 seconds
+2025-08-27 15:04:11,032 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:04:11,032 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:04:11,033 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:04:11,033 - core.integrated_pipeline - WARNING - Redis schema not available, using fallback
+2025-08-27 15:04:11,034 - core.integrated_pipeline - WARNING - Redis publisher not available, using fallback
+2025-08-27 15:04:15,126 - core.production_signal_generator - WARNING - Redis connection failed: Error 22 connecting to localhost:6379. The remote computer refused the network connection.
+2025-08-27 15:04:15,126 - risk_management.cooldown_manager - INFO - CooldownManager initialized
+2025-08-27 15:04:15,127 - core.production_signal_generator - INFO - ProductionSignalGenerator initialized successfully
+2025-08-27 15:04:15,127 - core.integrated_pipeline - WARNING - ML pipeline initialization failed: FeatureEngineer.__init__() missing 1 required positional argument: 'config'
+2025-08-27 15:04:15,127 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:04:15,127 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:04:18,831 - app.scrapers.robust_odds_scraper - ERROR - Error fetching https://www.rivalry.com/esports/counter-strike-bets from rivalry (attempt 1): 400, message='Can not decode content-encoding: brotli (br). Please install `Brotli`', url='https://www.rivalry.com/esports/counter-strike-bets'
+2025-08-27 15:04:19,187 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:04:20,304 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:06:10,791 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:06:10,791 - __main__ - INFO - Performance optimizer initialized
+2025-08-27 15:06:10,793 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:06:10,793 - core.utils.timing - INFO - Startup delay: 8.8 seconds
+2025-08-27 15:06:19,585 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:06:19,586 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:06:19,586 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:06:19,587 - core.integrated_pipeline - WARNING - Redis schema not available, using fallback
+2025-08-27 15:06:19,590 - core.integrated_pipeline - WARNING - Redis publisher not available, using fallback
+2025-08-27 15:06:23,692 - core.production_signal_generator - WARNING - Redis connection failed: Error 22 connecting to localhost:6379. The remote computer refused the network connection.
+2025-08-27 15:06:23,692 - risk_management.cooldown_manager - INFO - CooldownManager initialized
+2025-08-27 15:06:23,692 - core.production_signal_generator - INFO - ProductionSignalGenerator initialized successfully
+2025-08-27 15:06:23,699 - core.integrated_pipeline - WARNING - ML pipeline initialization failed: FeatureEngineer.__init__() missing 1 required positional argument: 'config'
+2025-08-27 15:06:23,699 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:06:23,700 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:06:23,700 - __main__ - INFO - All components initialized successfully
+2025-08-27 15:06:23,700 - __main__ - INFO - System is now monitoring matches and generating signals
+2025-08-27 15:06:23,700 - __main__ - INFO - Press Ctrl+C to stop
+2025-08-27 15:06:23,700 - core.integrated_pipeline - INFO - Starting integrated CS2 betting pipeline...
+2025-08-27 15:06:23,700 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:06:23,701 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001E1E0F95BE0>
+2025-08-27 15:06:23,701 - core.utils.timing - INFO - Startup delay: 0.8 seconds
+2025-08-27 15:06:24,548 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:06:24,549 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:06:24,549 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:06:24,549 - core.integrated_pipeline - WARNING - Redis schema not available, using fallback
+2025-08-27 15:06:24,552 - core.integrated_pipeline - WARNING - Redis publisher not available, using fallback
+2025-08-27 15:06:28,647 - core.production_signal_generator - WARNING - Redis connection failed: Error 22 connecting to localhost:6379. The remote computer refused the network connection.
+2025-08-27 15:06:28,647 - risk_management.cooldown_manager - INFO - CooldownManager initialized
+2025-08-27 15:06:28,648 - core.production_signal_generator - INFO - ProductionSignalGenerator initialized successfully
+2025-08-27 15:06:28,648 - core.integrated_pipeline - WARNING - ML pipeline initialization failed: FeatureEngineer.__init__() missing 1 required positional argument: 'config'
+2025-08-27 15:06:28,648 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:06:28,648 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:06:28,648 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 17.857317}
+2025-08-27 15:06:32,898 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:06:33,891 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:06:34,482 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:06:34,482 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:06:34,482 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:11:21,023 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:11:21,024 - __main__ - INFO - Performance optimizer initialized
+2025-08-27 15:11:21,026 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:11:21,026 - core.utils.timing - INFO - Startup delay: 11.0 seconds
+2025-08-27 15:11:32,073 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:11:32,073 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:11:32,074 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:11:32,075 - core.integrated_pipeline - WARNING - Redis schema not available, using fallback
+2025-08-27 15:11:32,078 - core.integrated_pipeline - WARNING - Redis publisher not available, using fallback
+2025-08-27 15:11:36,176 - core.production_signal_generator - WARNING - Redis connection failed: Error 22 connecting to localhost:6379. The remote computer refused the network connection.
+2025-08-27 15:11:36,176 - risk_management.cooldown_manager - INFO - CooldownManager initialized
+2025-08-27 15:11:36,176 - core.production_signal_generator - INFO - ProductionSignalGenerator initialized successfully
+2025-08-27 15:11:36,184 - core.integrated_pipeline - WARNING - ML pipeline initialization failed: FeatureEngineer.__init__() missing 1 required positional argument: 'config'
+2025-08-27 15:11:36,185 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:11:36,185 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:11:36,185 - __main__ - INFO - All components initialized successfully
+2025-08-27 15:11:36,185 - __main__ - INFO - System is now monitoring matches and generating signals
+2025-08-27 15:11:36,185 - __main__ - INFO - Press Ctrl+C to stop
+2025-08-27 15:11:36,186 - core.integrated_pipeline - INFO - Starting integrated CS2 betting pipeline...
+2025-08-27 15:11:36,186 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:11:36,187 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001ED68C51BE0>
+2025-08-27 15:11:36,187 - core.utils.timing - INFO - Startup delay: 6.2 seconds
+2025-08-27 15:11:42,366 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:11:42,366 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:11:42,366 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:11:42,367 - core.integrated_pipeline - WARNING - Redis schema not available, using fallback
+2025-08-27 15:11:42,371 - core.integrated_pipeline - WARNING - Redis publisher not available, using fallback
+2025-08-27 15:11:46,451 - core.production_signal_generator - WARNING - Redis connection failed: Error 22 connecting to localhost:6379. The remote computer refused the network connection.
+2025-08-27 15:11:46,451 - risk_management.cooldown_manager - INFO - CooldownManager initialized
+2025-08-27 15:11:46,452 - core.production_signal_generator - INFO - ProductionSignalGenerator initialized successfully
+2025-08-27 15:11:46,452 - core.integrated_pipeline - WARNING - ML pipeline initialization failed: FeatureEngineer.__init__() missing 1 required positional argument: 'config'
+2025-08-27 15:11:46,452 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:11:46,452 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:11:46,453 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 25.429092}
+2025-08-27 15:11:49,630 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:11:50,078 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:11:52,183 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:11:52,183 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:11:52,183 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:14:09,089 - __main__ - INFO - Starting CS2 Betting System v2.0...
+2025-08-27 15:14:09,089 - __main__ - INFO - Performance optimizer initialized
+2025-08-27 15:14:09,089 - __main__ - INFO - Using Redis URL: redis://localhost:6379
+2025-08-27 15:14:09,091 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:14:09,092 - core.utils.timing - INFO - Startup delay: 5.6 seconds
+2025-08-27 15:14:14,686 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:14:14,687 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:14:14,687 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:14:14,688 - core.integrated_pipeline - WARNING - Redis schema not available, using fallback
+2025-08-27 15:14:14,691 - core.integrated_pipeline - WARNING - Redis publisher not available, using fallback
+2025-08-27 15:14:18,909 - core.production_signal_generator - WARNING - Redis connection failed: Error 22 connecting to localhost:6379. The remote computer refused the network connection.
+2025-08-27 15:14:18,909 - risk_management.cooldown_manager - INFO - CooldownManager initialized
+2025-08-27 15:14:18,909 - core.production_signal_generator - INFO - ProductionSignalGenerator initialized successfully
+2025-08-27 15:14:18,915 - core.integrated_pipeline - WARNING - ML pipeline initialization failed: FeatureEngineer.__init__() missing 1 required positional argument: 'config'
+2025-08-27 15:14:18,916 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:14:18,916 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:14:18,916 - __main__ - INFO - All components initialized successfully
+2025-08-27 15:14:18,916 - __main__ - INFO - System is now monitoring matches and generating signals
+2025-08-27 15:14:18,916 - __main__ - INFO - Press Ctrl+C to stop
+2025-08-27 15:14:18,916 - core.integrated_pipeline - INFO - Starting integrated CS2 betting pipeline...
+2025-08-27 15:14:18,916 - core.integrated_pipeline - INFO - Initializing integrated CS2 betting pipeline...
+2025-08-27 15:14:18,917 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001A7D2C45BE0>
+2025-08-27 15:14:18,917 - core.utils.timing - INFO - Startup delay: 10.9 seconds
+2025-08-27 15:14:29,866 - app.scrapers.enhanced_hltv_scraper - INFO - Enhanced HLTV Scraper initialized with human-like timing
+2025-08-27 15:14:29,866 - app.scrapers.robust_odds_scraper - INFO - Initializing RobustOddsScraper with 3 bookmaker sources
+2025-08-27 15:14:29,867 - app.scrapers.robust_odds_scraper - INFO - Initialized 7 bookmaker sessions
+2025-08-27 15:14:29,867 - core.integrated_pipeline - WARNING - Redis schema not available, using fallback
+2025-08-27 15:14:29,868 - core.integrated_pipeline - WARNING - Redis publisher not available, using fallback
+2025-08-27 15:14:33,925 - core.production_signal_generator - WARNING - Redis connection failed: Error 22 connecting to localhost:6379. The remote computer refused the network connection.
+2025-08-27 15:14:33,926 - risk_management.cooldown_manager - INFO - CooldownManager initialized
+2025-08-27 15:14:33,926 - core.production_signal_generator - INFO - ProductionSignalGenerator initialized successfully
+2025-08-27 15:14:33,926 - core.integrated_pipeline - WARNING - ML pipeline initialization failed: FeatureEngineer.__init__() missing 1 required positional argument: 'config'
+2025-08-27 15:14:33,926 - core.integrated_pipeline - INFO - Started 4 background tasks
+2025-08-27 15:14:33,926 - core.integrated_pipeline - INFO - Pipeline initialization completed successfully
+2025-08-27 15:14:33,927 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 24.837271}
+2025-08-27 15:14:36,646 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:14:36,841 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:14:37,047 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:14:37,048 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:14:37,048 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:14:54,916 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:14:55,071 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:14:55,338 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:14:55,339 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:14:55,339 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:16:46,465 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 325.440946}
+2025-08-27 15:17:40,476 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:17:41,849 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:17:42,174 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:17:42,175 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:17:42,175 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:17:59,673 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:18:00,258 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:18:00,328 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:18:00,329 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:18:00,329 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:18:49,532 - app.scrapers.enhanced_hltv_scraper - WARNING - HTTP 403 for https://www.hltv.org/matches
+2025-08-27 15:19:33,934 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 324.844187}
+2025-08-27 15:20:45,779 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:20:45,875 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:20:46,056 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:20:46,057 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:20:46,057 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:21:03,636 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:21:04,294 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:21:06,906 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:21:06,906 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:21:06,907 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:21:46,470 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 625.445857}
+2025-08-27 15:22:00,322 - app.scrapers.enhanced_hltv_scraper - WARNING - HTTP 403 for https://www.hltv.org/matches
+2025-08-27 15:23:49,347 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:23:50,714 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:23:50,971 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:23:50,971 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:23:50,971 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:24:11,844 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:24:11,897 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:24:12,902 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:24:12,903 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:24:12,903 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:24:33,940 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 624.849904}
+2025-08-27 15:26:46,484 - core.integrated_pipeline - INFO - System Metrics: {'total_matches': 0, 'signals_sent': 0, 'predictions_made': 0, 'errors': 0, 'uptime_seconds': 925.460022}
+2025-08-27 15:26:53,678 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:26:55,467 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:26:56,096 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:26:56,096 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:26:56,096 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches
+2025-08-27 15:27:18,772 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from GG.bet
+2025-08-27 15:27:19,309 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from Rivalry
+2025-08-27 15:27:19,969 - app.scrapers.robust_odds_scraper - INFO - Scraped 0 matches from OddsPortal
+2025-08-27 15:27:19,970 - app.scrapers.robust_odds_scraper - INFO - Total odds scraped: 0 from 3 sources
+2025-08-27 15:27:19,970 - app.scrapers.robust_odds_scraper - INFO - Created consensus for 0 matches

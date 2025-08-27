@@ -1,0 +1,16 @@
+features:
+  baseline:
+    - team_elo
+    - map_winrate
+    - form_5
+    - h2h_record
+    - recent_performance
+  advanced:
+    - player_ratings
+    - map_pool_strength
+    - tournament_context
+    - momentum_indicators
+  odds_features:
+    - market_consensus
+    - line_movement
+    - volume_indicators

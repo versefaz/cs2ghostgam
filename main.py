@@ -8,6 +8,7 @@ import asyncio
 import logging
 import signal
 import sys
+import os
 import traceback
 from datetime import datetime
 from contextlib import suppress
@@ -15,7 +16,7 @@ from contextlib import suppress
 # Core system imports
 from core.integrated_pipeline import IntegratedPipeline
 from core.performance_optimizer import PerformanceOptimizer
-from app.scrapers.session_manager import session_manager
+from core.session.session_manager import session_manager
 
 # Configure logging with better formatting
 logging.basicConfig(
@@ -258,62 +259,24 @@ class CS2BettingSystem:
 
 async def main():
     """Enhanced main application entry point with proper cleanup"""
-    global pipeline, performance_optimizer
+    logging.getLogger(__name__).info("Starting CS2 Betting System v2.0...")
+    pipeline = IntegratedPipeline(cfg={})
+    await pipeline.start()
     
+    # graceful shutdown
     stop_event = asyncio.Event()
-    
-    def signal_handler_async(*args):
-        logger.info("Received shutdown signal")
-        stop_event.set()
-    
-    # Register signal handlers for graceful shutdown
     for sig in (signal.SIGINT, signal.SIGTERM):
-        signal.signal(sig, signal_handler_async)
+        asyncio.get_running_loop().add_signal_handler(sig, stop_event.set)
     
-    try:
-        # Display startup banner
-        print_banner()
-        
-        logger.info("Starting CS2 Betting System v2.0...")
-        
-        # Initialize performance optimizer
-        performance_optimizer = PerformanceOptimizer()
-        logger.info("Performance optimizer initialized")
-        
-        # Initialize integrated pipeline
-        pipeline = IntegratedPipeline()
-        await pipeline.initialize()
-        
-        logger.info("All components initialized successfully")
-        logger.info("System is now monitoring matches and generating signals")
-        logger.info("Press Ctrl+C to stop")
-        
-        # Start the main pipeline in background
-        pipeline_task = asyncio.create_task(pipeline.run())
-        
-        # Wait for shutdown signal or pipeline completion
-        done, pending = await asyncio.wait(
-            [pipeline_task, asyncio.create_task(stop_event.wait())],
-            return_when=asyncio.FIRST_COMPLETED
-        )
-        
-        # Cancel any pending tasks
-        for task in pending:
-            task.cancel()
-            
-    except KeyboardInterrupt:
-        logger.info("Shutdown requested by user")
-    except Exception as e:
-        logger.exception(f"System error: {e}")
-    finally:
-        await cleanup_system()
+    await stop_event.wait()
+    await pipeline.stop()
 
 
 async def cleanup_system():
     """Enhanced cleanup system resources with proper session management"""
     global pipeline, performance_optimizer
     
-    logger.info("🛑 Cleaning up system resources...")
+    logger.info("Cleaning up system resources...")
     
     try:
         # Shutdown pipeline first
@@ -352,7 +315,7 @@ async def cleanup_system():
     except Exception as e:
         logger.error(f"Error during cleanup: {e}")
     
-    logger.info("✅ System cleanup completed")
+    logger.info("System cleanup completed")
 
 
 if __name__ == "__main__":

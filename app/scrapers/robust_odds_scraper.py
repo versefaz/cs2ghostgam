@@ -20,7 +20,7 @@ import statistics
 from enum import Enum
 
 # Import SessionManager for proper session handling
-from app.scrapers.session_manager import session_manager
+from core.session.session_manager import session_manager
 
 # Import timing utilities and config
 from core.utils.timing import HumanLikeTiming, TimingConfig, RateLimitError, RequestThrottler, random_startup_delay
@@ -212,8 +212,6 @@ class RobustOddsScraper:
             )
         
         logger.info(f"Initialized {len(BookmakerSource)} bookmaker sessions")
-        
-        logger.info(f"Initialized {len(self.sessions)} bookmaker sessions")
     
     async def close(self):
         """Close all HTTP sessions via SessionManager"""

@@ -224,6 +224,11 @@ async def random_startup_delay(max_delay: float = 30.0):
     await asyncio.sleep(delay)
 
 
+def log_startup_delay():
+    """Log startup delay for pipeline initialization"""
+    logger.info("Pipeline startup initiated")
+
+
 def get_retry_delay(attempt: int, base_delay: float = 1.0, max_delay: float = 60.0) -> float:
     """Get exponential backoff delay for retries"""
     delay = base_delay * (2 ** attempt) + random.uniform(0, 1)
