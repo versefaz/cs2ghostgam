@@ -219,29 +219,52 @@ class DeepBettingAnalyzer:
     
     def _generate_match_winner_reasoning(self, team: str, team_analysis: TeamAnalysis, 
                                        opponent_analysis: TeamAnalysis, ev: float) -> str:
-        """สร้างเหตุผลสำหรับการเดิมพันผู้ชนะแมตช์"""
+        """สร้างเหตุผลเชิงลึกสำหรับการเดิมพันผู้ชนะแมตช์"""
         
         reasons = []
         
-        # ผู้เล่นดาวเด่น
+        # วิเคราะห์ผู้เล่นดาวเด่น
         star_player = max(team_analysis.players, key=lambda p: p.rating)
         opponent_star = max(opponent_analysis.players, key=lambda p: p.rating)
         
         if star_player.rating > opponent_star.rating + 0.15:
-            reasons.append(f"{star_player.name} (Rating: {star_player.rating}) โดดเด่นกว่า {opponent_star.name}")
+            reasons.append(f"🌟 {star_player.name} (Rating {star_player.rating}) เหนือกว่า {opponent_star.name} ({opponent_star.rating}) อย่างชัดเจน")
         
-        # ฟอร์ม
-        if team_analysis.recent_form == "excellent":
-            reasons.append(f"{team} อยู่ในฟอร์มดีเยี่ยม")
+        # วิเคราะห์ฟอร์มและ win streak
+        if team_analysis.recent_form == "excellent" and team_analysis.win_streak >= 5:
+            reasons.append(f"🔥 {team} ฟอร์มร้อนแรง ชนะติดต่อกัน {team_analysis.win_streak} แมตช์")
+        elif team_analysis.recent_form == "excellent":
+            reasons.append(f"⚡ {team} อยู่ในฟอร์มดีเยี่ยม มีความมั่นคงสูง")
         
-        # Ranking
-        if team_analysis.current_ranking < opponent_analysis.current_ranking - 10:
-            reasons.append(f"อันดับ {team_analysis.current_ranking} สูงกว่าคู่แข่งมาก")
+        # วิเคราะห์ ranking และความแข็งแกร่ง
+        ranking_diff = opponent_analysis.current_ranking - team_analysis.current_ranking
+        if ranking_diff > 20:
+            reasons.append(f"🏆 อันดับ {team_analysis.current_ranking} เหนือกว่าคู่แข่ง {ranking_diff} อันดับ")
         
-        # Expected Value
-        reasons.append(f"Expected Value {ev:.1%} คุ้มค่าการลงทุน")
+        # วิเคราะห์ map pool
+        team_avg_winrate = sum(m.win_rate for m in team_analysis.map_pool) / len(team_analysis.map_pool)
+        opponent_avg_winrate = sum(m.win_rate for m in opponent_analysis.map_pool) / len(opponent_analysis.map_pool)
+        if team_avg_winrate > opponent_avg_winrate + 15:
+            reasons.append(f"🗺️ Win rate เฉลี่ย {team_avg_winrate:.1f}% สูงกว่าคู่แข่ง {team_avg_winrate - opponent_avg_winrate:.1f}%")
         
-        return " | ".join(reasons[:3])
+        # วิเคราะห์ clutch และ pressure performance
+        team_clutch = sum(p.clutch_success_rate for p in team_analysis.players) / len(team_analysis.players)
+        opponent_clutch = sum(p.clutch_success_rate for p in opponent_analysis.players) / len(opponent_analysis.players)
+        if team_clutch > opponent_clutch + 5:
+            reasons.append(f"🎯 Clutch success rate {team_clutch:.1f}% เหนือกว่าคู่แข่ง")
+        
+        if team_analysis.pressure_performance > opponent_analysis.pressure_performance + 15:
+            reasons.append(f"💪 เล่นภายใต้แรงกดดันได้ดีกว่า ({team_analysis.pressure_performance:.1f}% vs {opponent_analysis.pressure_performance:.1f}%)")
+        
+        # สรุป Expected Value และคำแนะนำ
+        if ev > 3.0:
+            reasons.append(f"💎 Expected Value {ev:.1%} สูงมหาศาล คุ้มค่าการลงทุนสูงสุด")
+        elif ev > 0.5:
+            reasons.append(f"💰 Expected Value {ev:.1%} สูงมาก คุ้มค่าการลงทุน")
+        elif ev > 0.2:
+            reasons.append(f"✅ Expected Value {ev:.1%} ดี คุ้มค่าการลงทุน")
+        
+        return " | ".join(reasons[:4])
     
     def _identify_key_factors(self, team1: TeamAnalysis, team2: TeamAnalysis) -> List[str]:
         """ระบุปัจจัยสำคัญ"""

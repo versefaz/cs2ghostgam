@@ -102,6 +102,13 @@ def print_betting_analysis(opportunities: List, team1: str, team2: str):
         print("❌ ไม่พบโอกาสการเดิมพันที่มีกำไรในขณะนี้")
         return
     
+    # แสดงข้อเสนอที่ดีที่สุด
+    best_opportunity = max(opportunities, key=lambda x: x.expected_value)
+    print(f"🏆 ข้อเสนอที่ดีที่สุด: {best_opportunity.selection} @{best_opportunity.odds}")
+    print(f"💎 Expected Value: {best_opportunity.expected_value:.1%} | ความเสี่ยง: {best_opportunity.risk_level}")
+    print(f"💰 แนะนำเดิมพัน: {best_opportunity.stake_recommendation:.1%} ของเงินทุน")
+    print()
+    
     print(f"🎯 พบโอกาสการเดิมพันที่น่าสนใจ {len(opportunities)} รายการ:")
     print()
     
@@ -123,10 +130,10 @@ def print_betting_analysis(opportunities: List, team1: str, team2: str):
         
         # แบ่งเหตุผลเป็นบรรทัด
         reasoning_parts = opp.detailed_reasoning.split(" | ")
-        for part in reasoning_parts[:3]:
+        for j, part in enumerate(reasoning_parts[:4], 1):
             if len(part) > 65:
                 part = part[:62] + "..."
-            print(f"│    • {part:<63} │")
+            print(f"│ {j}. {part:<65} │")
         
         print(f"│ {'':>70} │")
         
@@ -141,14 +148,35 @@ def print_betting_analysis(opportunities: List, team1: str, team2: str):
         print(f"└{'─' * 70}┘")
         print()
     
+    # แยกตามระดับความเสี่ยง
+    print("\n📊 การแบ่งตามระดับความเสี่ยง:")
+    low_risk = [opp for opp in opportunities if opp.risk_level == "LOW"]
+    medium_risk = [opp for opp in opportunities if opp.risk_level == "MEDIUM"]
+    high_risk = [opp for opp in opportunities if opp.risk_level == "HIGH"]
+    
+    if low_risk:
+        print(f"   🟢 ความเสี่ยงต่ำ: {len(low_risk)} รายการ - เหมาะสำหรับนักลงทุนระมัดระวัง")
+    if medium_risk:
+        print(f"   🟡 ความเสี่ยงกลาง: {len(medium_risk)} รายการ - เหมาะสำหรับนักลงทุนทั่วไป")
+    if high_risk:
+        print(f"   🔴 ความเสี่ยงสูง: {len(high_risk)} รายการ - เหมาะสำหรับนักลงทุนเสี่ยงภัย")
+    
     # สรุปคำแนะนำ
-    print("🎯 สรุปคำแนะนำการเดิมพัน:")
+    print("\n🎯 สรุปคำแนะนำการเดิมพัน:")
     high_confidence_bets = [opp for opp in opportunities if opp.confidence_level in ["HIGH", "VERY_HIGH"]]
     
     if high_confidence_bets:
         print(f"   ✅ มีการเดิมพันความมั่นใจสูง {len(high_confidence_bets)} รายการ")
         total_stake = sum(opp.stake_recommendation for opp in high_confidence_bets[:3])
         print(f"   💰 แนะนำใช้เงินทุนรวม {total_stake:.1%} สำหรับ 3 อันดับแรก")
+        
+        # แนะนำเฉพาะ
+        best_low_risk = min(opportunities, key=lambda x: 0 if x.risk_level == "LOW" else 1)
+        if best_low_risk.risk_level == "LOW":
+            print(f"   🛡️  สำหรับเล่นปลอดภัย: {best_low_risk.selection} @{best_low_risk.odds}")
+        
+        best_value = max(opportunities, key=lambda x: x.expected_value)
+        print(f"   💎 สำหรับกำไรสูงสุด: {best_value.selection} @{best_value.odds} (EV: {best_value.expected_value:.1%})")
     else:
         print("   ⚠️  ไม่มีการเดิมพันความมั่นใจสูงในขณะนี้")
     
