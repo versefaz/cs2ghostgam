@@ -636,6 +636,75 @@ class EnhancedHLTVScraper:
             logger.error(f"Error fetching enhanced match data for {match_id}: {e}")
             return None
     
+    async def get_upcoming_matches(self, limit: int = 10) -> List[Dict[str, Any]]:
+        """Fetch upcoming matches (simplified format for pipeline)"""
+        try:
+            matches_url = f"{self.base_url}/matches"
+            soup = await self._fetch_page(matches_url)
+            
+            if not soup:
+                return []
+            
+            matches = []
+            
+            # Parse upcoming matches - try different selectors
+            match_selectors = [
+                '.upcomingMatch',
+                '.matchEvent',
+                '.match-row',
+                '.upcoming-match',
+                '[data-zonedgrouping-entry-unix]'
+            ]
+            
+            match_elements = []
+            for selector in match_selectors:
+                elements = soup.select(selector)
+                if elements:
+                    match_elements = elements[:limit]
+                    break
+            
+            for match_elem in match_elements:
+                try:
+                    # Extract team names
+                    team_elements = match_elem.select('.team')
+                    if len(team_elements) >= 2:
+                        team1 = team_elements[0].get_text(strip=True)
+                        team2 = team_elements[1].get_text(strip=True)
+                    else:
+                        # Try alternative selectors
+                        team_names = match_elem.select('.teamName, .team-name, .matchTeamName')
+                        if len(team_names) >= 2:
+                            team1 = team_names[0].get_text(strip=True)
+                            team2 = team_names[1].get_text(strip=True)
+                        else:
+                            continue
+                    
+                    # Extract time
+                    time_elem = match_elem.select_one('.matchTime, .match-time, .time')
+                    match_time = time_elem.get_text(strip=True) if time_elem else "TBD"
+                    
+                    # Extract event
+                    event_elem = match_elem.select_one('.matchEvent, .event, .tournament')
+                    event = event_elem.get_text(strip=True) if event_elem else "Unknown Event"
+                    
+                    matches.append({
+                        'team1': team1,
+                        'team2': team2,
+                        'time': match_time,
+                        'event': event
+                    })
+                    
+                except Exception as e:
+                    logger.debug(f"Error parsing match element: {e}")
+                    continue
+            
+            logger.info(f"Fetched {len(matches)} upcoming matches")
+            return matches
+            
+        except Exception as e:
+            logger.error(f"Error fetching upcoming matches: {e}")
+            return []
+
     async def get_upcoming_matches_with_stats(self, limit: int = 50) -> List[MatchContext]:
         """Fetch upcoming matches with comprehensive team statistics"""
         try:
