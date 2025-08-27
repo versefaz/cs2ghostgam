@@ -8,13 +8,14 @@ import asyncio
 import re
 import json
 import logging
+import aiohttp
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, asdict
 from bs4 import BeautifulSoup
 import json
 import re
-from fake_useragent import UserAgent
+# from fake_useragent import UserAgent  # Not needed, using config user agents
 
 # Import timing utilities and config
 from core.utils.timing import HumanLikeTiming, TimingConfig, RateLimitError, RequestThrottler, random_startup_delay
@@ -96,7 +97,6 @@ class EnhancedHLTVScraper:
         # User agent rotation
         self.user_agents = USER_AGENTS
         self.current_ua_index = 0
-        self.ua = UserAgent()
         
         # Caching
         self.team_cache: Dict[str, TeamStats] = {}
@@ -117,6 +117,12 @@ class EnhancedHLTVScraper:
     
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
+    
+    def _get_next_user_agent(self) -> str:
+        """Get next user agent from rotation"""
+        ua = self.user_agents[self.current_ua_index]
+        self.current_ua_index = (self.current_ua_index + 1) % len(self.user_agents)
+        return ua
     
     async def initialize(self):
         """Initialize the scraper with session and headers"""

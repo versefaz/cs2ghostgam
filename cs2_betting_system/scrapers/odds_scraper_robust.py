@@ -1,5 +1,9 @@
 import asyncio
-import aiohttp
+# aiohttp import with fallback handling
+try:
+    import aiohttp
+except ImportError:
+    aiohttp = None
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait

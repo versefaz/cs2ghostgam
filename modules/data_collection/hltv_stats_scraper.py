@@ -82,7 +82,8 @@ class HLTVStatsScraper:
         
     async def initialize(self):
         """Initialize async session และ selenium driver"""
-        self.session = aiohttp.ClientSession(headers=self.headers)
+        if aiohttp:
+            self.session = aiohttp.ClientSession(headers=self.headers)
         
         # Setup undetected Chrome driver if available
         if SELENIUM_AVAILABLE:

@@ -109,7 +109,10 @@ class AdvancedTeamAnalytics:
 
         # Note: real HLTV team URLs are like /team/<id>/<name>. Using name only as fallback.
         url = f"{self.data_sources['hltv']}/search?query={team_name}"
-        timeout = aiohttp.ClientTimeout(total=10)
+        try:
+            timeout = aiohttp.ClientTimeout(total=10)
+        except AttributeError:
+            return {'matches': []}
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(url, headers={"User-Agent": "Mozilla/5.0"}) as response:
@@ -172,7 +175,10 @@ class AdvancedTeamAnalytics:
             return h2h_stats
 
         url = f"{self.data_sources['hltv']}/results?team={team1}&team={team2}"
-        timeout = aiohttp.ClientTimeout(total=10)
+        try:
+            timeout = aiohttp.ClientTimeout(total=10)
+        except AttributeError:
+            return h2h_stats
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(url, headers={"User-Agent": "Mozilla/5.0"}) as response:

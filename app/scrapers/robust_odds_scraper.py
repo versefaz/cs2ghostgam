@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup
 import re
 from urllib.parse import urljoin, urlparse
 import statistics
-from fake_useragent import UserAgent
+# from fake_useragent import UserAgent  # Not needed, using config user agents
 from enum import Enum
 
 # Import timing utilities and config
@@ -93,6 +93,7 @@ class RobustOddsScraper:
         # User agent rotation
         self.user_agents = USER_AGENTS
         self.current_ua_index = 0
+        self.timeout = 30  # Add timeout attribute
         
         # Bookmaker-specific delays (in addition to global timing)
         self.bookmaker_delays: Dict[str, float] = {
@@ -119,6 +120,13 @@ class RobustOddsScraper:
         # Caching
         self.odds_cache: Dict[str, List[OddsData]] = {}
         self.cache_ttl = 300  # 5 minutes
+        
+        # Initialize throttlers for each bookmaker
+        for source in BookmakerSource:
+            self.throttlers[source.value] = RequestThrottler(
+                max_concurrent=3,
+                min_delay=self.config.min_delay if hasattr(self, 'config') else 2.0
+            )
         
         # Validation thresholds
         self.min_odds = 1.01
@@ -177,12 +185,18 @@ class RobustOddsScraper:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
     
+    def _get_next_user_agent(self) -> str:
+        """Get next user agent from rotation"""
+        ua = self.user_agents[self.current_ua_index]
+        self.current_ua_index = (self.current_ua_index + 1) % len(self.user_agents)
+        return ua
+    
     async def initialize(self):
         """Initialize HTTP sessions for each bookmaker"""
         for source in BookmakerSource:
             config = self.bookmaker_configs.get(source, {})
             headers = config.get('headers', {
-                'User-Agent': self.ua.random,
+                'User-Agent': self._get_next_user_agent(),
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
             })
             
@@ -309,13 +323,11 @@ class RobustOddsScraper:
         try:
             url = f"https://www.oddsportal.com/{sport}/counter-strike/"
             response = await self._make_request(url, BookmakerSource.ODDSPORTAL)
-            response = await self._fetch_with_retry(BookmakerSource.ODDSPORTAL, url)
             
             if not response:
                 return odds_data
             
-            html = await response.text()
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(response, 'html.parser')
             
             # Updated selectors for current OddsPortal layout
             match_rows = soup.select('div[data-v-69e0c3c6] .eventRow, .table-main tbody tr')
@@ -379,13 +391,12 @@ class RobustOddsScraper:
         
         try:
             url = "https://gg.bet/en/counter-strike"
-            response = await self._fetch_with_retry(BookmakerSource.GGBET, url)
+            response = await self._make_request(url, BookmakerSource.GGBET)
             
             if not response:
                 return odds_data
             
-            html = await response.text()
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(response, 'html.parser')
             
             # GG.bet specific selectors
             match_elements = soup.select('.match-item, .event-item, .game-item')
@@ -450,13 +461,12 @@ class RobustOddsScraper:
         
         try:
             url = "https://www.rivalry.com/esports/counter-strike-bets"
-            response = await self._fetch_with_retry(BookmakerSource.RIVALRY, url)
+            response = await self._make_request(url, BookmakerSource.RIVALRY)
             
             if not response:
                 return odds_data
             
-            html = await response.text()
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(response, 'html.parser')
             
             # Rivalry specific selectors
             matches = soup.select('.match-card, .bet-card, .event-card')

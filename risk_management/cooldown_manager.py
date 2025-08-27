@@ -39,14 +39,20 @@ class CooldownManager:
     """Comprehensive cooldown management system"""
 
     def __init__(self):
-        self.cooldowns: Dict[str, Dict[CooldownLevel, datetime]] = {}
-        self.config = CooldownConfig()
+        self.cooldowns: Dict[str, Dict[CooldownLevel, float]] = {}
+        self.logger = logging.getLogger(__name__)
+    
+    async def initialize(self):
+        """Initialize the cooldown manager"""
+        self.logger.info("CooldownManager initialized")
         self.market_cooldowns: Dict[str, datetime] = {}  # market_type -> cooldown_end
         self.league_cooldowns: Dict[str, datetime] = {}  # league_id -> cooldown_end
         self.tournament_cooldowns: Dict[str, datetime] = {}  # tournament_id -> cooldown_end
         self.loss_streaks: Dict[str, int] = defaultdict(int)
         self.blocked_entities: set[str] = set()
+        self.config = CooldownConfig()
         self._lock = asyncio.Lock()
+        return self
 
     def is_available(
         self, level: CooldownLevel, entity_id: str, check_all: bool = True
@@ -123,7 +129,7 @@ class CooldownManager:
             self.tournament_cooldowns[tournament_id] = cooldown_end
         
         logger.info(f"Cooldown set: {identifier} ({level.value}) until {cooldown_end}")
-        self._propagate_cooldowns(level, entity_id, base_duration)
+        # self._propagate_cooldowns(level, identifier, timedelta(minutes=duration_minutes))
 
     def _get_base_duration(self, level: CooldownLevel) -> timedelta:
         durations = {

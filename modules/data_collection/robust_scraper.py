@@ -1,7 +1,15 @@
 import asyncio
+import logging
+import random
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional
+
+# aiohttp import with fallback handling
+try:
+    import aiohttp
+except ImportError:
+    aiohttp = None
 
 # Optional heavy deps guarded
 try:
@@ -24,6 +32,26 @@ try:
     CLOUDSCRAPER_AVAILABLE = True
 except Exception:  # pragma: no cover
     CLOUDSCRAPER_AVAILABLE = False
+
+logger = logging.getLogger(__name__)
+
+
+def _ensure_aiohttp() -> bool:
+    """Check if aiohttp is available for use"""
+    if aiohttp is None:
+        logger.error("aiohttp not available – falling back to empty result")
+        return False
+    return True
+
+
+def _random_ua() -> str:
+    """Generate random user agent string"""
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    ]
+    return random.choice(user_agents)
 
 
 @dataclass
@@ -194,23 +222,30 @@ class RobustOddsScraper:
             return []
 
     async def scrape_with_api(self, config: Dict, source_name: str) -> List[Dict]:
-        # If API endpoint exists, try to fetch via aiohttp
-        try:
-            import aiohttp  # local import to avoid hard dep if missing
-        except Exception:
+        """
+        ดึงราคาจาก REST-API ของ bookmaker
+        Returns: list ของ dict ราคา, ถ้า error → []
+        """
+        if not _ensure_aiohttp():
             return []
+        
         endpoint = config.get('api_endpoint')
         if not endpoint:
             return []
+            
         timeout = aiohttp.ClientTimeout(total=10)
+        headers = {"User-Agent": _random_ua()}
+        
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(endpoint, headers={'User-Agent': 'Mozilla/5.0'}) as r:
-                    if r.status != 200:
+                async with session.get(endpoint, headers=headers) as resp:
+                    if resp.status != 200:
+                        logger.warning("API %s status %s", endpoint, resp.status)
                         return []
-                    data = await r.json()
+                    data = await resp.json()
                     return self._extract_from_api_json(data, source_name)
-        except Exception:
+        except Exception as exc:
+            logger.warning("scrape_with_api(%s) failed: %s", endpoint, exc)
             return []
 
     async def emergency_scrape(self, source_name: str) -> List[Dict]:

@@ -94,10 +94,25 @@ class ProductionSignalGenerator:
         self.total_exposure = 0.0
         self._lock = asyncio.Lock()
         
-        # Components
-        self.kelly_calc = KellyCalculator()
+        # Components - initialize with proper parameters
+        from risk_management.kelly_calculator import BettingLimits
+        limits = BettingLimits(
+            max_bet_size=500.0,
+            max_exposure=2000.0,
+            max_bets_per_day=20,
+            max_percent_bankroll=0.05,
+            min_bet_size=10.0,
+            max_concurrent_bets=10
+        )
+        self.kelly_calc = KellyCalculator(limits)
         self.cooldown_mgr = CooldownManager()
-        self.metrics = PrometheusMetrics()
+        
+        # Initialize metrics with fallback
+        try:
+            self.metrics = PrometheusMetrics(service_name="signal_generator")
+        except Exception as e:
+            logger.warning(f"Failed to initialize Prometheus metrics: {e}")
+            self.metrics = None
         
         # Redis setup
         self.redis_url = redis_url
@@ -164,7 +179,9 @@ class ProductionSignalGenerator:
                     return []
                 
                 # Check cooldown
-                if await self.cooldown_mgr.is_match_in_cooldown(match_id):
+                from risk_management.cooldown_manager import CooldownLevel
+                is_available, _ = self.cooldown_mgr.is_available(CooldownLevel.MATCH, match_id)
+                if not is_available:
                     logger.debug(f"Match {match_id} in cooldown")
                     return []
                 
@@ -216,14 +233,16 @@ class ProductionSignalGenerator:
                 self.processed_matches.add(match_id)
                 
                 # Update metrics
-                self.metrics.signals_generated_total.inc(len(published_signals))
+                if self.metrics:
+                    self.metrics.signals_generated_total.inc(len(published_signals))
                 
                 logger.info(f"Generated {len(published_signals)} signals for match {match_id}")
                 return published_signals
                 
             except Exception as e:
                 logger.error(f"Error generating signals: {e}")
-                self.metrics.signal_generation_errors_total.inc()
+                if self.metrics:
+                    self.metrics.signal_generation_errors_total.inc()
                 return []
     
     async def _generate_value_signals(
@@ -261,11 +280,15 @@ class ProductionSignalGenerator:
                     continue
                 
                 # Calculate Kelly stake
-                kelly = self.kelly_calc.calculate_kelly_fraction(
+                from risk_management.kelly_calculator import KellyParameters
+                kelly_params = KellyParameters(
                     probability=our_prob,
                     odds=odds,
-                    multiplier=self.config.kelly_multiplier
+                    bankroll=self.bankroll,
+                    kelly_fraction=self.config.kelly_multiplier
                 )
+                kelly_amount = self.kelly_calc.calculate_kelly(kelly_params)
+                kelly = kelly_amount / self.bankroll  # Convert to fraction
                 
                 stake = min(kelly, self.config.max_stake)
                 priority = self._determine_priority(ev)
@@ -402,12 +425,16 @@ class ProductionSignalGenerator:
             if ev < self.config.min_ev:
                 return signals
             
-            # Calculate stake
-            kelly = self.kelly_calc.calculate_kelly_fraction(
+            # Calculate Kelly for this opportunity
+            from risk_management.kelly_calculator import KellyParameters
+            kelly_params = KellyParameters(
                 probability=model_prob,
                 odds=winner_odds,
-                multiplier=self.config.kelly_multiplier
+                bankroll=self.bankroll,
+                kelly_fraction=self.config.kelly_multiplier
             )
+            kelly_amount = self.kelly_calc.calculate_kelly(kelly_params)
+            kelly = kelly_amount / self.bankroll  # Convert to fraction
             
             stake = min(kelly, self.config.max_stake)
             priority = self._determine_priority(ev)
@@ -635,13 +662,15 @@ class ProductionSignalGenerator:
                 )
             )
             
-            self.metrics.signals_published_total.inc()
+            if self.metrics:
+                self.metrics.signals_published_total.inc()
             logger.info(f"Signal published: {signal.match_id} - {signal.side.value} - EV: {signal.ev:.2%}")
             return True
             
         except Exception as e:
             logger.error(f"Failed to publish signal: {e}")
-            self.metrics.signal_publish_errors_total.inc()
+            if self.metrics:
+                self.metrics.signal_publish_errors_total.inc()
             return False
     
     async def _track_signal(self, signal: BettingSignal):
@@ -652,8 +681,10 @@ class ProductionSignalGenerator:
         self.total_exposure += signal.stake
         
         # Set cooldown
-        await self.cooldown_mgr.set_match_cooldown(
+        from risk_management.cooldown_manager import CooldownLevel
+        self.cooldown_mgr.set_cooldown(
             signal.match_id, 
+            CooldownLevel.MATCH,
             self.config.signal_expiry_minutes
         )
     

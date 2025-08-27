@@ -1,12 +1,18 @@
 import asyncio
-import json
 import logging
-from datetime import datetime, timedelta
+import smtplib
+import ssl
+from datetime import datetime
 from typing import Dict, List, Optional, Any, Callable
 from dataclasses import dataclass, asdict
 from enum import Enum
-import aiohttp
-import smtplib
+
+# aiohttp import with fallback handling
+try:
+    import aiohttp
+except ImportError:
+    aiohttp = None
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 

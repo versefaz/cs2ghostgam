@@ -160,8 +160,8 @@ class IntegratedPipeline:
             # Initialize ML components (with fallbacks)
             if ML_PIPELINE_AVAILABLE:
                 try:
-                    from ml_pipeline.config.feature_config import FeatureConfig
-                    feature_config = FeatureConfig()
+                    from ml_pipeline.config.feature_config import FeatureConfig, FEATURE_SETS
+                    feature_config = FEATURE_SETS['default']
                     self.feature_engineer = FeatureEngineer(config=feature_config)
                     self.model_trainer = ModelTrainer()
                 except Exception as e:
@@ -617,10 +617,11 @@ class IntegratedPipeline:
             }
             
             # Store health status in Redis
-            await self.redis_schema.store_health_status(health_status)
+            if self.redis_schema:
+                await self.redis_schema.store_health_status(health_status)
             
             # Check for alerts
-            if health_status['error_rate'] > 0.1:  # 10% error rate
+            if health_status['error_rate'] > 0.1 and self.alert_system:  # 10% error rate
                 await self.alert_system.send_alert(
                     "warning",
                     "High Error Rate",
@@ -635,14 +636,18 @@ class IntegratedPipeline:
         """Report pipeline metrics to monitoring systems"""
         try:
             # Update Prometheus metrics
-            self.prometheus_metrics.matches_processed_total.set(self.metrics.matches_processed)
-            self.prometheus_metrics.signals_generated_total.set(self.metrics.signals_generated)
-            self.prometheus_metrics.predictions_made_total.set(self.metrics.predictions_made)
+            if hasattr(self.prometheus_metrics, 'matches_scraped_total'):
+                self.prometheus_metrics.matches_scraped_total._value._value = self.metrics.matches_processed
+            if hasattr(self.prometheus_metrics, 'signals_generated_total'):
+                self.prometheus_metrics.signals_generated_total._value._value = self.metrics.signals_generated
+            if hasattr(self.prometheus_metrics, 'predictions_generated_total'):
+                self.prometheus_metrics.predictions_generated_total._value._value = self.metrics.predictions_made
             
             # Store metrics in Redis
-            metrics_data = asdict(self.metrics)
-            metrics_data['timestamp'] = datetime.utcnow().isoformat()
-            await self.redis_schema.store_metrics(metrics_data)
+            if self.redis_schema:
+                metrics_data = asdict(self.metrics)
+                metrics_data['timestamp'] = datetime.utcnow().isoformat()
+                await self.redis_schema.store_metrics(metrics_data)
             
         except Exception as e:
             logger.error(f"Error reporting metrics: {e}")
@@ -656,12 +661,13 @@ class IntegratedPipeline:
             self.is_running = True
             
             # Send startup alert
-            await self.alert_system.send_alert(
-                "info",
-                "Pipeline Started",
-                "CS2 Betting Pipeline is now running",
-                {"timestamp": datetime.utcnow().isoformat()}
-            )
+            if self.alert_system:
+                await self.alert_system.send_alert(
+                    "info",
+                    "Pipeline Started",
+                    "CS2 Betting Pipeline is now running",
+                    {"timestamp": datetime.now().isoformat()}
+                )
             
             # Keep running until stopped
             while self.is_running:

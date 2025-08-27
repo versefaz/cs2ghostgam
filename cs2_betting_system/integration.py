@@ -3,8 +3,16 @@ import json
 from datetime import datetime
 from typing import Dict, List, Optional
 
-import aiohttp
-import redis
+# aiohttp import with fallback handling
+try:
+    import aiohttp
+except ImportError:
+    aiohttp = None
+
+try:
+    import redis
+except ImportError:
+    redis = None
 
 
 class BettingSystemIntegration:
@@ -14,6 +22,8 @@ class BettingSystemIntegration:
         self.scraper_api = "http://localhost:8001/matches"
 
     async def fetch_live_matches(self) -> List[Dict]:
+        if aiohttp is None:
+            return []
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(self.scraper_api) as response:
@@ -25,13 +35,15 @@ class BettingSystemIntegration:
             return []
 
     async def get_predictions(self, match_data: Dict) -> Dict:
+        if aiohttp is None:
+            return {}
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.post(self.prediction_api, json=match_data) as response:
                     if response.status == 200:
                         return await response.json()
             except Exception as e:
-                print(f"Error getting prediction: {e}")
+                print(f"Error getting predictions: {e}")
             return {}
 
     def calculate_kelly(self, prob: float, odds: float) -> float:

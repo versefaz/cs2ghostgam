@@ -46,16 +46,19 @@ class HumanLikeTiming:
         base = self.config.base_interval_sec
         jitter = base * self.config.jitter_pct
         
-        # Add random jitter
-        jittered_delay = random.uniform(base - jitter, base + jitter)
+        # Apply exponential backoff
+        backoff_multiplier = 2 ** self.backoff_level
+        adjusted_base = base * backoff_multiplier
         
-        # Apply exponential backoff if needed
-        if self.backoff_level > 0:
-            backoff_multiplier = 2 ** min(self.backoff_level, self.config.max_backoff)
-            jittered_delay *= backoff_multiplier
-            
+        # Add jitter
+        jittered_delay = adjusted_base + random.uniform(-jitter, jitter)
+        
         # Ensure minimum delay
         return max(jittered_delay, self.config.min_delay)
+    
+    def get_delay(self) -> float:
+        """Alias for next_delay for compatibility"""
+        return self.next_delay()
     
     def on_success(self):
         """Reset backoff on successful request"""
